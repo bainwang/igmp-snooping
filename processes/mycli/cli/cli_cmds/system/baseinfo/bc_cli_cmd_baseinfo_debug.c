@@ -1,0 +1,246 @@
+/************************************************************
+  -------------------------------------------------------------------------
+  FileName: bc_cli_cmd_baseinfo.c
+  Author:  bain.wang@outlook.com      Version :  1.0        Date:2016-10-10
+  Description: proj depend parameter define       
+  Version:                        
+  History:        
+                  
+    1. Date:
+       Author:
+       Modification:
+    2. ...
+***********************************************************/
+
+
+#include "bc_cli.h"
+#include "bc_cli_type.h"
+#include "bc_cli_paratype.h"
+#include "bc_sys_defs.h"
+#include "bc_sys_ipc_client.h"
+#include "bc_cli_dir.h"
+
+
+static I32_T __bcm_mode(
+	IN const UI32_T 	sid,
+	IN cli_value_t 		*cli_para,
+	IN void 			*user_data)
+{
+#if 0
+	bc_sys_bcm_switch(TRUE);
+
+	bc_cli_set_cmdpath(sid, CLI_MOD_DEBUG_BCM_PATH, CLI_MOD_DEBUG_BCM_PROM, cli_para);
+#else
+	CLI_CMD_PRT(sid, "*** not supported ***\r\n");
+#endif
+	return CLI_CMD_SUCCESS_PRT_NEWLINE;
+}
+
+
+/*************************************************
+  Function: __bcm_debug
+  Description: 
+  Input:   
+  		sid					session id
+  		ptrCliValue			命令行参数
+  		ptrUserData			自定义用户数据
+  Output:
+  		NULL
+  Return:
+  		0: success
+  		~0: fail
+  Note: 
+  History: 
+*************************************************/
+static I32_T __bcm_debug
+	(
+		IN const UI32_T 	sid,
+	    IN cli_value_t 		*ptrCliValue,
+	    IN void 			*ptrUserData	
+	)
+{
+#if 0
+	if (!ptrCliValue)
+	{
+		bc_sys_bcm_string("?");
+	}
+	else if (ptrCliValue->type == CLI_TYPES_KEYWORD)
+	{
+		if (memcmp(ptrCliValue->value, "on", 2) == 0)
+		{
+			bc_sys_bcm_switch(TRUE);
+			BC_PT_COMMAND(BC_MODULE_SYSTEM, "Success");
+		}
+		else if (memcmp(ptrCliValue->value, "off", 3) == 0)
+		{
+			bc_sys_bcm_switch(FALSE);
+			BC_PT_COMMAND(BC_MODULE_SYSTEM, "Success");
+		}
+		else
+		{
+			BC_PT_ERROR(BC_MODULE_SYSTEM, "Unknow keyword\r\n");
+		}
+	}
+	else
+	{
+		BC_PT_ERROR(BC_MODULE_SYSTEM, "Unknow cli type\r\n");
+		return 0;
+	}
+#else
+	CLI_CMD_PRT(sid, "*** not supported ***\r\n");
+#endif
+	return 0;
+}
+
+
+static I32_T __event_debug
+	(
+		IN const UI32_T 	sid,
+	    IN cli_value_t 		*ptrCliValue,
+	    IN void 			*ptrUserData	
+	)
+{
+	bc_sys_ipc_event_dbg_dump();
+	return 0;
+}
+
+
+static I32_T __polling_debug
+	(
+		IN const UI32_T 	sid,
+	    IN cli_value_t 		*ptrCliValue,
+	    IN void 			*ptrUserData	
+	)
+{
+	bc_sys_ipc_polling_dbg_dump();
+	return 0;
+}
+
+
+static I32_T __utili_ext_block_debug
+	(
+		IN const UI32_T 	sid,
+	    IN cli_value_t 		*ptrCliValue,
+	    IN void 			*ptrUserData	
+	)
+{
+	bc_sys_ipc_block_ext_dbg_dump();
+	return 0;
+}
+
+static I32_T __utili_ext_block_single_debug
+	(
+		IN const UI32_T 	sid,
+	    IN cli_value_t 		*ptrCliValue,
+	    IN void 			*ptrUserData	
+	)
+{
+	bc_uint32 ofs;
+
+	ofs = *(bc_uint32*)ptrCliValue->value;
+	bc_sys_ipc_block_ext_dbg_dump_single(ofs);
+	return 0;
+}
+
+
+static I32_T __bc_cli_baseinfo_dbg_shell
+	(
+		IN const UI32_T 	sid,
+	    IN cli_value_t 		*ptrCliValue,
+	    IN void 			*ptrUserData	
+	)
+{
+	system("/bin/sh");
+	return 0;
+}
+
+
+/*************************************************
+  Function: bc_cli_cmd_baseinfo_dbg_reg
+  Description: system basic info command
+  Input:   
+  		void
+  Output:
+  		NULL
+  Return:
+  		void
+  Note: 
+  History: 
+*************************************************/
+void bc_cli_cmd_baseinfo_dbg_reg(void)
+{
+	cli_dir_reg_mode(CLI_MOD_DEBUG_BCM_PATH, "bcm", "bcm mode");
+
+    bc_cli_reg_cmd(
+		CLI_MOD_DEBUG_PATH
+		"/bcm ", 
+		__bcm_mode,
+		CLI_ACC_LVL_USER,
+		"Enter bcm mode.",
+		"",
+		NULL);
+
+	bc_cli_reg_cmd(
+		CLI_MOD_DEBUG_PATH
+		"/bcm_ctrl [ on | off ] ",
+		__bcm_debug,
+		CLI_ACC_LVL_ADMIN,
+		"command use \"\" include",
+		"",
+		NULL
+		);
+
+	bc_cli_reg_cmd(
+		CLI_MOD_DEBUG_PATH
+		"/system event",
+		__event_debug,
+		CLI_ACC_LVL_ADMIN,
+		"command use \"\" include",
+		"",
+		NULL
+		);
+
+	bc_cli_reg_cmd(
+		CLI_MOD_DEBUG_PATH
+		"/system polling",
+		__polling_debug,
+		CLI_ACC_LVL_ADMIN,
+		"command use \"\" include",
+		"",
+		NULL
+		);
+
+	bc_cli_reg_cmd(
+		CLI_MOD_DEBUG_PATH
+		"/utili block_ext",
+		__utili_ext_block_debug,
+		CLI_ACC_LVL_ADMIN,
+		"command use \"\" include",
+		"",
+		NULL
+		);
+
+	bc_cli_reg_cmd(
+		CLI_MOD_DEBUG_PATH
+		"/utili block_ext ofs <uint>",
+		__utili_ext_block_single_debug,
+		CLI_ACC_LVL_ADMIN,
+		"command use \"\" include",
+		"",
+		NULL
+		);
+
+	bc_cli_reg_cmd(
+		CLI_MOD_DEBUG_PATH
+		"/system shell",
+		__bc_cli_baseinfo_dbg_shell,
+		CLI_ACC_LVL_ADMIN,
+		"command use \"\" include",
+		"",
+		NULL
+		);
+	
+}
+
+
+

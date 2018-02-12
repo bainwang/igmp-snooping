@@ -1,0 +1,176 @@
+/************************************************************
+  FileName:
+  Author:  bain.wang@outlook.com      Version :  1.0        Date:2016-2-11
+  Description:                   
+  Version:                        
+  History:        
+                  
+    1. Date:
+       Author:
+       Modification:
+    2. ...
+***********************************************************/
+
+#ifndef __bc_msg_h__
+#define __bc_msg_h__
+
+#include "bc_common_defs.h"
+#include "bc_modules.h"
+#include "bc_err.h"
+
+#define BC_MSG_ERR_LEN 			128
+#define BC_MSG_LEN					128
+
+typedef enum {
+		BC_LAN_ENGLISH_E = 0x00,
+		BC_LAN_CHINESE_E = 0x01, 
+		BC_LAN_MAX
+} bc_lan_e;
+
+#define BC_MSG_ERR_MSG_LAN_MAX		2
+
+/*通用menu定义*/
+#define BC_MSG_COMMON_TEMPLATE \
+	__bc_msg_start_template(BC_FIRST_MODULE, BC_MSG_CMM_START,                        "common msg",										"公共消息") \
+	__bc_msg_template(BC_MSG_CMM_NAME,            		"name",														"名称"	) \
+	__bc_msg_template(BC_MSG_CMM_TYPE,                        "type",					"类型")\
+	__bc_msg_template(BC_MSG_CMM_FLAG,                        "flag",					"标志")\
+	__bc_msg_template(BC_MSG_CMM_ENABLE,             	"enable",														"打开"	) \
+	__bc_msg_template(BC_MSG_CMM_DISABLE,             	"disable",														"关闭"	) \
+	__bc_msg_template(BC_MSG_CMM_THERE_ARE,       		"there are %u entries.\r\n",						"共有 %u 项。\r\n"	) \
+	__bc_msg_template(BC_MSG_CMM_PORT,       			"port",						"端口"	) \
+	__bc_msg_template(BC_MSG_CMM_ON,             		"on",														"开"	) \
+	__bc_msg_template(BC_MSG_CMM_OFF,             		"off",														"关"	) \
+	__bc_msg_template(BC_MSG_CMM_YES,             		"yes",														"是"	) \
+	__bc_msg_template(BC_MSG_CMM_NO,             		"no",														"否"	) \
+	__bc_msg_template(BC_MSG_CMM_UP,             		"up",														"在线"	) \
+	__bc_msg_template(BC_MSG_CMM_DOWN,             		"down",														"离线"	) \
+	__bc_msg_template(BC_MSG_CMM_KBPS,       			"Kbps",						"千位/秒"	) \
+	__bc_msg_template(BC_MSG_CMM_INGRESS,       		"ingress"	,                                        "入口") \
+	__bc_msg_template(BC_MSG_CMM_EGRESS,       			"egress",                                         "出口") \
+        __bc_msg_template(BC_MSG_CMM_STATE,       			"state",                               "状态") \
+        __bc_msg_template(BC_MSG_CMM_UNI,       			"UNI",                               "UNI") \
+        __bc_msg_template(BC_MSG_CMM_UNICAST,                        "unknown unicast",					"未知单播")\
+	__bc_msg_template(BC_MSG_CMM_MULTI,                        "multicast",					"组播")\
+	__bc_msg_template(BC_MSG_CMM_BROAD,                        "broadcast",					"广播")\
+	__bc_msg_template(BC_MSG_CMM_NONE,       			"none",						"无") \
+	__bc_msg_template(BC_MSG_CMM_RATE,					"rate",                     "速率")\
+
+
+#define BC_MSG_SYS_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_SYSTEM, BC_MSG_SYS_START,                        "sys message id",										"系统消息") \
+	__bc_msg_template(BC_MSG_SYS_TEST,                        "test",														"测试"	) \
+	__bc_msg_template(BC_MSG_SYS_VERINFO,                     "sys version information",									"系统版本信息"	) \
+	__bc_msg_template(BC_MSG_SYS_SOFTVER,                     "sys software version",										"系统软件版本"	) \
+	__bc_msg_template(BC_MSG_SYS_HARDVER,					  "sys hardware version",										"系统硬件版本"	) \
+	__bc_msg_template(BC_MSG_SYS_MGNTIN,					  "sys manage inband",											"系统带内管理"	) \
+	__bc_msg_template(BC_MSG_SYS_MGNTOUT,					  "sys manage outband",											"系统带外管理"	)
+
+#define BC_MSG_IGMP_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_IGMP, BC_MSG_IGMP_START,                        "igmp message id",									"IGMP消息")
+
+#define BC_MSG_CLI_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_CLI, BC_MSG_CLI_START,                        "cli message id",										"CLI消息")
+
+
+#define BC_MSG_SNMP_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_SNMP, BC_MSG_SNMP_START,                        "snmp message id",									"SNMP消息")
+
+#define BC_MSG_PLATFROM_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_PLATFORM, BC_MSG_PLATFROM_START,                        "platform message id",								"PLATFORM消息")
+
+
+#define BC_MSG_UTILI_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_UTILI, BC_MSG_UTILI_START,                        "utili message id",								"UTILI消息")
+
+
+#define BC_MSG_PRINT_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_PRINT, BC_MSG_PRINT_START,                        "print message id",								"PRINT消息")
+
+
+#define BC_MSG_IPC_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_IPC, BC_MSG_IPC_START,                        "ipc message id",								"IPC消息")
+
+
+#define BC_MSG_SESSION_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_SESSION, BC_MSG_SESSION_START,                        "session message id",								"SESSION消息")
+
+#define BC_MSG_VFS_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_VFS, BC_MSG_VFS_START,                        "virtual fs message id",								"VFS消息")
+
+#define BC_MSG_LOG_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_LOG, BC_MSG_LOG_START,                        "log message id",								"LOG消息")
+
+#define BC_MSG_USERMGMT_TEMPLATE \
+	__bc_msg_start_template(BC_MODULE_USERMGMT, BC_MSG_USERMGMT_START,                        "user mana message id", 				        "USERMGMT消息")	\
+	__bc_msg_start_template(BC_MODULE_USERMGMT, BC_MSG_USERMGMT_REG_NAME,                        "New Username(<=15 chars):", 				        "用户名(<=15 chars):")	\
+	__bc_msg_start_template(BC_MODULE_USERMGMT, BC_MSG_USERMGMT_REG_PWD,                        "New Password(<=15 chars):", 				        "密码(<=15 chars):")	\
+	__bc_msg_start_template(BC_MODULE_USERMGMT, BC_MSG_USERMGMT_REG_CHOIC_LVL,                        "1.Basic   2.Privi   3.User   4.Puser   5.Admin   6.Factory   7.Debug", 				        "1.Basic   2.Privi   3.User   4.Puser   5.Admin   6.Factory   7.Debug")	\
+	__bc_msg_start_template(BC_MODULE_USERMGMT, BC_MSG_USERMGMT_REG_LVL,                        "User's Level:", 				        "用户权限:")	\
+	__bc_msg_start_template(BC_MODULE_USERMGMT, BC_MSG_USERMGMT_REG_CONFIRM_PWD,                        "Confirm password(<=15 chars):", 				        "确认密码(<=15 chars):")
+	
+#undef __bc_msg_start_template
+#define __bc_msg_start_template(mod_id, msg_id, english_m, chinese_m) msg_id = mod_id,
+
+#undef __bc_msg_template
+#define __bc_msg_template(msg_id, english_m, chinese_m) msg_id,
+
+
+typedef enum {
+	BC_MSG_COMMON_TEMPLATE
+	BC_MSG_SYS_TEMPLATE
+	BC_MSG_IGMP_TEMPLATE
+	BC_MSG_CLI_TEMPLATE
+	BC_MSG_SNMP_TEMPLATE
+	BC_MSG_PLATFROM_TEMPLATE
+	BC_MSG_UTILI_TEMPLATE
+	BC_MSG_PRINT_TEMPLATE
+	BC_MSG_IPC_TEMPLATE
+	BC_MSG_SESSION_TEMPLATE
+	BC_MSG_VFS_TEMPLATE
+	BC_MSG_LOG_TEMPLATE
+	BC_MSG_USERMGMT_TEMPLATE
+} bc_msg_e;
+
+
+#undef __bc_msg_start_template
+#undef __bc_msg_template
+
+/*************************************************
+  Function: bc_msg_get
+  Description: get msg by msg id
+  Input: 
+  		msg_id: msg id
+  		lan: language
+  Output:
+  Return:
+  		!NULL is the msg
+  		NULL means can't found msg
+  Note: 
+  History: 
+    1. Date:
+       Author:
+       Modification:
+*************************************************/
+extern bc_char* bc_msg_get(bc_msg_e msg_id, bc_lan_e lan);
+
+/*************************************************
+  Function: bc_msg_err_get
+  Description: get err msg by err id
+  Input: 
+  		err_id: err id
+  		lan: language
+  Output:
+  Return:
+  		!NULL is the err msg
+  		NULL means can't found err msg
+  Note: 
+  History: 
+    1. Date:
+       Author:
+       Modification:
+*************************************************/
+extern bc_char* bc_msg_err_get(bc_err_e err_id, bc_lan_e lan);
+
+#endif
+

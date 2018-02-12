@@ -1,0 +1,26 @@
+/*******************************************************************************
+  Copyright (C), 1988-2014, xxxxx Tech. Co., Ltd.
+  [File name]  : \\DEV\systerm\alarm\bc_snmp_vlan_global_info.c
+  [Author]     : wangbin
+  [Version]    : 1.0
+  [Date]       : 2014-10-29
+  [Description]:
+
+  [Others]     :
+
+  [History]:
+	 Date          Modification 							    Initials
+	----------     ----------                                   -------
+	2015-9-28      Created								   		wangbin
+*******************************************************************************/
+
+#ifndef __BC_CLI_IPC_MSG_SERVER_H__
+#define __BC_CLI_IPC_MSG_SERVER_H__
+
+#include "bc_ipc_package.h"
+
+extern bc_err_e bc_cli_ipc_msg_recv(bc_ipc_package_t *data);
+
+
+#endif
+

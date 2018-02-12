@@ -1,0 +1,1037 @@
+/*
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+*/
+
+
+
+
+
+
+/*******************************************************************************
+  [Author]     : bain.wang@outlook.com.uestc@gmail.com
+  [Version]    : 
+  [Date]       : 
+  [Description]: !!!!!!!!!!!!!!!!!!!请勿修改本文件!!!!!!!!!!!!!!!!!!!!!!!!
+
+  [Others]     :
+
+  [History]:
+	 Date          	Modification 							    			Initials
+	----------   ----------                                   					-------
+	2017-03-16     Created								   			bain.wang@outlook.com
+	2017-05-05     Modify								   			bain.wang@outlook.com
+*******************************************************************************/
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//																			  //
+//								头   文   件								  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+#include <net-snmp/net-snmp-config.h>
+#include <net-snmp/net-snmp-includes.h>
+#include <net-snmp/agent/net-snmp-agent-includes.h>
+#include <net-snmp/agent/snmp_vars.h>
+
+
+#include <net-snmp/agent/agent_trap.h>
+#include <net-snmp/agent/agent_callbacks.h>
+#include <net-snmp/agent/table.h>
+#include <net-snmp/agent/table_iterator.h>
+#include <net-snmp/agent/table_data.h>
+#include <net-snmp/agent/table_dataset.h>
+
+#include <signal.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <unistd.h>     
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <net/if.h>
+#include <net/if_arp.h>
+#include <netinet/in.h>
+#include <stdio.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <unistd.h>
+#include <string.h>
+#include "bc_common_defs.h"
+#include "snmp_global.h"
+#include "snmp_core_ex.h"
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                               			 //
+//																			 //
+//						外 部 变 量、 函 数 引 用					         //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//																			 //
+//						结   构   体   宏   定   义							 //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+
+/*
+ *		当源文件需要定义宏，而头文件又与其它模块头文件中的宏定义有重复定义嫌疑
+ *	时，在此处定义。
+ */
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//																			 //
+//							全 局 变 量 定 义							     //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+/* 
+ *	外部全局变量，提供整个工程调用，在头文件中提供调用接口(外部引用声明)。
+ */
+
+/* 
+ *	内部全局变量，只提供给该文件内部函数调用，不在头文件中提供调用接口。
+ */
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//																			 //
+//								函  数  声  明								 //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//																			 //
+//								函  数  定  义								 //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+#if 1
+void snmp_get_oid_index(netsnmp_variable_list *reqvb, bc_int32 idxnum, bc_int32 oids[SNMP_OID_INDEX_MAX])
+{
+	bc_int32 i=0,j=idxnum;
+	netsnmp_variable_list *tmp_reqvb = reqvb;
+
+	if(!reqvb)
+		return;
+	if(!idxnum || idxnum>10)
+		return ;
+	for(; i<idxnum; i++,j--)
+	{
+		oids[i] = tmp_reqvb->name[tmp_reqvb->name_length-j];
+	}
+}
+void snmp_pt_oid(netsnmp_variable_list *reqvb)
+{
+	bc_int32 i = 0;
+	netsnmp_variable_list *tmp_reqvb = reqvb;
+
+	if(!reqvb)
+		return;
+	
+        for (i = 0; i < tmp_reqvb->name_length; i ++)
+        {
+                if (i != tmp_reqvb->name_length - 1)
+                {
+                        printf("%d.", (bc_int32)tmp_reqvb->name[i]);
+                }
+                else
+                {
+                        printf("%d ", (bc_int32)tmp_reqvb->name[i]);
+                }
+        }
+        printf("\n");      
+}
+#endif
+
+SNMP_INLINE bc_int32
+snmp_check_vb_type(const netsnmp_variable_list *var, bc_int32 type )
+{
+    register bc_int32 rc = SNMP_ERR_NOERROR;
+
+    if (NULL == var)
+        return SNMP_ERR_GENERR;
+    
+    if (var->type != type) {
+        rc = SNMP_ERR_WRONGTYPE;
+    }
+
+    return rc;
+}
+
+#define __SNMP_FREE(s)    do { if (s) { free((void *)s); s=NULL; } } while(0)
+
+static void __snmp_handler_free(netsnmp_mib_handler *handler)
+{
+    if (handler != NULL) {
+        if (handler->next != NULL) {
+
+            netsnmp_assert(handler != handler->next); 
+            __snmp_handler_free(handler->next);	///////////////////////////WARNNING
+            handler->next = NULL;
+        }
+        if ((handler->myvoid != NULL) && (handler->data_free != NULL))
+        {
+            handler->data_free(handler->myvoid);
+        }
+        SNMP_P_FREE(handler->handler_name);
+        SNMP_P_FREE(handler);
+    }
+}
+
+static void __snmp_handler_registration_free(netsnmp_handler_registration *reginfo)
+{
+    if (reginfo != NULL) {
+        __snmp_handler_free(reginfo->handler);
+        SNMP_P_FREE(reginfo->handlerName);
+        SNMP_P_FREE(reginfo->contextName);
+        SNMP_P_FREE(reginfo->rootoid);
+        reginfo->rootoid_len = 0;
+        SNMP_P_FREE(reginfo);
+    }
+}
+
+static void
+__register_mib_detach_node(snmp_ns_subtree *s)
+{
+    if (s != NULL) {
+        s->flags = s->flags & ~SNMP_SUBTREE_ATTACHED;
+    }
+}
+
+SNMP_STATIC_INLINE lookup_cache_context *
+get_context_lookup_cache(const bc_char *context) {
+    lookup_cache_context *ptr;
+    if (!context)
+        context = "";
+#ifndef	SNMP_CORE_SUPPORT_SET
+    for(ptr = thecontextcache; ptr; ptr = ptr->next) {
+        if (strcmp(ptr->context, context) == 0)
+            break;
+    }
+    if (!ptr) {
+        if (netsnmp_subtree_find_first(context)) {
+            ptr = SNMP_MALLOC_TYPEDEF(lookup_cache_context);
+            ptr->next = thecontextcache;
+            ptr->context = strdup(context);
+            thecontextcache = ptr;
+        } else {
+            return NULL;
+        }
+    }
+#endif
+    return ptr;
+}
+
+SNMP_STATIC_INLINE void
+__invalidate_lookup_cache(const bc_char *context) {
+    lookup_cache_context *cptr;
+    if ((cptr = get_context_lookup_cache(context)) != NULL) {
+        cptr->thecachecount = 0;
+        cptr->currentpos = 0;
+    }
+}
+
+static bc_int32 __snmp_inject_handler_before(netsnmp_handler_registration *reginfo,
+                              netsnmp_mib_handler *handler)
+{
+//	const bc_char *before_what = NULL;
+	
+    netsnmp_mib_handler *handler2 = handler;
+
+    if (handler == NULL || reginfo == NULL) {
+        snmp_log(LOG_ERR, "netsnmp_inject_handler() called illegally\n");
+        netsnmp_assert(reginfo != NULL);
+        netsnmp_assert(handler != NULL);
+        return SNMP_ERR_GENERR;
+    }
+    while (handler2->next) {
+        handler2 = handler2->next;  /* FIND END OF SNODE */
+    }
+    if (reginfo->handler == NULL) {
+        DEBUGMSGTL(("handler:inject", "injecting %s\n", handler->handler_name));
+    }
+    else {
+        DEBUGMSGTL(("handler:inject", "injecting %s before %s\n",
+                    handler->handler_name, reginfo->handler->handler_name));
+    }
+#if 0	
+    if (before_what) {
+        netsnmp_mib_handler *nexth, *prevh = NULL;
+        if (reginfo->handler == NULL) {
+            snmp_log(LOG_ERR, "no handler to inject before\n");
+            return SNMP_ERR_GENERR;
+        }
+        for(nexth = reginfo->handler; nexth;
+            prevh = nexth, nexth = nexth->next) {
+            if (strcmp(nexth->handler_name, before_what) == 0)
+                break;
+        }
+        if (!nexth)
+            return SNMP_ERR_GENERR;
+        if (prevh) {
+            /* after prevh and before nexth */
+            prevh->next = handler;
+            handler2->next = nexth;
+            handler->prev = prevh;
+            nexth->prev = handler2;
+            return SNMPERR_SUCCESS;
+        }
+        /* else we're first, which is what we do next anyway so fall through */
+    }
+#endif
+    handler2->next = reginfo->handler;
+    if (reginfo->handler)
+        reginfo->handler->prev = handler2;
+    reginfo->handler = handler;
+    return SNMPERR_SUCCESS;
+}
+
+static bc_int32 __snmp_register_mib_for_set(bc_int32 pir, const bc_char *moduleName,
+                     oid * mibloc,
+                     size_t mibloclen,
+                     bc_int32 priority,
+                     bc_int32 range_subid,
+                     oid range_ubound,
+                     netsnmp_session * ss,
+                     const bc_char *context,
+                     bc_int32 timeout,
+                     bc_int32 flags,
+                     netsnmp_handler_registration *reginfo,
+                     bc_int32 callback,
+                     oid range_bound)
+{
+	struct variable *var = NULL;
+	size_t varsize = 0;
+	size_t numvars = 0;
+	snmp_ns_subtree *b = NULL;
+	
+    snmp_ns_subtree *subtree = NULL, *sub2 = NULL;
+    bc_int32             res;
+    struct register_parameters reg_parms;
+    bc_int32 old_lookup_cache_val = netsnmp_get_lookup_cache_size();
+
+	
+    if (moduleName == NULL ||
+        mibloc     == NULL) {
+        __snmp_handler_registration_free(reginfo);
+        return MIB_REGISTRATION_FAILED;
+    }
+	if(range_bound){
+		subtree = (snmp_ns_subtree *)calloc(1, sizeof(snmp_ns_subtree));
+		if (subtree == NULL) {
+			__snmp_handler_registration_free(reginfo);
+			return MIB_REGISTRATION_FAILED;
+		}
+	}else
+		snmp_reg_conti_check(pir);
+	
+    DEBUGMSGTL(("register_mib", "registering \"%s\" at ", moduleName));
+    DEBUGMSGOIDRANGE(("register_mib", mibloc, mibloclen, range_subid,
+                      range_ubound));
+    DEBUGMSG(("register_mib", " with context \"%s\"\n",
+              SNMP_STRORNULL(context)));
+
+    /*
+     * check context
+     */
+    if( ((NULL == context) && (NULL != reginfo->contextName)) ||
+        ((NULL != context) && (NULL == reginfo->contextName)) ||
+        ( ((NULL != context) && (NULL != reginfo->contextName)) &&
+          (0 != strcmp(context, reginfo->contextName))) ) {
+        snmp_log(LOG_WARNING,"context passed during registration does not "
+                 "equal the reginfo contextName! ('%s' != '%s')\n",
+                 context, reginfo->contextName);
+        netsnmp_assert(!"register context == reginfo->contextName"); /* always false */
+    }
+
+    /*  reg  for new node*/
+
+    subtree->reginfo = reginfo;
+    subtree->name_a  = snmp_duplicate_objid(mibloc, mibloclen);
+    subtree->start_a = snmp_duplicate_objid(mibloc, mibloclen);
+    subtree->end_a   = snmp_duplicate_objid(mibloc, mibloclen);
+    subtree->label_a = strdup(moduleName);
+    if (subtree->name_a == NULL || subtree->start_a == NULL || 
+	subtree->end_a  == NULL || subtree->label_a == NULL) {
+	netsnmp_subtree_free(subtree); /* also frees reginfo */
+	return MIB_REGISTRATION_FAILED;
+    }
+    subtree->namelen   = (u_char)mibloclen;
+    subtree->start_len = (u_char)mibloclen;
+    subtree->end_len   = (u_char)mibloclen;
+    subtree->end_a[mibloclen - 1]++;
+
+    if (var != NULL) {
+	subtree->variables = (struct variable *)malloc(varsize*numvars);
+	if (subtree->variables == NULL) {
+	    netsnmp_subtree_free(subtree); /* 释放*/
+	    return MIB_REGISTRATION_FAILED;
+	}
+	memcpy(subtree->variables, var, numvars*varsize);
+	subtree->variables_len = numvars;
+	subtree->variables_width = varsize;
+    }
+    subtree->priority = priority;
+    subtree->timeout = timeout;
+    subtree->range_subid = range_subid;
+    subtree->range_ubound = range_ubound;
+    subtree->session = ss;
+    subtree->flags = (u_char)flags;    /*  识别实例中的OID*/
+    subtree->flags |= SNMP_SUBTREE_ATTACHED;
+    subtree->global_cacheid = reginfo->global_cacheid;
+
+    netsnmp_set_lookup_cache_size(0);
+    res = netsnmp_subtree_load(subtree, context);
+
+	b = (snmp_ns_subtree *)calloc(1, sizeof(snmp_ns_subtree));
+	
+    if (res == MIB_REGISTERED_OK && range_subid != 0) {
+        bc_int32 i;
+	for (i = mibloc[range_subid - 1] + 1; i <= (bc_int32)range_ubound; i++) {
+#if 1	/*对子节点的拷贝操作*/
+		if (b != NULL) {
+			memcpy(b, subtree, sizeof(snmp_ns_subtree));
+			b->name_a  = snmp_duplicate_objid(subtree->name_a,  subtree->namelen);
+			b->start_a = snmp_duplicate_objid(subtree->start_a, subtree->start_len);
+			b->end_a   = snmp_duplicate_objid(subtree->end_a,   subtree->end_len);
+			b->label_a = strdup(subtree->label_a);
+    
+			if (b->name_a == NULL || b->start_a == NULL || 
+				b->end_a  == NULL || b->label_a == NULL) {
+				netsnmp_subtree_free(b);
+				goto SUBTREE_COPY_ERR;
+			}
+
+			if (subtree->variables != NULL) {
+				b->variables = (struct variable *)malloc(subtree->variables_len * 
+						       subtree->variables_width);
+				if (b->variables != NULL) {
+					memcpy(b->variables, subtree->variables,subtree->variables_len*subtree->variables_width);
+				} else {
+					netsnmp_subtree_free(b);
+					goto SUBTREE_COPY_ERR;
+				}
+			}
+
+			if (subtree->reginfo != NULL) {
+				b->reginfo = netsnmp_handler_registration_dup(subtree->reginfo);
+				if (b->reginfo == NULL) {
+					netsnmp_subtree_free(b);
+					goto SUBTREE_COPY_ERR;
+				}
+	   		 }
+  		}
+  		sub2 = b;
+#endif
+
+	    if (sub2 == NULL) {
+		//	BC_PT_DBG_FUN(BC_MODULE_SNMP, "calloc snmp_ns_subtree failure!\n");
+			unregister_mib_context(mibloc, mibloclen, priority,
+                                       range_subid, range_ubound, context);
+                netsnmp_set_lookup_cache_size(old_lookup_cache_val);
+			__invalidate_lookup_cache(context);
+			
+                __invalidate_lookup_cache(context);
+                return MIB_REGISTRATION_FAILED;
+            }
+
+            sub2->name_a[range_subid - 1]  = i;
+            sub2->start_a[range_subid - 1] = i;
+            sub2->end_a[range_subid - 1]   = i;     /* XXX - ???? */
+            if (range_subid == (bc_int32)mibloclen) {
+                ++sub2->end_a[range_subid - 1];
+            }
+            sub2->flags |= SNMP_SUBTREE_ATTACHED;
+            sub2->global_cacheid = reginfo->global_cacheid;
+
+            sub2->reginfo->rootoid[range_subid - 1]  = i;
+
+            res = netsnmp_subtree_load(sub2, context);
+            if (res != MIB_REGISTERED_OK) {
+	//	BC_PT_DBG_FUN(BC_MODULE_SNMP, "netsnmp_subtree_load error, MIB REGISTER FAILURE!\n");				
+                unregister_mib_context(mibloc, mibloclen, priority,
+                                       range_subid, range_ubound, context);
+                netsnmp_remove_subtree(sub2);
+		netsnmp_subtree_free(sub2);
+                netsnmp_set_lookup_cache_size(old_lookup_cache_val);
+                __invalidate_lookup_cache(context);
+                return res;
+            }
+        }
+    } 
+	else if (res == MIB_DUPLICATE_REGISTRATION ||
+               res == MIB_REGISTRATION_FAILED) {
+       //      BC_PT_DBG_FUN(BC_MODULE_SNMP, "MIB_DUPLICATE_REGISTRATION or MIB_REGISTRATION_FAILED!\n");
+        netsnmp_set_lookup_cache_size(old_lookup_cache_val);
+        __invalidate_lookup_cache(context);
+        netsnmp_subtree_free(subtree);
+        return res;
+    }
+
+    /* if no main-code, mark current mib-node invalid
+     */
+    if (netsnmp_ds_get_boolean(NETSNMP_DS_APPLICATION_ID, 
+			       NETSNMP_DS_AGENT_ROLE) != MASTER_AGENT) {
+        extern struct snmp_session *main_session;
+        if (main_session == NULL) {
+            __register_mib_detach_node(subtree);
+	}
+    }
+
+    if (res == MIB_REGISTERED_OK && callback) {
+        memset(&reg_parms, 0x0, sizeof(reg_parms));
+        reg_parms.name = mibloc;
+        reg_parms.namelen = mibloclen;
+        reg_parms.priority = priority;
+        reg_parms.range_subid = range_subid;
+        reg_parms.range_ubound = range_ubound;
+        reg_parms.timeout = timeout;
+        reg_parms.flags = (u_char) flags;
+        reg_parms.contextName = context;
+        reg_parms.session = ss;
+        reg_parms.reginfo = reginfo;
+        reg_parms.contextName = context;
+        snmp_call_callbacks(SNMP_CALLBACK_APPLICATION,
+                            SNMPD_CALLBACK_REGISTER_OID, &reg_parms);
+    }
+
+    netsnmp_set_lookup_cache_size(old_lookup_cache_val);
+    __invalidate_lookup_cache(context);
+    return res;
+
+SUBTREE_COPY_ERR:
+	if(callback)
+		return netsnmp_register_mib(reginfo->handlerName,
+                                (struct variable *)ss, FALSE, FALSE,
+                                reginfo->rootoid, reginfo->rootoid_len,
+                                reginfo->priority,
+                                reginfo->range_subid,
+                                reginfo->range_ubound, NULL,
+                                reginfo->contextName, reginfo->timeout, flags,
+                                reginfo, callback);
+	unregister_mib_context(mibloc, mibloclen, priority,
+                                       range_subid, range_ubound, context);
+	netsnmp_set_lookup_cache_size(old_lookup_cache_val);
+	__invalidate_lookup_cache(context);
+	return MIB_REGISTRATION_FAILED;
+}
+
+#if 1
+netsnmp_mib_handler *
+snmp_netsnmp_create_handler(const char *name,
+                       snmp_ns_node_handler * handler_access_method)
+{
+    netsnmp_mib_handler *retval = SNMP_MALLOC_TYPEDEF(netsnmp_mib_handler);
+    if (retval) {
+        retval->access_method = handler_access_method;
+        if (NULL != name) {
+            retval->handler_name = strdup(name);
+            if (NULL == retval->handler_name)
+                SNMP_P_FREE(retval);
+        }
+    }
+    return retval;
+}
+
+netsnmp_mib_handler *snmp_get_old_api_handler(void)
+{
+    return snmp_netsnmp_create_handler(SNMP_NETSNMP_OLD_API_NAME, netsnmp_old_api_helper);
+}
+
+#endif
+
+bc_int32 snmp_regitster_mib_proc(const bc_char *moduleName,
+                         struct variable *var,
+                         size_t varsize,
+                         size_t numvars,
+                         const oid * mibloc,
+                         size_t mibloclen,
+                         bc_int32 priority,
+                         bc_int32 range_subid,
+                         oid range_ubound,
+                         netsnmp_session * ss,
+                         const bc_char *context, bc_int32 timeout, bc_int32 flags)
+{
+
+	bc_uint32    i;
+	oid range_back;
+	netsnmp_mib_handler *handler;
+	bc_int32 __flags = flags;
+
+	netsnmp_session * __ss;
+
+#if 0
+	netsnmp_mib_handler *ret = SNMP_MALLOC_TYPEDEF(netsnmp_mib_handler);
+#endif	
+	/*
+	* reg node
+	*/
+	for (i = 0; i < numvars; i++) {
+		struct variable *vp;
+		netsnmp_handler_registration *reginfo =
+		SNMP_MALLOC_TYPEDEF(netsnmp_handler_registration);
+		if (reginfo == NULL)
+			return SNMP_ERR_GENERR;
+
+		vp = netsnmp_duplicate_variable((struct variable *)
+					((bc_char *) var + varsize * i));
+
+#if 0
+    		if (ret) 
+		{
+        		ret->access_method = netsnmp_old_api_helper;
+       		 if (NULL != "old_api") 
+			 {
+            			ret->handler_name = strdup("old_api");
+            			if (!(ret->handler_name))
+               			 SNMP_FREE(ret);
+        		}
+    		}
+		reginfo->handler = ret;
+#else
+		reginfo->handler = snmp_get_old_api_handler();
+#endif
+		reginfo->handlerName = strdup(moduleName);
+		reginfo->rootoid_len = (mibloclen + vp->namelen);
+		reginfo->rootoid = (oid *) malloc(reginfo->rootoid_len * sizeof(oid));
+		if (reginfo->rootoid == NULL) {
+			SNMP_FREE(vp);
+			SNMP_FREE(reginfo->handlerName);
+			SNMP_FREE(reginfo);
+			return SNMP_ERR_GENERR;
+		}
+
+		memcpy(reginfo->rootoid, mibloc, mibloclen * sizeof(oid));
+		memcpy(reginfo->rootoid + mibloclen, vp->name, vp->namelen * sizeof(oid));
+		reginfo->handler->myvoid = (void *) vp;
+		reginfo->handler->data_clone = (void *(*)(void *))netsnmp_duplicate_variable;
+		reginfo->handler->data_free = free;
+
+		reginfo->priority = priority;
+		reginfo->range_subid = range_subid;
+
+		reginfo->range_ubound = range_ubound;
+		reginfo->timeout = timeout;
+		reginfo->contextName = (context) ? strdup(context) : NULL;
+		reginfo->modes = HANDLER_CAN_RWRITE;	//get or set
+
+		/*
+		* reg priv node ,ex:FiberHome all mib file
+		*/
+#if 1
+		if (reginfo == NULL) {
+			snmp_log(LOG_ERR, "netsnmp_register_handler() called illegally\n");
+			netsnmp_assert(reginfo != NULL);
+			return SNMP_ERR_GENERR;
+		}
+
+		DEBUGIF("handler::register") {
+			DEBUGMSGTL(("handler::register", "Registering %s (", reginfo->handlerName));
+			for (handler = reginfo->handler; handler; handler = handler->next) {
+				DEBUGMSG(("handler::register", "::%s", handler->handler_name));
+			}
+
+			DEBUGMSG(("handler::register", ") at "));
+			if (reginfo->rootoid && reginfo->range_subid) {
+				DEBUGMSGOIDRANGE(("handler::register", reginfo->rootoid, reginfo->rootoid_len, reginfo->range_subid, reginfo->range_ubound));
+			} 
+			else if (reginfo->rootoid) {
+				DEBUGMSGOID(("handler::register", reginfo->rootoid, reginfo->rootoid_len));
+			} 
+			else {
+				DEBUGMSG(("handler::register", "[null]"));
+			}
+			DEBUGMSG(("handler::register", "\n"));
+		}
+
+		/*
+		* !!!!!!!!!!!error!!!!!!!!!!, quit
+		*/
+		if (0 == reginfo->modes) {
+			reginfo->modes = HANDLER_CAN_DEFAULT;
+		//	BC_PT_DBG_FUN(BC_MODULE_SNMP, "no registration modes specified for %s. " "Defaulting to 0x%x\n", reginfo->handlerName, reginfo->modes);
+		}
+		range_back = reginfo->range_ubound;
+
+		/*
+		* NO GETBULK
+		*/
+		if (!(reginfo->modes & HANDLER_CAN_GETBULK)) {
+			__snmp_inject_handler_before(reginfo, netsnmp_get_bulk_to_next_handler());
+		}
+
+		flags = 0;
+		for (handler = reginfo->handler; handler; handler = handler->next) {
+			if (handler->flags & MIB_HANDLER_INSTANCE)
+			flags = FULLY_QUALIFIED_INSTANCE;
+		}
+
+		if(!SNMP_CORE_SUPPORT_SET)
+			__ss = (netsnmp_session *)ss;
+		else
+			__ss = NULL;
+
+		__snmp_register_mib_for_set(priority,reginfo->handlerName,
+                                reginfo->rootoid, reginfo->rootoid_len,
+                                reginfo->priority,
+                                reginfo->range_subid,
+                                reginfo->range_ubound, __ss,
+                                reginfo->contextName, reginfo->timeout, flags,
+                                reginfo, TRUE, range_back);
+
+#endif
+	}
+    return SNMPERR_SUCCESS;
+}
+
+
+
+SNMP_STATIC_INLINE bc_int32
+__snmp_request_set_error(netsnmp_request_info *request, bc_int32 mode, bc_int32 error_value)
+{
+    if (!request)
+        return SNMPERR_NO_VARS;
+
+    request->processed = 1;
+    request->delegated = REQUEST_IS_NOT_DELEGATED;
+
+    switch (error_value) {
+    case SNMP_NOSUCHOBJECT:
+    case SNMP_NOSUCHINSTANCE:
+    case SNMP_ENDOFMIBVIEW:
+        switch (mode) {
+        case MODE_GET:
+        case MODE_GETNEXT:
+        case MODE_GETBULK:
+            request->requestvb->type = error_value;
+            break;
+
+            /*
+            snmp_log(LOG_ERR, "Illegal error_value %d for mode %d ignored\n",
+                     error_value, mode);
+            return SNMPERR_VALUE;
+             */
+
+#ifndef NETSNMP_NO_WRITE_SUPPORT
+        case SNMP_MSG_INTERNAL_SET_RESERVE1:
+            request->status = SNMP_ERR_NOCREATION;
+            break;
+#endif
+
+        default:
+            request->status = SNMP_ERR_NOSUCHNAME;
+            break;
+        }
+        break;                  /* 致命错误，估计NETSNMP内核已死*/
+
+    default:
+        if (error_value < 0) {
+            BC_PT_DBG_FUN(BC_MODULE_SNMP, "Illegal error_value %d translated to %d\n",
+                     error_value, SNMP_ERR_GENERR);
+            request->status = SNMP_ERR_GENERR;
+        } else {
+            request->status = error_value;
+        }
+        break;
+    }
+    return SNMPERR_SUCCESS;
+}
+
+bc_int32
+snmp_set_request_error(netsnmp_agent_request_info *reqinfo,
+                          netsnmp_request_info *request, bc_int32 error_value)
+{
+    if (!request || !reqinfo)
+        return error_value;
+
+    __snmp_request_set_error(request, reqinfo->mode, error_value);
+
+    return error_value;
+}
+
+
+#if 1
+
+static netsnmp_mib_handler *
+__snmp_create_hr(const bc_char *name,
+                       snmp_ns_node_handler * handler_access_method)
+{
+//	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+    netsnmp_mib_handler *ret = (netsnmp_mib_handler *) calloc(1, sizeof(netsnmp_mib_handler));
+    if (ret) {
+	//	BC_PT_FUN_TAG(BC_MODULE_SNMP);
+        ret->access_method = handler_access_method;
+        if (NULL != name) {
+		//	BC_PT_FUN_TAG(BC_MODULE_SNMP);
+            ret->handler_name = strdup(name);
+            if (NULL == ret->handler_name){
+			BC_PT_FUN_TAG(BC_MODULE_SNMP);
+			SNMP_FREE(ret);
+		}
+          //      SNMP_FREE(ret);
+        }else{
+//		BC_PT_FUN_TAG(BC_MODULE_SNMP);
+		SNMP_FREE(ret);
+		}
+    }
+//	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+    return ret;
+}
+
+static netsnmp_handler_registration *
+__snmp_hr_reg_create(const bc_char *name,
+                                    netsnmp_mib_handler *hr,
+                                    const oid * regoid, size_t regoid_len,
+                                    bc_int32 modes)
+{
+//	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+    netsnmp_handler_registration *the_reg;
+    the_reg = (netsnmp_handler_registration *) calloc(1, sizeof(netsnmp_handler_registration));
+    if (!the_reg){
+//	BC_PT_FUN_TAG(BC_MODULE_SNMP);	
+        return NULL;
+    }
+//	BC_PT_FUN_TAG(BC_MODULE_SNMP);
+    if (modes)
+        the_reg->modes = modes;
+    else
+        the_reg->modes = 0x01 | 0x08;
+
+    the_reg->handler = hr;
+    the_reg->priority = 127;	//default
+    if (name)
+        the_reg->handlerName = strdup(name);
+    the_reg->rootoid = snmp_duplicate_objid(regoid, regoid_len);
+    the_reg->rootoid_len = regoid_len;
+//	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+    return the_reg;
+}
+
+static bc_int32
+__snmp_inject_hr_before_proc(netsnmp_handler_registration *reginfo,
+                              netsnmp_mib_handler  *handler,
+                              const bc_char *before_what)
+{
+    netsnmp_mib_handler *handler2 = handler;
+
+//	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+	
+    if (handler == NULL || reginfo == NULL) {
+        BC_PT_DBG_FUN(BC_MODULE_SNMP, "netsnmp_inject_handler() called illegally\n");
+        netsnmp_assert(reginfo != NULL);
+        netsnmp_assert(handler != NULL);
+        return SNMP_ERR_GENERR;
+    }
+    while (handler2->next) {
+        handler2 = handler2->next;  /* 查找最后处理的子结点 */
+    }
+    if (reginfo->handler == NULL) {
+//       BC_PT_DBG_FUN(BC_MODULE_SNMP, "handler:inject", "injecting %s\n", handler->handler_name);
+    }
+    else {
+//        BC_PT_DBG_FUN(BC_MODULE_SNMP, "handler:inject", "injecting %s before %s\n",
+//                    handler->handler_name, reginfo->handler->handler_name);
+    }
+    if (before_what) {
+        netsnmp_mib_handler *nexth, *prevh = NULL;
+        if (reginfo->handler == NULL) {
+            BC_PT_DBG_FUN(BC_MODULE_SNMP, "no handler to inject before\n");
+            return SNMP_ERR_GENERR;
+        }
+        for(nexth = reginfo->handler; nexth;
+            prevh = nexth, nexth = nexth->next) {
+            if (strcmp(nexth->handler_name, before_what) == 0)
+                break;
+        }
+        if (!nexth)
+            return SNMP_ERR_GENERR;
+	if (prevh) 
+	{
+            prevh->next = handler;
+            handler2->next = nexth;
+            handler->prev = prevh;
+            nexth->prev = handler2;
+	//		BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+            return SNMPERR_SUCCESS;
+        }
+    }
+    handler2->next = reginfo->handler;
+    if (reginfo->handler)
+        reginfo->handler->prev = handler2;
+    reginfo->handler = handler;
+//	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+    return SNMPERR_SUCCESS;
+}
+
+netsnmp_handler_registration *
+snmp_create_hr_reg(const bc_char *name,
+                                    snmp_ns_node_handler *
+                                    handler_access_method, const oid * regoid,
+                                    size_t regoid_len, bc_int32 modes)
+{
+	netsnmp_handler_registration *hrv = NULL;
+//	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+	netsnmp_mib_handler *hr = __snmp_create_hr(name, handler_access_method);
+//	BC_PT_FUN_TAG(BC_MODULE_SNMP);
+	if (hr) {
+	//	BC_PT_FUN_TAG(BC_MODULE_SNMP);
+		hrv = __snmp_hr_reg_create(
+			name, hr, regoid, regoid_len, modes);
+		if (!hrv){
+	//		BC_PT_FUN_TAG(BC_MODULE_SNMP);
+			if (hr != NULL) {
+		//		BC_PT_FUN_TAG(BC_MODULE_SNMP);
+				if (hr->next != NULL) {
+			//		BC_PT_FUN_TAG(BC_MODULE_SNMP);
+			            /** 不可指向OWNER */
+			            netsnmp_assert(hr != hr->next); /* 1 ERROR*/
+			            netsnmp_handler_free(hr->next);
+			            hr->next = NULL;
+			        }
+			//	BC_PT_FUN_TAG(BC_MODULE_SNMP);
+			        if ((hr->myvoid != NULL) && (hr->data_free != NULL))
+			        {
+			//        	BC_PT_FUN_TAG(BC_MODULE_SNMP);
+			            hr->data_free(hr->myvoid);
+			        }
+			//		BC_PT_FUN_TAG(BC_MODULE_SNMP);
+			        SNMP_FREE(hr->handler_name);
+			        SNMP_FREE(hr);
+			}
+		}
+	}
+//	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+	return hrv;
+}
+
+netsnmp_handler_registration *
+netsnmp_create_handler_registration(const char *name,
+                                    snmp_ns_node_handler *
+                                    handler_access_method, const oid * reg_oid,
+                                    size_t reg_oid_len, int modes)
+{
+    netsnmp_handler_registration *rv = NULL;
+//	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+    netsnmp_mib_handler *handler =
+        netsnmp_create_handler(name, handler_access_method);
+    if (handler) {
+        rv = netsnmp_handler_registration_create(
+            name, handler, reg_oid, reg_oid_len, modes);
+        if (!rv)
+            netsnmp_handler_free(handler);
+    }
+//	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+    return rv;
+}
+
+bc_int32
+snmp_scalar_register_proc(netsnmp_handler_registration *info)
+{
+//	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+
+	if(!info)
+		BC_PT_FUN_TAG(BC_MODULE_SNMP);
+	
+	info->rootoid = (oid*)realloc(info->rootoid,
+						(info->rootoid_len+1) * sizeof(oid) );
+	info->rootoid[ info->rootoid_len ] = 0;
+	
+//BC_PT_FUN_TAG(BC_MODULE_SNMP);
+	__snmp_inject_hr_before_proc(info, netsnmp_get_instance_handler(), NULL);
+//	BC_PT_FUN_TAG(BC_MODULE_SNMP);
+	__snmp_inject_hr_before_proc(info, netsnmp_get_scalar_handler(), NULL);
+//	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+	return netsnmp_register_serialize(info);
+}
+
+//netsnmp_register_scalar	
+bc_int32 snmp_scalar_register(snmp_scalar_type_t *scalars, bc_int32 num)
+{
+	bc_int32 x = 0;
+
+	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+	
+	for(x=0; x<num; x++)
+	{
+		if(snmp_scalar_register_proc
+			(snmp_create_hr_reg(scalars[x].descr, scalars[x].method, scalars[x].regoid, OID_LENGTH(scalars[x].regoid), scalars[x].modes)) != MIB_REGISTERED_OK)
+		{
+				BC_PT_ERROR(BC_MODULE_SNMP,"register_scalar %s registration failed.\n", scalars[x].descr);
+				DEBUGMSGTL(("register_scalar", "%s registration failed.\n", scalars[x].descr));
+		}
+		else
+		{
+			BC_PT_EVENT(BC_MODULE_SNMP,"register_scalar %s registration successed.\n", scalars[x].descr);
+		}
+	}
+	BC_PT_DBG_FUN(BC_MODULE_SNMP, "register_scalars successed, total: %d.\n", num);
+	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+	return TRUE;
+}
+
+static int
+__snmp_oid_compare(const oid * in_name1,
+                 size_t len1, const oid * in_name2, size_t len2)
+{
+    register int    len;
+    register const oid *name1 = in_name1;
+    register const oid *name2 = in_name2;
+
+    if (len1 < len2)
+        len = len1;
+    else
+        len = len2;
+   //找第一个不匹配的OID
+    while (len-- > 0) {
+        if (*(name1) != *(name2)) {
+            if (*(name1) < *(name2))
+                return -1;
+            return 1;
+        }
+        name1++;
+        name2++;
+    }
+
+    if (len1 < len2)
+        return -1;
+    if (len2 < len1)
+        return 1;
+    return 0;
+}
+
+
+#endif

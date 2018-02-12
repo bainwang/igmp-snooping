@@ -1,0 +1,75 @@
+/************************************************************
+  FileName: proj_defs.h
+  Author:  wangbin      Version :  1.0        Date:2017-04-04
+  Description: proj depend parameter define       
+  Version:                        
+  History:        
+                  
+    1. Date:
+       Author:
+       Modification:
+    2. ...
+***********************************************************/
+
+#ifndef __bc_proj_system_defs_h__
+#define __bc_proj_system_defs_h__
+
+#include "bc_common_defs.h"
+#include "bc_modules.h"
+#include "bc_print.h"
+#include "bc_err.h"
+
+
+/* ---------- BC_MODULE_SYSTEM START ---------- */
+
+
+#define BC_SYS_INVALID_IP 0xFFFFFFFF
+
+#define BC_SYSTEM_SW_VER 			"1.0"
+#define BC_SYSTEM_NAME 			"binchie"
+#define BC_SYSTEM_HW_VER 			"1.0.0"
+#define BC_SYSTEM_MANUFACTURER	"BC"
+#define BC_SYSTEM_CONTACT			"BinChie(136335455@qq.com)"
+#if 0
+#define BC_SYSTEM_LOCATION			"sample sysLocation factory default"
+#else
+#define BC_SYSTEM_LOCATION			"No.28 ring road, wuhou district, chengdu"
+#endif
+#define BC_SYS_EVENT_NODE_MAX 	128
+#define BC_SYS_FUNC_NODE_MAX 		512
+
+#define BC_SYS_POLLING_NODE_MAX 	128
+
+#define BC_SYS_BIGENDIAN
+
+/* system default IP */
+#define BC_SYS_INBAND_IP 			0xC0A80A05	/* 192.168.10.5 */
+#define BC_SYS_INBAND_MASK 		0xFFFFFF00
+#define BC_SYS_INBAND_GW			0xC0A80A01
+#define BC_SYS_INBAND_INTF    		2
+
+#define BC_SYS_OUTBAND_IP 			0xC0A80205	/* 192.168.2.5 */
+#define BC_SYS_OUTBAND_MASK		0xFFFFFF00
+#define BC_SYS_OUTBAND_GW			0xC0A80201
+#define BC_SYS_OUTBAND_INTF    		1
+
+#define BC_SYS_INTERNAL_IP 			0xAC1E0002	/* 172.30.0.2 */
+#define BC_SYS_INTERNAL_MASK		0xFFFF0000
+#define BC_SYS_INTERNAL_GW		0xAC1E0001
+#define BC_SYS_INTERNAL_INTF    		0
+
+#define BC_SYS_SWITCH_CPU_IP 		BC_SYS_INVALID_IP	/* 0.0.0.0 */
+#define BC_SYS_SWITCH_CPU_MASK	0x00000000
+#define BC_SYS_SWITCH_CPU_GW		0x00000000
+#define BC_SYS_SWITCH_CPU_INTF    	3
+
+
+#define BC_SYS_DEF_MAC {0x00, 0x0F, 0x1E, 0xEE, 0xEE, 0x00}
+
+#define BC_STARTUP_INIT_MODULE 1
+
+
+/* ---------- BC_MODULE_SYSTEM END ---------- */
+
+#endif
+

@@ -1,0 +1,508 @@
+/*******************************************************************************
+  [Author]	   : bain.wang@outlook.com.uestc@gmail.com
+  [Version]    : 1.0
+  [Date]       : 2017-02-27
+  [Description]:
+
+  [Others]     :
+
+  [History]:
+	 Date          Modification 							    Initials
+	----------     ----------                                   -------
+	2017-02-27      Created								   		bain.wang@outlook.com
+*******************************************************************************/
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//																			  //
+//								头   文   件								  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+#include <net-snmp/net-snmp-config.h>
+#include <net-snmp/net-snmp-includes.h>
+#include <net-snmp/agent/net-snmp-agent-includes.h>
+#include <net-snmp/agent/header_complex.h>
+
+#include "snmp_privateObject_scalar.h"
+#include "snmp_global.h"
+#include "snmp_core_ex.h"
+
+#include "snmp_trap_comm.h"
+
+#if SNMP_PRJ_NAME_X86
+#include "snmp_trap_x86.h"
+#else
+#include "snmp_trap_610a.h"
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                               			 //
+//																			 //
+//						外 部 变 量、 函 数 引 用					         //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+static time_t update_time;
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//																			 //
+//						结   构   体   宏   定   义							 //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+ *		当源文件需要定义宏，而头文件又与其它模块头文件中的宏定义有重复定义嫌疑
+ *	时，在此处定义。
+ */
+#define PRIVATEOBJECT_SCALAR_OID_LEN		12	/*OID长度*/
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//																			 //
+//							全 局 变 量 定 义							     //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+/* 
+ *	外部全局变量，提供整个工程调用，在头文件中提供调用接口(外部引用声明)。
+ */
+
+/* 
+ *	内部全局变量，只提供给该文件内部函数调用，不在头文件中提供调用接口。
+ */
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//																			 //
+//								函  数  声  明								 //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+	
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//																			 //
+//								函  数  定  义								 //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                               			 //
+//																			 //
+//						外 部 变 量、 函 数 引 用					         //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//																			 //
+//								函  数  定  义								 //
+//																			 //
+///////////////////////////////////////////////////////////////////////////////
+#if 0
+static bc_boolean __snmp_privateObject_scalar_update()
+{
+	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+	BC_PT_FUN_TAG(BC_MODULE_SNMP,);
+
+	if(snmp_is_update(&update_time))
+	{
+		vir_api_get_data();
+	}
+	return TRUE;
+}	
+#endif
+
+static bc_int32 __check_alarm_code_err(int val)
+{
+	if(val != SNMP_ALARM_CODE_LINK_DOWN
+		&& val != SNMP_ALARM_CODE_BOARD_NO_EXIST
+		&& val != SNMP_ALARM_CODE_BOARD_FAULT
+		&& val != SNMP_ALARM_CODE_INTF_TRAFFIC_EXCEED
+		&& val != SNMP_ALARM_CODE_INTF_RX_BAD_PKT_EXCEED
+		&& val != SNMP_ALARM_CODE_PHYSICAL_INTERFACE_DOWN
+		&& val != SNMP_ALARM_CODE_INTF_PKT_LOSS_EXCEED
+		&& val != SNMP_ALARM_CODE_BOARD_TEMP_EXCEED
+		&& val != SNMP_ALARM_CODE_MEMORY_USAGE_EXCEED
+		&& val != SNMP_ALARM_CODE_CPU_USAGE_EXCEED
+		&& val != SNMP_ALARM_CODE_POWER_SUPPLY_SHORTAGE
+		&& val != SNMP_ALARM_CODE_LASER_SEND_FAULT
+		&& val != SNMP_ALARM_CODE_LASER_TEMP_EXCEED
+		&& val != SNMP_ALARM_CODE_POWER_OUT_SHORTAGE
+		&& val != SNMP_ALARM_CODE_POWER_OUT_EXCEED
+		&& val != SNMP_ALARM_CODE_POWER_IN_SHORTAGE
+		&& val != SNMP_ALARM_CODE_POWER_IN_EXCEED
+		&& val != SNMP_ALARM_CODE_VC_DOWN
+		&& val != SNMP_ALARM_CODE_VC_UP
+		&& val != SNMP_ALARM_CODE_PWE3_VC_W2P
+		&& val != SNMP_ALARM_CODE_PWE3_VC_P2W)
+	{
+		return SNMP_ERR_BADVALUE;
+	}
+
+	return SNMP_ERR_NOERROR;
+}
+
+//暂不生效，仅虚假显示
+static bc_int32 __handle_debugEnable(netsnmp_mib_handler *handler,
+                  netsnmp_handler_registration *reginfo,
+                  netsnmp_agent_request_info *reqinfo,
+                  netsnmp_request_info *requests)
+{
+	bc_int32 ret = SNMP_ERR_NOERROR;
+	bc_int32 en = 0;
+	BC_PT_DBG_SMP(BC_MODULE_SNMP, "\n");
+	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+		
+	switch (reqinfo->mode)
+	{
+	case MODE_GET:
+		en = bc_pt_prt_this_mdl_en(BC_MODULE_SNMP)?1:0;
+		snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER, &en, sizeof(en));
+		break;
+
+#if 1
+	case MODE_SET_RESERVE1:
+		ret = snmp_check_vb_type(requests->requestvb, ASN_INTEGER);
+		if (ret != SNMP_ERR_NOERROR)
+		{
+			snmp_set_request_error(reqinfo, requests, ret);
+		}
+		break;
+	case MODE_SET_RESERVE2:
+		break;
+	case MODE_SET_FREE:
+		break;
+	case MODE_SET_ACTION:
+		en = *(bc_int32 *)requests->requestvb->val.integer;
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "\nset print enable: %d\n", en);
+		
+		if(en == 1)
+		{
+			bc_pt_open_prj_mdl(BC_MODULE_SNMP);
+			bc_pt_prt_lvl_open(BC_LVL_BIT_ALL);
+		}
+		else if(en == 0)
+		{
+			bc_pt_close_prj_mdl(BC_MODULE_SNMP);
+			bc_pt_prt_lvl_close(BC_LVL_BIT_ALL);
+		}
+		else
+		{
+			ret = SNMP_ERR_BADVALUE;
+			snmp_set_request_error(reqinfo, requests, ret);
+		}
+		snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
+									  &en,
+									  sizeof(en));
+		break;
+	case MODE_SET_COMMIT:
+		break;
+	case MODE_SET_UNDO:
+		break;
+#endif
+	default:
+		snmp_log(LOG_ERR, "unknown mode (%d) in handle_debugEnable\n", reqinfo->mode);
+		return SNMP_ERR_GENERR;
+    }
+	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+    return SNMP_ERR_NOERROR;
+}
+
+static bc_int32 __handle_trapInfoEnable(netsnmp_mib_handler *handler,
+                  netsnmp_handler_registration *reginfo,
+                  netsnmp_agent_request_info *reqinfo,
+                  netsnmp_request_info *requests)
+{
+	bc_int32 ret = SNMP_ERR_NOERROR;
+	bc_int32 en = 0;
+
+	snmp_alarm_cfg_t alarm_cfg;
+
+	BC_PT_DBG_PRINT(BC_MODULE_SNMP, "\n");
+	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+	
+//	SNMP_GET_TRAP_INFO(alarm_cfg);	
+	snmp_trap_cfg_get(&alarm_cfg);
+	
+	switch (reqinfo->mode)
+	{
+	case MODE_GET:
+		en = alarm_cfg.enable == SNMP_TRAP_ENABLE?1:0;
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "alarm_cfg.enable: %d\n", alarm_cfg.enable);
+		snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER, &en, sizeof(en));
+		break;
+
+#if 1
+	case MODE_SET_RESERVE1:
+		ret = snmp_check_vb_type(requests->requestvb, ASN_INTEGER);
+		if (ret != SNMP_ERR_NOERROR)
+		{
+			snmp_set_request_error(reqinfo, requests, ret);
+		}
+		
+		if(*(bc_int32 *)requests->requestvb->val.integer <0 || *(bc_int32 *)requests->requestvb->val.integer >1)
+		{
+			snmp_set_request_error(reqinfo, requests, SNMP_ERR_BADVALUE);
+		}	
+		break;
+	case MODE_SET_RESERVE2:
+		break;
+	case MODE_SET_FREE:
+		break;
+	case MODE_SET_ACTION:
+		en = *(bc_int32 *)requests->requestvb->val.integer;
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "alarm_cfg.enable: %d\n", en);
+/*
+		if(en != 1 && en != 0)
+		{
+			ret = SNMP_ERR_BADVALUE;
+			snmp_set_request_error(reqinfo, requests, ret);
+		}*/
+		if(en == 1)
+		{
+			if(alarm_cfg.enable == SNMP_TRAP_DISABLE)
+			{
+				alarm_cfg.enable = SNMP_TRAP_ENABLE;
+			#if SNMP_PRJ_NAME_X86
+				SNMP_TRAP_START(alarm_cfg);
+			#elif SNMP_PRJ_NAME_610A
+				snmp_alarm_event_item_pt();
+			#else
+				
+			#endif
+			}
+		}
+		else
+		{
+			if(alarm_cfg.enable == SNMP_TRAP_ENABLE)
+			{
+				alarm_cfg.enable = SNMP_TRAP_DISABLE;
+			#if SNMP_PRJ_NAME_X86
+				SNMP_TRAP_STOP(alarm_cfg);
+			#endif
+			}
+		}
+		snmp_trap_cfg_set(alarm_cfg);
+		
+	//	alarm_cfg.en = en == 1?SNMP_TRAP_ENABLE:SNMP_TRAP_DISABLE;
+
+		snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
+									  &en,
+									  sizeof(en));
+		break;
+	case MODE_SET_COMMIT:
+		break;
+	case MODE_SET_UNDO:
+		break;
+#endif
+	default:
+		snmp_log(LOG_ERR, "unknown mode (%d) in __handle_trapInfoEnable\n", reqinfo->mode);
+		return SNMP_ERR_GENERR;
+    }
+
+	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+	
+    return SNMP_ERR_NOERROR;
+}
+
+static bc_int32 __handle_trapInfoInterval(netsnmp_mib_handler *handler,
+                  netsnmp_handler_registration *reginfo,
+                  netsnmp_agent_request_info *reqinfo,
+                  netsnmp_request_info *requests)
+{
+	bc_int32 ret = SNMP_ERR_NOERROR;
+	bc_int32 interval = 0;
+	snmp_alarm_cfg_t alarm_cfg;
+
+	BC_PT_DBG_PRINT(BC_MODULE_SNMP, "\n");
+	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+//	SNMP_GET_TRAP_INFO(alarm_cfg);	
+	snmp_trap_cfg_get(&alarm_cfg);
+
+	switch (reqinfo->mode)
+	{
+	case MODE_GET:
+		snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER, &alarm_cfg.interval, sizeof(alarm_cfg.interval));
+		break;
+
+#if 1
+	case MODE_SET_RESERVE1:
+		ret = snmp_check_vb_type(requests->requestvb, ASN_INTEGER);
+		if (ret != SNMP_ERR_NOERROR)
+		{
+			snmp_set_request_error(reqinfo, requests, ret);
+		}
+		if(*(bc_int32 *)requests->requestvb->val.integer == 0)
+		{
+			snmp_set_request_error(reqinfo, requests, SNMP_ERR_BADVALUE);
+		}
+		break;
+	case MODE_SET_RESERVE2:
+		break;
+	case MODE_SET_FREE:
+		break;
+	case MODE_SET_ACTION:
+		interval = *(bc_int32 *)requests->requestvb->val.integer;
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "set alarm_interval: %d\n", interval);
+		if(interval == 0)
+		{
+			BC_PT_ERROR(BC_MODULE_SNMP,"invalid!\n");
+			break;
+		}	
+		
+		alarm_cfg.interval = interval;
+		snmp_trap_cfg_set(alarm_cfg);
+#if SNMP_PRJ_NAME_X86		
+		if(alarm_cfg.enable == SNMP_TRAP_ENABLE)
+			SNMP_TRAP_RESET(alarm_cfg);
+#endif
+		
+		snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
+									  &interval,
+									  sizeof(interval));
+		break;
+	case MODE_SET_COMMIT:
+		break;
+	case MODE_SET_UNDO:
+		break;
+#endif
+	default:
+		snmp_log(LOG_ERR, "unknown mode (%d) in __handle_trapInfoInterval\n", reqinfo->mode);
+		return SNMP_ERR_GENERR;
+    }
+	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+    return SNMP_ERR_NOERROR;
+}
+
+static bc_int32 __handle_trapInfoCounter(netsnmp_mib_handler *handler,
+                  netsnmp_handler_registration *reginfo,
+                  netsnmp_agent_request_info *reqinfo,
+                  netsnmp_request_info *requests)
+{
+	bc_int32 ret = SNMP_ERR_NOERROR;
+	snmp_alarm_cfg_t alarm_cfg;
+
+	BC_PT_DBG_PRINT(BC_MODULE_SNMP, "\n");
+	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+//	SNMP_GET_TRAP_INFO(alarm_cfg);	
+	snmp_trap_cfg_get(&alarm_cfg);
+
+	switch (reqinfo->mode)
+	{
+	case MODE_GET:
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "alarm_cfg.counter: %d\n", alarm_cfg.counter);
+		snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER, &alarm_cfg.counter, sizeof(alarm_cfg.counter));
+		break;
+
+	default:
+		snmp_log(LOG_ERR, "unknown mode (%d) in __handle_trapInfoCounter\n", reqinfo->mode);
+		return SNMP_ERR_GENERR;
+    }
+	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+    return SNMP_ERR_NOERROR;
+}
+
+static bc_int32 __handle_trapInfoAlarmCode(netsnmp_mib_handler *handler,
+                  netsnmp_handler_registration *reginfo,
+                  netsnmp_agent_request_info *reqinfo,
+                  netsnmp_request_info *requests)
+{
+	bc_int32 ret = SNMP_ERR_NOERROR;
+	bc_int32 val = 0;
+	snmp_alarm_cfg_t alarm_cfg;
+
+	BC_PT_DBG_PRINT(BC_MODULE_SNMP, "\n");
+	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+//	SNMP_GET_TRAP_INFO(alarm_cfg);	
+	snmp_trap_cfg_get(&alarm_cfg);
+
+	val = *(bc_int32 *)requests->requestvb->val.integer;
+	switch (reqinfo->mode)
+	{
+	case MODE_GET:
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "MODE_GET\n");
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "alarm_cfg.code: %d\n", alarm_cfg.code);
+		snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER, &alarm_cfg.code, sizeof(alarm_cfg.code));
+		break;
+
+	case MODE_SET_RESERVE1:	/*entry MODE_SET_RESERVE1 when SET, but */
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "MODE_SET_RESERVE1\n");
+		ret = snmp_check_vb_type(requests->requestvb, ASN_INTEGER);
+		if (ret != SNMP_ERR_NOERROR)
+		{
+			snmp_set_request_error(reqinfo, requests, ret);
+		}
+		break;
+	case MODE_SET_RESERVE2:
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "MODE_SET_RESERVE2\n");
+		if(__check_alarm_code_err(val) != SNMP_ERR_NOERROR)
+		{
+			BC_PT_DBG_FUN(BC_MODULE_SNMP, "alarm code error, code:0x%x\n", val);
+			ret = SNMP_ERR_BADVALUE;
+			snmp_set_request_error(reqinfo, requests, ret);
+		}
+		break;
+	case MODE_SET_FREE:
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "MODE_SET_FREE\n");
+		break;
+	case MODE_SET_ACTION:
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "MODE_SET_ACTION\n");
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "alarm_cfg.code: %d\n", val);
+		alarm_cfg.code = val;
+		snmp_trap_cfg_set(alarm_cfg);
+#if SNMP_PRJ_NAME_X86
+		if(alarm_cfg.enable == SNMP_TRAP_ENABLE)
+			SNMP_TRAP_RESET(alarm_cfg);
+#endif		
+		snmp_set_var_typed_value(requests->requestvb, ASN_INTEGER,
+									  &val,
+									  sizeof(val));
+		break;
+	case MODE_SET_COMMIT:
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "MODE_SET_COMMIT\n");
+		break;
+	case MODE_SET_UNDO:
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "MODE_SET_UNDO\n");
+		break;
+
+	default:
+		BC_PT_DBG_FUN(BC_MODULE_SNMP, "default\n");
+		snmp_log(LOG_ERR, "unknown mode (%d) in __handle_trapInfoAlarmCode\n", reqinfo->mode);
+		return SNMP_ERR_GENERR;
+    }
+	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+    return SNMP_ERR_NOERROR;
+}
+
+#if 1
+const oid debugEnable_oid[] = { 1, 3, 6, 1, 4, 1, 11408, 11, 1, 12345, 1, 1};
+const oid trapInfoEnable_oid[] = { 1, 3, 6, 1, 4, 1, 11408, 11, 1, 12345, 2, 1};
+const oid trapInfoInterval_oid[] = { 1, 3, 6, 1, 4, 1, 11408, 11, 1, 12345, 2, 2};
+const oid trapInfoCounter_oid[] = { 1, 3, 6, 1, 4, 1, 11408, 11, 1, 12345, 2, 3};
+const oid trapInfoAlarmCode_oid[] = { 1, 3, 6, 1, 4, 1, 11408, 11, 1, 12345, 2, 4};
+
+static snmp_scalar_type_t privateObject_variables[] = {
+	{SNMP_MIB_SCALAR_INFO_INIT(debugEnable, HANDLER_CAN_RWRITE)},
+	{SNMP_MIB_SCALAR_INFO_INIT(trapInfoEnable, HANDLER_CAN_RWRITE)},
+	{SNMP_MIB_SCALAR_INFO_INIT(trapInfoInterval, HANDLER_CAN_RWRITE)},
+	{SNMP_MIB_SCALAR_INFO_INIT(trapInfoCounter, HANDLER_CAN_RONLY)},
+	{SNMP_MIB_SCALAR_INFO_INIT(trapInfoAlarmCode, HANDLER_CAN_RWRITE)}
+};
+#endif
+
+void snmp_privateObject_scalar_init(void)
+{
+	BC_PT_FUN_ENTER(BC_MODULE_SNMP);
+	SNMP_MIB_FFLUSH_INIT();
+
+	DEBUGMSGTL(("privateObject_scalar", "Initializing\n"));
+	SNMP_REGISTER_SCALAR(privateObject_variables);
+
+	BC_PT_FUN_LEAVE(BC_MODULE_SNMP);
+}
+

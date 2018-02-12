@@ -1,0 +1,632 @@
+/*******************************************************************************
+ * Copyright(C) 2008, Kingtype Networks Corporation. All rights reserved.
+ *
+ * This is unpublished proprietary source code of Kingtype Networks Corporation.
+ *
+ * The copyright notice above does not evidence any actual or intended
+ *	publication of such source code.
+*******************************************************************************/
+/*==============================================================================
+ * MODULE NAME: Kingtype CLI, bc_cli
+ * FILE NAME  : bc_cli_alias.c
+ * VERSION    : 1.0.0
+ * DESCRIPTION:
+ * NOTES:
+ *
+ * HISTORY:
+ * -----------------------------------------------------------------------------
+ * Version 1.0 -- 2016-3-31 by Zeng Yi
+ * [NEW FEATURE]
+ * <DESCRIPTION> Create
+ *============================================================================*/
+
+#if 1	/*wangbin for cli code transplantation*/
+#include "bc_cli_para_lex_dnf.h"
+#include "utili_list.h"
+#include "utili_block.h"
+#include "utili_block_ext.h"
+#include "bc_platform_mem.h"
+#include "bc_platform_mutex.h"
+
+#include "bc_proj_port_defs.h"
+
+#if 0	/*wangbin for cli code transplantation*/
+#include "bc_port_def.h"
+#include "bc_port_bitmap.h"
+#include "bc_vlan_def.h"
+#include "bc_onu_type.h"
+#include "bc_onu_bitmap.h"
+#endif
+#include "utili_bit.h"
+
+typedef enum {
+	BC_CLI_TOKEN_COMMA,
+	BC_CLI_TOKEN_BAR,
+	BC_CLI_TOKEN_SLASH,
+	BC_CLI_TOKEN_COLON,
+
+	BC_CLI_TOKEN_KEY,
+	
+	BC_CLI_TOKEN_PORT,
+	BC_CLI_TOKEN_SW_PORT,
+	BC_CLI_TOKEN_EPON_PORT,
+
+	BC_CLI_TOKEN_SLOT,
+
+	BC_CLI_TOKEN_VLAN,
+	
+	BC_CLI_TOKEN_ONU,
+
+	BC_CLI_TOKEN_STR,
+} bc_cli_token_type_e;
+
+
+#if 1
+
+typedef struct {
+	bc_cli_token_type_e type;
+	bc_char *match_item;
+} bc_cli_match_item_t;
+
+/*
+	Current we just parse:
+	1. string: a string [a-z _ , - / 0-9]
+	2. num: [NUM(range-range) | NUM], range: [int]
+*/
+typedef enum {
+	BC_CLI_LEX_LEX_TYPE_STR,
+	BC_CLI_LEX_LEX_TYPE_NUM,
+	BC_CLI_LEX_LEX_TYPE_NULL,
+} bc_cli_lex_lex_type_e;
+
+typedef struct {
+	utili_node node;
+
+	bc_cli_lex_lex_type_e type;
+	union {
+		struct {
+			bc_char *start;
+			bc_char *end;
+		} str;
+
+		struct{
+			bc_uint32 start;
+			bc_uint32 end;
+		} num;
+	} match_value;
+} bc_cli_lex_lex_item_t;
+
+typedef struct {
+	bc_cli_token_type_e lex_type;
+	utili_list list;
+} bc_cli_lex_lex_item_info_t;
+
+#define BC_CLI_LEX_LEX_LIST_MAX 128
+typedef struct {
+	bc_uint32 item_num;
+
+	bc_cli_lex_lex_item_info_t items[BC_CLI_LEX_LEX_LIST_MAX];
+} bc_cli_lex_lex_t;
+
+static bc_pthread_mutex_t *lex_lex_mutex;
+#define BC_LEX_LEX_LOCK() bc_platform_mutex_lock(lex_lex_mutex)
+#define BC_LEX_LEX_UNLOCK() bc_platform_mutex_unlock(lex_lex_mutex)
+
+static utili_block_ext_t lex_lex_block;
+
+static bc_err_e __bc_cli_lex_lex_free(bc_cli_lex_lex_t *lex_lex)
+{
+	bc_uint32 idx;
+	bc_cli_lex_lex_item_t *item;
+
+	for (idx = 0; idx < lex_lex->item_num; idx++)
+	{
+		if (lex_lex->items[idx].list.count == 0)
+			continue;
+	
+		while ((item = (bc_cli_lex_lex_item_t *)utili_lst_first(&(lex_lex->items[idx].list))) != NULL)
+		{
+			utili_lst_delete(&(lex_lex->items[idx].list), (utili_node*)item);
+			BC_LEX_LEX_LOCK();
+			utili_block_ext_free(&lex_lex_block, item);
+			BC_LEX_LEX_UNLOCK();
+			item = NULL;
+		}
+	}
+
+	return BC_ERR_OK;
+}
+
+static bc_err_e __bc_cli_lex_lex_find_a_word(bc_char *str, bc_uint32 str_len, bc_uint32 *word_len, bc_cli_lex_lex_type_e *word_type)
+{
+	if (str_len == 0)
+	{
+		*word_len = 0;
+		*word_type = BC_CLI_LEX_LEX_TYPE_NULL;
+		return BC_ERR_OK;
+	}
+
+	if ((str[0] >= 'a' && str[0] <= 'z') ||
+			(str[0] == '_') || (str[0] == ',') ||
+			(str[0] == '-') || (str[0] == '/') || (str[0] == ':') ||
+			(str[0] >= '0' && str[0] <= '9'))
+	{
+		*word_type = BC_CLI_LEX_LEX_TYPE_STR;
+		
+		*word_len = 0;
+		while ((*word_len < str_len) && 
+							((str[*word_len] >= 'a' && str[*word_len] <= 'z') ||
+							(str[*word_len] == '_') || (str[*word_len] == ',') ||
+							(str[*word_len] == '-') || (str[*word_len] == '/') || (str[*word_len] == ':') ||
+							(str[*word_len] >= '0' && str[*word_len] <= '9')))
+		{
+			(*word_len)++;
+		}
+	}
+	else if (str[0] == 'N')
+	{
+		*word_type = BC_CLI_LEX_LEX_TYPE_NUM;
+	
+		if (str_len < 3)
+		{
+			BC_PT_DBG_FUN(BC_MODULE_CLI, "Parse 'NUM' but string too short. \n\r");
+			return BC_ERR_PARA;
+		}
+	
+		if (memcmp(str, "NUM", 3) != 0)
+		{
+			BC_PT_DBG_FUN(BC_MODULE_CLI, "Parse 'NUM' but string isn't 'NUM'. \n\r");
+			return BC_ERR_PARA;
+		}
+		*word_len = 3;
+
+		if (str_len <= 3)
+			return BC_ERR_OK;
+		
+		if (str[*word_len] == '(')
+		{
+			while ((*word_len < str_len) && (str[*word_len] != ')'))
+			{
+				(*word_len)++;
+			}
+
+			if (str[*word_len] != ')')
+			{
+				BC_PT_DBG_FUN(BC_MODULE_CLI, "Parse 'NUM()' but can't find ')'. \n\r");
+				return BC_ERR_PARA;
+			}
+	
+			(*word_len)++;
+		}
+	}
+	else
+	{
+		BC_PT_DBG_FUN(BC_MODULE_CLI, "Don't support parse: %s. \n\r", str);
+		return BC_ERR_NOT_SUPPORT;
+	}
+
+	return BC_ERR_OK;
+}
+
+static bc_err_e __bc_cli_lex_lex_para_num_range(bc_char *str, bc_uint32 word_len, bc_uint32 *start, bc_uint32 *end)
+{
+	bc_uint32 idx;
+
+	if (word_len == 3)
+	{
+		*start = 0;
+		*end = 0x7fffffff;
+		return BC_ERR_OK;
+	}
+
+	*start = 0;
+	idx = 4; /* NUM( */
+	while ((str[idx] >= '0') && (str[idx] <= '9'))
+	{
+		(*start) *= 10;
+		(*start) += (str[idx]-'0');
+
+		idx++;
+	}
+
+	while ((str[idx] != ')') && ((str[idx] < '0') || (str[idx] > '9')))
+	{
+		idx++;
+	}
+
+	if (str[idx] == ')')
+	{
+		*end = 0x7fffffff;
+		return BC_ERR_OK;
+	}
+
+	*end = 0;
+	while ((str[idx] >= '0') && (str[idx] <= '9'))
+	{
+		(*end) *= 10;
+		(*end) += (str[idx]-'0');
+
+		idx++;
+	}
+
+	if (*start > *end)
+	{
+		BC_PT_DBG_FUN(BC_MODULE_CLI, "start(%d) > end(%d). \n\r", *start, *end);
+		return BC_ERR_OUT_OF_RANGE;
+	}
+	
+	return BC_ERR_OK;
+}
+
+/*
+DNF:
+	S -> STR | S
+	   -> NUM | S
+	   -> NULL
+*/
+static bc_err_e __bc_cli_lex_lex_item_bnf(bc_char *str, bc_uint32 str_len, utili_list *list)
+{
+	bc_uint32 word_len = 0;
+	bc_cli_lex_lex_type_e word_type;
+
+	bc_cli_lex_lex_item_t *item;
+
+	bc_err_e ret;
+
+	ret = __bc_cli_lex_lex_find_a_word(str, str_len, &word_len, &word_type);
+	if (ret != BC_ERR_OK)
+	{
+		BC_PT_DBG_FUN(BC_MODULE_CLI, "lex_lex find word error, str:%s, len:%d \n\r", str, str_len);
+		return ret;
+	}
+	
+	switch (word_type)
+	{
+	case BC_CLI_LEX_LEX_TYPE_STR:
+		BC_LEX_LEX_LOCK();
+		item = utili_block_ext_alloc(&lex_lex_block);
+		BC_LEX_LEX_UNLOCK();
+		if (!item)
+		{
+			BC_PT_DBG_FUN(BC_MODULE_CLI, "resource not enough. \n\r");
+			return BC_ERR_RESOURCE;
+		}
+
+		item->type = BC_CLI_LEX_LEX_TYPE_STR;
+		item->match_value.str.start = str;
+		item->match_value.str.end = str+word_len-1;
+		utili_lst_add(list, (utili_node*)item);
+
+		return __bc_cli_lex_lex_item_bnf(str+word_len, str_len-word_len, list);
+		break;
+	case BC_CLI_LEX_LEX_TYPE_NUM:
+		BC_LEX_LEX_LOCK();
+		item = utili_block_ext_alloc(&lex_lex_block);
+		BC_LEX_LEX_UNLOCK();
+		if (!item)
+		{
+			BC_PT_DBG_FUN(BC_MODULE_CLI, "resource not enough. \n\r");
+			return BC_ERR_RESOURCE;
+		}
+
+		item->type = BC_CLI_LEX_LEX_TYPE_NUM;
+		if (__bc_cli_lex_lex_para_num_range(str, word_len, &(item->match_value.num.start), &(item->match_value.num.end)) != BC_ERR_OK)
+		{
+			BC_PT_DBG_FUN(BC_MODULE_CLI, "get num range fail. \n\r");
+			return BC_ERR_PARA;
+		}
+		utili_lst_add(list, (utili_node*)item);
+
+		return __bc_cli_lex_lex_item_bnf(str+word_len, str_len-word_len, list);
+		break;
+	case BC_CLI_LEX_LEX_TYPE_NULL:
+		/* nothing */
+		break;
+	default:
+		BC_PT_DBG_FUN(BC_MODULE_CLI, "error lex_lex type:%d. \n\r", word_type);
+		return BC_ERR_PARA;
+		break;
+	}
+
+	return BC_ERR_OK;
+}
+
+static bc_err_e __bc_cli_lex_lex(bc_cli_match_item_t *items, bc_uint32 num, bc_cli_lex_lex_t *lex_lex)
+{
+	bc_uint32 idx;
+
+	bc_err_e ret;
+
+	lex_lex->item_num= num;
+	for (idx = 0; idx < num; idx++)
+	{
+		utili_lst_init(&(lex_lex->items[idx].list), NULL);
+
+		ret = __bc_cli_lex_lex_item_bnf(items[idx].match_item, strlen(items[idx].match_item), &(lex_lex->items[idx].list));
+		if (ret != BC_ERR_OK)
+		{
+			__bc_cli_lex_lex_free(lex_lex);
+			return ret;
+		}
+
+		lex_lex->items[idx].lex_type = items[idx].type;
+	}
+
+	return BC_ERR_OK;
+}
+
+static bc_err_e __bc_cli_lex_lex_dbg_dump(bc_cli_lex_lex_t *lex_lex)
+{
+	bc_uint32 idx;
+	bc_cli_lex_lex_item_t *item;
+
+	bc_uint32 ofs;
+
+	bc_char *type_str[] = {"str", "num", "null"};
+
+	BC_PT_DBG_PRINT(BC_MODULE_CLI, "lex_lex: %d \n\r", lex_lex->item_num);
+	for (idx = 0; idx < lex_lex->item_num; idx++)
+	{
+		if (lex_lex->items[idx].list.count == 0)
+		{
+			BC_PT_DBG_PRINT(BC_MODULE_CLI, "idx(%d): NULL\n\r", idx);
+			continue;
+		}
+
+		BC_PT_DBG_PRINT(BC_MODULE_CLI, "idx(%d): ", idx);
+		item = (bc_cli_lex_lex_item_t *)utili_lst_first(&(lex_lex->items[idx].list));
+		if (item)
+		{
+			do
+			{
+				BC_PT_DBG_PRINT(BC_MODULE_CLI, "%s", type_str[item->type]);
+				switch (item->type)
+				{
+				case BC_CLI_LEX_LEX_TYPE_STR:
+					BC_PT_DBG_PRINT(BC_MODULE_CLI, "(");
+					ofs = 0;
+					while ((item->match_value.str.start + ofs) <= item->match_value.str.end)
+					{
+						BC_PT_DBG_PRINT(BC_MODULE_CLI, "%c", item->match_value.str.start[ofs]);
+						ofs++;
+					}
+					BC_PT_DBG_PRINT(BC_MODULE_CLI, ")");
+					break;
+				case BC_CLI_LEX_LEX_TYPE_NUM:
+					BC_PT_DBG_PRINT(BC_MODULE_CLI, "(%d-%d)", item->match_value.num.start, item->match_value.num.end);
+					break;
+				default:
+					/* nothing */
+					break;
+				}
+
+				BC_PT_DBG_PRINT(BC_MODULE_CLI, "-> ");
+			} while ((item = (bc_cli_lex_lex_item_t *)utili_lst_next((utili_node*)item)) != NULL);
+		}
+
+		BC_PT_DBG_PRINT(BC_MODULE_CLI, "\n\r");
+	}
+
+	return BC_ERR_OK;
+}
+
+bc_err_e bc_cli_lex_lex_dbg(bc_char *match_str)
+{
+	bc_cli_lex_lex_t lex_lex;
+	bc_cli_match_item_t item;
+
+	bc_err_e ret;
+
+	item.type = BC_CLI_TOKEN_STR;
+	item.match_item = match_str;
+	ret = __bc_cli_lex_lex(&item, 1, &lex_lex);
+	if (ret != BC_ERR_OK)
+	{
+		__bc_cli_lex_lex_free(&lex_lex);	
+		return ret;
+	}
+
+	__bc_cli_lex_lex_dbg_dump(&lex_lex);
+
+	__bc_cli_lex_lex_free(&lex_lex);	
+	return BC_ERR_OK;
+}
+
+#endif
+#if 1
+
+typedef struct {
+	utili_node node;
+
+	bc_cli_token_type_e type;
+	union {
+		struct {
+			bc_char *start;
+			bc_char *end;
+		} key; /* pointer to match item string */
+	//	bc_port_lpid_t port;
+		bc_uint32 slot;
+		bc_uint32 vlan;
+	//	bc_onu_index_t onu;
+	} val;
+} bc_cli_lex_item_t;
+
+typedef struct {
+	utili_list list;
+} bc_cli_lex_t;
+
+
+static bc_pthread_mutex_t *lex_mutex;
+#define BC_LEX_LOCK() bc_platform_mutex_lock(lex_mutex)
+#define BC_LEX_UNLOCK() bc_platform_mutex_unlock(lex_mutex)
+
+static utili_block_ext_t lex_block;
+
+#endif
+
+#if 1
+
+
+typedef struct {
+	bc_cli_para_lex_bnf_type_e type;
+
+	bc_cli_match_item_t *items;
+	bc_uint32 item_num;
+
+	bc_cli_lex_lex_t lex_lex;
+} bc_cli_para_lex_bnf_t;
+
+
+static bc_cli_match_item_t ports_match_items[] = {
+		{BC_CLI_TOKEN_COMMA, 	","},
+		{BC_CLI_TOKEN_BAR, 			"-"},
+		{BC_CLI_TOKEN_KEY, 			"sni"},
+		{BC_CLI_TOKEN_KEY, 			"pon"},
+		{BC_CLI_TOKEN_KEY, 			"all"},
+		{BC_CLI_TOKEN_PORT, 	  	"NUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM(1-16)"},
+		{BC_CLI_TOKEN_PORT, 	  	"sNUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_SNI_MAX_SLOT_STR")/NUM("BC_PORT_SNI_MIN_PORT_STR"-"BC_PORT_SNI_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_PORT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_SLOT, 		"NUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/"},
+		{BC_CLI_TOKEN_SLOT, 		"sNUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_SNI_MAX_SLOT_STR")/"},
+		{BC_CLI_TOKEN_SLOT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/"},
+	};
+
+static bc_cli_match_item_t ports_switch_match_items[] = {
+		{BC_CLI_TOKEN_COMMA, 	","},
+		{BC_CLI_TOKEN_BAR, 			"-"},
+		{BC_CLI_TOKEN_KEY, 			"sni"},
+		{BC_CLI_TOKEN_KEY, 			"all"},
+		{BC_CLI_TOKEN_PORT, 	  	"NUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_SNI_MAX_SLOT_STR")/NUM("BC_PORT_SNI_MIN_PORT_STR"-"BC_PORT_SNI_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_PORT, 	  	"sNUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_SNI_MAX_SLOT_STR")/NUM("BC_PORT_SNI_MIN_PORT_STR"-"BC_PORT_SNI_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_SLOT, 		"NUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_SNI_MAX_SLOT_STR")/"},
+		{BC_CLI_TOKEN_SLOT, 		"sNUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_SNI_MAX_SLOT_STR")/"},
+	};
+
+static bc_cli_match_item_t ports_epon_match_items[] = {
+		{BC_CLI_TOKEN_COMMA, 	","},
+		{BC_CLI_TOKEN_BAR, 			"-"},
+		{BC_CLI_TOKEN_KEY, 			"pon"},
+		{BC_CLI_TOKEN_KEY, 			"all"},
+		{BC_CLI_TOKEN_PORT, 	  	"NUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_PORT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_SLOT, 		"NUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/"},
+		{BC_CLI_TOKEN_SLOT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/"},
+	};
+
+static bc_cli_match_item_t port_match_items[] = {
+		{BC_CLI_TOKEN_PORT, 	  	"NUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM(1-16)"},
+		{BC_CLI_TOKEN_PORT, 	  	"sNUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_SNI_MAX_SLOT_STR")/NUM("BC_PORT_SNI_MIN_PORT_STR"-"BC_PORT_SNI_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_PORT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR")"},
+	};
+
+static bc_cli_match_item_t port_switch_match_items[] = {
+		{BC_CLI_TOKEN_PORT, 	  	"NUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_SNI_MAX_SLOT_STR")/NUM("BC_PORT_SNI_MIN_PORT_STR"-"BC_PORT_SNI_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_PORT, 	  	"sNUM("BC_PORT_SNI_MIN_SLOT_STR"-"BC_PORT_SNI_MAX_SLOT_STR")/NUM("BC_PORT_SNI_MIN_PORT_STR"-"BC_PORT_SNI_MAX_PORT_STR")"},
+	};
+
+static bc_cli_match_item_t port_epon_match_items[] = {
+		{BC_CLI_TOKEN_PORT, 	  	"NUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_PORT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR")"},
+	};
+
+static bc_cli_match_item_t vlan_match_items[] = {
+		{BC_CLI_TOKEN_COMMA, 	","},
+		{BC_CLI_TOKEN_BAR, 			"-"},
+		{BC_CLI_TOKEN_VLAN, 		"NUM(1-4094)"},
+	};
+
+static bc_cli_match_item_t epon_onus_match_items[] = {
+		{BC_CLI_TOKEN_COMMA, 	","},
+		{BC_CLI_TOKEN_BAR, 			"-"},
+		{BC_CLI_TOKEN_KEY, 			"all"},
+		{BC_CLI_TOKEN_ONU, 			"NUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR"):NUM(1-64)"},
+		{BC_CLI_TOKEN_ONU, 			"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR"):NUM(1-64)"},
+		{BC_CLI_TOKEN_PORT, 		"NUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR"):"},
+		{BC_CLI_TOKEN_PORT, 		"NUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_PORT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR"):"},
+		{BC_CLI_TOKEN_PORT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR")"},
+		{BC_CLI_TOKEN_SLOT, 		"NUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/"},
+		{BC_CLI_TOKEN_SLOT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/"},
+		{BC_CLI_TOKEN_SLOT, 		"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")"},
+	};
+
+static bc_cli_match_item_t epon_onu_match_items[] = {
+		{BC_CLI_TOKEN_ONU, 			"NUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR"):NUM(1-64)"},
+		{BC_CLI_TOKEN_ONU, 			"pNUM("BC_PORT_PON_MIN_SLOT_STR"-"BC_PORT_PON_MAX_SLOT_STR")/NUM("BC_PORT_PON_MIN_PORT_STR"-"BC_PORT_PON_MAX_PORT_STR"):NUM(1-64)"},
+	};
+
+static bc_cli_para_lex_bnf_t lex_bnf[] = {
+		{BC_CLI_PARA_LEX_BNF_PORTS, 					ports_match_items, sizeof(ports_match_items)/sizeof(bc_cli_match_item_t), },
+		{BC_CLI_PARA_LEX_BNF_PORTS_SWITCH, 	ports_switch_match_items, sizeof(ports_switch_match_items)/sizeof(bc_cli_match_item_t), },
+		{BC_CLI_PARA_LEX_BNF_PORTS_EPON, 			ports_epon_match_items, sizeof(ports_epon_match_items)/sizeof(bc_cli_match_item_t), },
+		{BC_CLI_PARA_LEX_BNF_PORT, 						port_match_items, sizeof(port_match_items)/sizeof(bc_cli_match_item_t), },
+		{BC_CLI_PARA_LEX_BNF_PORT_SWITCH, 		port_switch_match_items, sizeof(port_switch_match_items)/sizeof(bc_cli_match_item_t), },
+		{BC_CLI_PARA_LEX_BNF_PORT_EPON, 			port_epon_match_items, sizeof(port_epon_match_items)/sizeof(bc_cli_match_item_t), },
+		{BC_CLI_PARA_LEX_BNF_VLAN,						vlan_match_items, sizeof(vlan_match_items)/sizeof(bc_cli_match_item_t), },
+		{BC_CLI_PARA_LEX_BNF_EPON_ONUS,			epon_onus_match_items, sizeof(epon_onus_match_items)/sizeof(bc_cli_match_item_t), },
+		{BC_CLI_PARA_LEX_BNF_EPON_ONU,				epon_onu_match_items, sizeof(epon_onu_match_items)/sizeof(bc_cli_match_item_t), },
+	};
+
+static bc_err_e __bc_cli_para_lex_init(void)
+{
+	bc_uint32 idx;
+
+	bc_err_e ret;
+
+	for (idx = 0; idx < sizeof(lex_bnf)/sizeof(bc_cli_para_lex_bnf_t); idx++)
+	{
+		lex_bnf[idx].lex_lex.item_num = 0;
+		ret = __bc_cli_lex_lex(lex_bnf[idx].items, lex_bnf[idx].item_num, &(lex_bnf[idx].lex_lex));
+		if (ret != BC_ERR_OK)
+		{
+			BC_PT_DBG_PRINT(BC_MODULE_CLI, "idx(%d) lex lex fail. \n\r", idx);
+			__bc_cli_lex_lex_free(&(lex_bnf[idx].lex_lex));	
+		}
+	}
+
+	return ret;
+}
+
+bc_err_e bc_cli_para_lex_bnf_dump_lex_lex(void)
+{
+	bc_uint32 idx;
+
+	for (idx = 0; idx < sizeof(lex_bnf)/sizeof(bc_cli_para_lex_bnf_t); idx++)
+	{
+		BC_PT_DBG_PRINT(BC_MODULE_CLI, "\n\r");
+		__bc_cli_lex_lex_dbg_dump(&(lex_bnf[idx].lex_lex));
+		BC_PT_DBG_PRINT(BC_MODULE_CLI, "\n\r");
+	}
+
+	return BC_ERR_OK;
+}
+
+#endif
+
+#if 1
+
+bc_err_e bc_cli_para_lex_bnf_init(void)
+{
+	utili_block_ext_init(&lex_lex_block, BC_MODULE_CLI, "lex_lex", sizeof(bc_cli_lex_lex_item_t), 1024);
+	lex_lex_mutex = bc_platform_mutex_create("lex_lex");
+	if (!lex_lex_mutex)
+	{
+		return BC_ERR_RESOURCE;
+	}
+
+	utili_block_ext_init(&lex_block, BC_MODULE_CLI, "lex", sizeof(bc_cli_lex_item_t), 1024);
+	lex_mutex = bc_platform_mutex_create("lex");
+	if (!lex_mutex)
+	{
+		return BC_ERR_RESOURCE;
+	}
+
+	__bc_cli_para_lex_init();
+
+	return BC_ERR_OK;	
+}
+
+
+
+#endif
+ #endif	/* #if 0wangbin for cli code transplantation */

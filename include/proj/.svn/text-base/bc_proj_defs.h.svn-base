@@ -1,0 +1,37 @@
+/************************************************************
+  FileName: proj_defs.h
+  Author:  wangbin      Version :  1.0        Date:2017-04-04
+  Description: proj depend parameter define       
+  Version:                        
+  History:        
+                  
+    1. Date:
+       Author:
+       Modification:
+    2. ...
+***********************************************************/
+
+#ifndef __bc_proj_defs_h__
+#define __bc_proj_defs_h__
+
+#include "bc_common_defs.h"
+#include "bc_modules.h"
+#include "bc_print.h"
+#include "bc_err.h"
+
+#include "bc_proj_system_defs.h"
+#include "bc_proj_platform_defs.h"
+
+
+/*  
+	本文件只存放功能和子功能的开关
+	根据项目变化的模块参数定义放到
+	同级目录的bc_proj_"module name"_defs.h 文件中
+*/
+
+
+
+
+
+#endif
+

@@ -1,0 +1,333 @@
+/************************************************************
+  Copyright (C), 1988-2014, xxxxx Tech. Co., Ltd.
+  FileName: bc_print_srv.h
+  Author:  wangbin      Version :  1.0        Date:2014-6-23
+  Description: proj depend parameter define       
+  Version:                        
+  History:        
+                  
+    1. Date:
+       Author:
+       Modification:
+    2. ...
+***********************************************************/
+#ifndef __BC_PRINT_SRV_H__
+#define __BC_PRINT_SRV_H__
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                              头   文   件                                  //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+#include "bc_print.h"
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                      外 部 变 量、 函 数 引 用                             //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                              宏   定   义                                  //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                  结 构 体 、联 合 体、枚 举 定 义                          //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                          全 局 变 量 定 义                                 //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+/* 
+ *  外部全局变量，提供整个工程调用，在头文件中提供调用接口(外部引用声明)。
+ */
+
+/* 
+ *  内部全局变量，只提供给该文件内部函数调用，不在头文件中提供调用接口。
+ */
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                              函  数  声  明                                //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+/*************************************************
+  Function: bc_pt_prt_open_all_srv
+  Description: 打开所有打印配置(包括打开所有打印
+  				 级别和打开所有模块),服务端
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_prt_open_all_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_prt_close_all_srv
+  Description: 清除打印配置，全关闭(关闭所有的打
+  				 印级别和模块)
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_prt_close_all_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_prt_lvl_open_srv
+  Description: 打开打印的该级别(位)
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_prt_lvl_open_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_prt_lvl_close_srv
+  Description: 关闭打印的该级别(位)
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_prt_lvl_close_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_open_prj_all_srv
+  Description: 打开打印整个工程(开启打印所有的模块)
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_open_prj_all_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_open_prj_mdl_srv
+  Description: 打开某个模块所有文件
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_open_prj_mdl_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_open_prj_mdl_file_srv
+  Description: 打开某个模块的某个文件
+  Input: 
+   		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_open_prj_mdl_file_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_close_prj_all_srv
+  Description: 关闭整个工程(所有模块的所有文件)的
+  				 打印
+  Input: 
+   		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_close_prj_all_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_close_prj_mdl_srv
+  Description: 关闭某个模块的所有文件的打印
+  Input: 
+   		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_close_prj_mdl_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_close_prj_mdl_file_srv
+  Description: 关闭某个模块的某个文件的打印
+  Input: 
+   		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_close_prj_mdl_file_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_get_prt_lvl_srv
+  Description: 获取打印的打印级别
+  Input: 
+   		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_get_prt_lvl_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_get_prj_all_srv
+  Description: 获取整个工程(所有模块)数据信息
+  Input: 
+   		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  History: 
+*************************************************/
+bc_err_e bc_pt_get_prj_all_srv(bc_ipc_package_t *data);
+
+
+
+
+/*************************************************
+  Function: bc_pt_dbg_save_cfg_srv
+  Description: 保存调试配置数据到文件
+  Input: 
+   		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_dbg_save_cfg_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_pt_dbg_save_clear_srv
+  Description: 清除调试配置文件和内存调试数据
+  Input: 
+   		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_dbg_save_clear_srv(bc_ipc_package_t *data);
+
+
+/*************************************************
+  Function: bc_pt_dump_srv
+  Description: dump所有内存数据
+  Input: 
+   		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_pt_dump_srv(bc_ipc_package_t *data);
+
+
+
+
+#endif		/* __BC_PRINT_SRV_H__ */
+

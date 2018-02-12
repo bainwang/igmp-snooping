@@ -1,0 +1,245 @@
+/************************************************************
+  Copyright (C), 1988-2014, xxxxx Tech. Co., Ltd.
+  FileName:
+  Author:  wangbin      Version :  1.0        Date:2014-2-8
+  Description:             线程相关函数
+  Version:       1.0              
+  History:        
+                  
+    1. Date:
+       Author:
+       Modification:
+    2. ...
+***********************************************************/
+
+#ifndef _BC_PLATFORM_THREAD_H_
+#define _BC_PLATFORM_THREAD_H_
+
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/param.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <signal.h>
+#include <string.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <time.h>
+#include <sys/syscall.h>
+#include "bc_platform_types.h"
+#include "bc_platform_mem.h"
+
+#define BC_THREAD_MAX_API_NAME  30
+#define BC_THREAD_1K_STACK_SIAE 1024  /*1K stack*/
+
+/* Default Stack Size 16k */
+#define	BC_THREAD_DEF_STACK_SIZE	(16*BC_THREAD_1K_STACK_SIAE)	
+
+
+typedef pthread_t bc_thread_t;
+typedef pid_t    bc_pid_t;
+
+/*************************************************
+  Function: bc_platform_thread_init
+  Description:线程结构初始化
+  Input: 
+  
+  Output:
+  Return:
+  		void
+  Note: 用bc_platform_init替代bc_platform_thread_init进行
+  初始化
+  History: 
+*************************************************/
+extern  void bc_platform_thread_init(void);
+
+/*************************************************
+  Function: bc_platform_thread_create
+  Description:创建一个线程
+  Input: 
+	  	name : name of task
+  		stacksize : stack size requested
+  		prio : scheduling prio (1 = lowest,99 =  highest)
+  		f:address of function to call
+  		arg:argument passed to func
+  Output:
+  Return:
+  		成功:THREAD ID
+  		失败:NULL
+  Note: 
+  History: 
+*************************************************/
+extern bc_thread_t *bc_platform_thread_create(
+	 bc_char *name,
+	 bc_int32 stacksize, 
+	 bc_int32 prio, 
+	 void (*f)(void *), 
+	 void *arg);
+
+/*************************************************
+  Function: bc_platform_thread_destroy
+  Description:destroy a task
+  Input: 
+	  	thread : thread id
+  Output:
+  Return:
+		成功:BC_ERR_OK 失败:other
+  Notes:
+ 	This routine is not generally used by Broadcom drivers because
+ 	it's unsafe.  If a task is destroyed while holding a mutex or
+ 	other resource, system operation becomes unpredictable.  Also,
+ 	some RTOS's do not include kill routines.
+ 
+ 	Instead, Broadcom tasks are written so they can be notified via
+ 	semaphore when it is time to exit, at which time they call
+ 	bc_platform_thread_exit().
+  History: 
+**************************************************/
+extern bc_err_e bc_platform_thread_destroy(bc_thread_t *thread);
+
+/*************************************************
+  Function: bc_platform_thread_exit
+  Description:Exit the calling thread
+  Input: 
+	  	rc - return code from thread.
+  Output:
+  Return:
+		void
+  Notes:
+  History: 
+*************************************************/
+extern void bc_platform_thread_exit(bc_int32 rc);
+
+/*************************************************
+  Function: bc_platform_thread_id_get
+  Description:Return thread ID of caller
+  Input: 
+  
+  Output:
+  Return:
+		void
+  Notes:
+  History: 
+*************************************************/
+extern bc_thread_t bc_platform_thread_id_get(void);
+
+/*************************************************
+  Function: bc_platform_thread_name_get
+  Description:Return name given to thread when it was created
+  Input: 
+   	thread : thread ID
+ 	thread_name : buffer to return thread name;
+ 			gets empty string if not available
+ 	thread_name_size : maximum size of buffer
+  
+  Output:
+  Return:
+		成功:BC_ERR_OK  失败:other
+  Notes:
+  History: 
+*************************************************/
+extern bc_err_e bc_platform_thread_name_get(
+	 bc_thread_t *thread,
+	 bc_int8 *thread_name,
+	 bc_int32  thread_name_size);
+
+/*************************************************
+  Function: bc_platform_thread_stack_get
+  Description:Return stack given to thread when it was created
+  Input: 
+   	thread : thread ID
+ 	stacksize : stack size
+  
+  Output:
+  Return:
+		成功:BC_ERR_OK  失败:other
+  Notes:
+  History: 
+*************************************************/
+extern bc_err_e bc_platform_thread_stack_get(bc_thread_t *thread, bc_int32 *stacksize);
+
+/*************************************************
+  Function: bc_platform_thread_piro_get
+  Description:Return prio given to thread when it was created
+  Input: 
+   	thread : thread ID
+ 	pro : pro 
+  
+  Output:
+  Return:
+		成功:BC_ERR_OK  失败:other
+  Notes:
+  History: 
+*************************************************/
+extern bc_err_e bc_platform_thread_piro_get(bc_thread_t *thread, bc_int32 *pro);
+
+/*************************************************
+  Function: bc_platform_thread_tid_get
+  Description:Return tid given to thread when it was created
+  Input: 
+   	thread : thread ID
+ 	tid :  
+  
+  Output:
+  Return:
+		成功:BC_ERR_OK  失败:other
+  Notes:
+  History: 
+*************************************************/
+extern bc_err_e bc_platform_thread_tid_get(bc_thread_t *thread, bc_int32 *tid);
+
+/*************************************************
+  Function: bc_platform_thread_show
+  Description:dump所有 线程信息
+  Input: 
+
+  Output:
+  Return:
+		void
+  Notes:
+  History: 
+*************************************************/
+extern void bc_platform_thread_show(void);
+
+/*************************************************
+  Function: bc_platform_time_sleep
+  Description:Suspend calling thread for a specified number of seconds
+  Input: 
+  		sec:number of seconds to suspend
+
+  Output:
+  Return:
+		void
+  Notes:Other tasks are free to run while the caller is suspended.
+  History: 
+*************************************************/
+extern void bc_platform_time_sleep(bc_uint32 sec);
+
+/*************************************************
+  Function: bc_platform_time_usleep
+  Description:Suspend calling thread for a specified number of microseconds.
+  Input: 
+  		usec:number of microseconds to suspend
+
+  Output:
+  Return:
+		void
+  Notes:	The actual delay period depends on the resolution of the
+ 	Unix select routine, whose precision is limited to the
+ 	the period of the scheduler tick, generally 1/60 or 1/100 sec.
+ 	Other tasks are free to run while the caller is suspended.
+  History: 
+*************************************************/
+void bc_platform_time_usleep(bc_uint32 usec);
+
+#ifdef BC_PLATFORM_THREAD_DEBUG
+extern void bc_platform_thread_ResourceUsageGet(
+                unsigned int *ktos_thread_count_curr,
+                unsigned int *ktos_stack_size_curr,
+                unsigned int *ktos_thread_count_max,
+                unsigned int *ktos_stack_size_max);
+#endif
+
+
+#endif	//_BC_PLATFORM_THREAD_H_
+

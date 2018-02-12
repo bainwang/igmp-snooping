@@ -1,0 +1,6 @@
+---- bc_ipc_dev_client_release_srv Matches (5 in 4 files) ----
+Bc_func.h (include\common\modules):    __bc_func_dev_srv_temp(BC_F_DONT_SYNC, BC_F_SLAVE_USE, bc_ipc_dev_client_release_srv) \
+Bc_ipc_dev_client.c (module\system\ipc):	ret = bc_ipc_client_request(BC_FUNC_ENUM(bc_ipc_dev_client_release_srv), data);
+Bc_ipc_dev_client_srv.c (module\system\ipc):  Function   : bc_ipc_dev_client_release_srv
+Bc_ipc_dev_client_srv.c (module\system\ipc):bc_err_e bc_ipc_dev_client_release_srv(bc_ipc_package_t *data)
+Bc_ipc_dev_client_srv.h (include\module\system\ipc):bc_err_e bc_ipc_dev_client_release_srv(bc_ipc_package_t *data);

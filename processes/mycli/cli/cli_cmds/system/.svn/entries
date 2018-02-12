@@ -1,0 +1,95 @@
+10
+
+dir
+12
+svn://localhost/processes/mycli/cli/cli_cmds/system
+svn://localhost
+
+
+
+2017-08-14T07:36:47.234170Z
+9
+wangbin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+86189913-313b-f84c-88d5-432afe7a17ae
+
+binchie
+dir
+
+usermgmt
+dir
+
+cfgmgmt
+dir
+
+baseinfo
+dir
+
+filetrans
+dir
+
+monitor
+dir
+
+clock
+dir
+
+dbg
+dir
+
+print
+dir
+
+Makefile
+file
+
+
+
+
+2017-07-07T01:15:43.161815Z
+b4feda46345a6582a0bb08e34c950393
+2017-07-07T05:15:54.759812Z
+5
+wangbin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+124
+
+ptcode
+dir
+
+stats
+dir
+

@@ -1,0 +1,293 @@
+/*******************************************************************************
+  Copyright (C), 1988-2018, xxxxx Tech. Co., Ltd.
+  [Author]     : wangbin
+  [Version]    : 1.0
+  [Date]       : 2017-7-5
+  [Description]:
+
+  [Others]     :
+
+  [Function List]:
+	1. ....
+	2. ....
+  [History]:
+	 D a t e	Modification										  Initials
+	---------- --------------										 ----------
+	2017-07-05	Created 										      wangbin
+*******************************************************************************/
+
+#ifndef __BC_STATS_SRV_H__
+#define __BC_STATS_SRV_H__
+
+#include "bc_stats_def.h"
+#include "bc_err.h"
+#include "bc_ipc_def.h"
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//								头   文   件								  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//								宏   定   义								  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//					结 构 体 、联 合 体、枚 举 定 义				          //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+/******************************************************************************\
+  Function   : bc_stats_init
+  Description: INIT
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_init();
+
+/******************************************************************************\
+  Function   : bc_stats_get_board_temp_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_board_temp_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_oamport_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_oamport_info_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_oamport_list_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_oamport_list_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_port_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_port_info_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_port_list_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_port_list_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_ptpport_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_ptpport_info_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_ptpport_list_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_ptpport_list_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_ptp_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_ptp_info_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_vp_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_vp_info_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_vp_list_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_vp_list_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_vc_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_vc_info_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_vc_list_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_vc_list_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_e1_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_e1_info_srv(bc_ipc_package_t *data);
+
+
+/******************************************************************************\
+  Function   : bc_stats_get_e1_list_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_e1_list_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_get_cur_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_cur_info_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_get_15min_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_15min_info_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_get_24hour_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_24hour_info_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_get_15min_incream_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_15min_incream_info_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_get_24hour_incream_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_24hour_incream_info_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_get_cur_oamport_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_15min_num_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_get_24hour_counter_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_24hour_num_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_get_15min_valid_counter_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_15min_valid_num_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_get_24hour_valid_counter_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_get_24hour_valid_num_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_del_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_del_info_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_del_15min_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_del_15min_info_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_del_24hour_info_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_del_24hour_info_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_threshold_get_srv
+  Description: 
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_threshold_get_srv(bc_ipc_package_t *data);
+
+/******************************************************************************\
+  Function   : bc_stats_threshold_set_srv
+  Description: 修改用户权限
+  Return     : bc_err_e  成功、失败
+  Others     : 
+\******************************************************************************/
+bc_err_e bc_stats_threshold_set_srv(bc_ipc_package_t *data);
+
+#endif
+

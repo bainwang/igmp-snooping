@@ -1,0 +1,1534 @@
+﻿tree(have not igmp/cli/snmp/system/common etc. source code.)
+.
+├── common
+│   ├── ipc
+│   │   ├── bc_ipc_client.c
+│   │   ├── bc_ipc_cmm.c
+│   │   ├── bc_ipc_package.c
+│   │   ├── bc_ipc_server.c
+│   │   ├── bc_ipc_trans.c
+│   │   └── Makefile
+│   ├── lib_a
+│   ├── log
+│   │   ├── bc_log.c
+│   │   └── Makefile
+│   ├── Makefile
+│   ├── message
+│   │   ├── bc_err_msg.c
+│   │   ├── bc_msg.c
+│   │   └── Makefile
+│   ├── modules
+│   │   ├── bc_modules.c
+│   │   └── Makefile
+│   ├── platform
+│   │   ├── bc_platform_dbg_trace.c
+│   │   ├── bc_platform_init.c
+│   │   ├── bc_platform_interrupt.c
+│   │   ├── bc_platform_mem.c
+│   │   ├── bc_platform_mutex.c
+│   │   ├── bc_platform_procps.c
+│   │   ├── bc_platform_queue.c
+│   │   ├── bc_platform_sem.c
+│   │   ├── bc_platform_signal.c
+│   │   ├── bc_platform_thread.c
+│   │   ├── bc_platform_time.c
+│   │   └── Makefile
+│   ├── print
+│   │   ├── bc_print.c
+│   │   └── Makefile
+│   ├── util
+│   │   ├── Makefile
+│   │   ├── TFX256B.tmp
+│   │   ├── TFX388.tmp
+│   │   ├── TFX6C7C.tmp
+│   │   ├── TFXF303.tmp
+│   │   ├── utili_avlt.c
+│   │   ├── utili_bit.c
+│   │   ├── utili_block.c
+│   │   ├── utili_block_ext.c
+│   │   ├── utili_hash.c
+│   │   ├── utili_ip_mac.c
+│   │   ├── utili_list.c
+│   │   ├── utili_module_cb.c
+│   │   ├── utili_rbt.c
+│   │   └── utili_string.c
+│   └── vfs
+│       ├── bc_vfs.c
+│       └── Makefile
+├── image
+├── include
+│   ├── common
+│   │   ├── bc_common_defs.h
+│   │   ├── error
+│   │   │   └── bc_err.h
+│   │   ├── ipc
+│   │   │   ├── bc_ipc_client.h
+│   │   │   ├── bc_ipc_cmm.h
+│   │   │   ├── bc_ipc_def.h
+│   │   │   ├── bc_ipc_package.h
+│   │   │   ├── bc_ipc_server.h
+│   │   │   └── bc_ipc_trans.h
+│   │   ├── log
+│   │   │   └── bc_log.h
+│   │   ├── message
+│   │   │   └── bc_msg.h
+│   │   ├── modules
+│   │   │   ├── bc_cli_func.h
+│   │   │   ├── bc_func.h
+│   │   │   ├── bc_modules_com_para.h
+│   │   │   └── bc_modules.h
+│   │   ├── nouse
+│   │   │   └── bc_no_use.h
+│   │   ├── platform
+│   │   │   ├── bc_platform_dbg_trace.h
+│   │   │   ├── bc_platform_init.h
+│   │   │   ├── bc_platform_interrupt.h
+│   │   │   ├── bc_platform_mem.h
+│   │   │   ├── bc_platform_mutex.h
+│   │   │   ├── bc_platform_procps.h
+│   │   │   ├── bc_platform_queue.h
+│   │   │   ├── bc_platform_sem.h
+│   │   │   ├── bc_platform_signal.h
+│   │   │   ├── bc_platform_thread.h
+│   │   │   ├── bc_platform_time.h
+│   │   │   └── bc_platform_types.h
+│   │   ├── print
+│   │   │   └── bc_print.h
+│   │   ├── util
+│   │   │   ├── TFX1EF8.tmp
+│   │   │   ├── TFX2F66.tmp
+│   │   │   ├── TFX88D2.tmp
+│   │   │   ├── TFXBFD.tmp
+│   │   │   ├── utili_avlt.h
+│   │   │   ├── utili_bit.h
+│   │   │   ├── utili_block_ext.h
+│   │   │   ├── utili_block.h
+│   │   │   ├── utili_hash.h
+│   │   │   ├── utili_ip_mac.h
+│   │   │   ├── utili_list.h
+│   │   │   ├── utili_module_cb.h
+│   │   │   ├── utili_rbt.h
+│   │   │   └── utili_string.h
+│   │   └── vfs
+│   │       └── bc_vfs.h
+│   ├── module
+│   │   └── system
+│   │       ├── baseinfo
+│   │       │   ├── bc_sys_baseinfo.h
+│   │       │   ├── bc_sys_defs.h
+│   │       │   ├── bc_sys_event.h
+│   │       │   ├── bc_sys.h
+│   │       │   ├── bc_sys_ipc_client.h
+│   │       │   ├── bc_sys_ipc_srv.h
+│   │       │   ├── bc_sys_ip.h
+│   │       │   ├── bc_sys_mac.h
+│   │       │   └── bc_sys_polling.h
+│   │       ├── binchie
+│   │       │   ├── bc_binchie_client.h
+│   │       │   ├── bc_binchie_db.h
+│   │       │   ├── bc_binchie_def.h
+│   │       │   └── bc_binchie_server.h
+│   │       ├── cli
+│   │       │   ├── bc_cli_ipc_client.h
+│   │       │   ├── bc_cli_ipc_msg_client.h
+│   │       │   ├── bc_cli_ipc_msg_server.h
+│   │       │   └── bc_cli_ipc_server.h
+│   │       ├── filetrans
+│   │       │   ├── bc_filetrans_core.h
+│   │       │   ├── bc_filetrans_db.h
+│   │       │   ├── bc_filetrans_def.h
+│   │       │   ├── bc_filetrans_file.h
+│   │       │   └── bc_filetrans_file_srv.h
+│   │       ├── ipc
+│   │       │   ├── bc_ipc_dev_api.h
+│   │       │   ├── bc_ipc_dev_client.h
+│   │       │   ├── bc_ipc_dev_client_srv.h
+│   │       │   ├── bc_ipc_dev_debug.h
+│   │       │   ├── bc_ipc_dev_debug_srv.h
+│   │       │   ├── bc_ipc_dev_def.h
+│   │       │   └── bc_ipc_dev_server.h
+│   │       ├── log
+│   │       │   ├── bc_log_client.h
+│   │       │   └── bc_log_server.h
+│   │       ├── platform
+│   │       │   ├── bc_platform.h
+│   │       │   └── bc_platform_srv.h
+│   │       ├── print
+│   │       │   ├── bc_print_client.h
+│   │       │   └── bc_print_server.h
+│   │       ├── session
+│   │       │   ├── bc_session_api.h
+│   │       │   ├── bc_session_def.h
+│   │       │   ├── bc_session.h
+│   │       │   ├── bc_session_ipc_client.h
+│   │       │   └── bc_session_server.h
+│   │       ├── startup
+│   │       │   ├── bc_startup.h
+│   │       │   └── bc_startup_post.h
+│   │       ├── test
+│   │       │   ├── bc_test_def.h
+│   │       │   └── bc_test.h
+│   │       └── usermgmt
+│   │           ├── bc_usermgmt_core.h
+│   │           ├── bc_usermgmt_db.h
+│   │           ├── bc_usermgmt_def.h
+│   │           ├── bc_usermgmt.h
+│   │           └── bc_usermgmt_srv.h
+│   └── proj
+│       ├── bc_proj_defs.h
+│       ├── bc_proj_platform_defs.h
+│       ├── bc_proj_port_defs.h
+│       └── bc_proj_system_defs.h
+├── lib_a
+├── Makefile
+├── Makefile.build
+├── module
+│   ├── Makefile
+│   ├── startup
+│   │   ├── bc_startup.c
+│   │   └── Makefile
+│   └── system
+│       ├── baseinfo
+│       │   ├── bc_sys_baseinfo.c
+│       │   ├── bc_sys.c
+│       │   ├── bc_sys_event.c
+│       │   ├── bc_sys_ip.c
+│       │   ├── bc_sys_ipc_client.c
+│       │   ├── bc_sys_ipc_srv.c
+│       │   ├── bc_sys_mac.c
+│       │   ├── bc_sys_polling.c
+│       │   └── Makefile
+│       ├── binchie
+│       │   ├── bc_binchie_client.c
+│       │   ├── bc_binchie_db.c
+│       │   ├── bc_binchie_server.c
+│       │   ├── Makefile
+│       │   ├── TFX8812.tmp
+│       │   └── TFX951.tmp
+│       ├── cli
+│       │   ├── bc_cli_ipc_client.c
+│       │   ├── bc_cli_ipc_msg_client.c
+│       │   ├── bc_cli_ipc_msg_server.c
+│       │   ├── bc_cli_ipc_server.c
+│       │   └── Makefile
+│       ├── filetrans
+│       │   ├── bc_filetrans_core.c
+│       │   ├── bc_filetrans_db.c
+│       │   ├── bc_filetrans_file.c
+│       │   ├── bc_filetrans_file_srv.c
+│       │   └── Makefile
+│       ├── ipc
+│       │   ├── bc_ipc_dev.c
+│       │   ├── bc_ipc_dev_client.c
+│       │   ├── bc_ipc_dev_client_srv.c
+│       │   ├── bc_ipc_dev_debug.c
+│       │   ├── bc_ipc_dev_debug_srv.c
+│       │   ├── bc_ipc_dev_server.c
+│       │   ├── Makefile
+│       │   └── TFXB670.tmp
+│       ├── lib_a
+│       ├── log
+│       │   ├── bc_log_client.c
+│       │   ├── bc_log_server.c
+│       │   └── Makefile
+│       ├── Makefile
+│       ├── platform
+│       │   ├── bc_platform_sys_debug.c
+│       │   ├── bc_platform_sys_debug_srv.c
+│       │   └── Makefile
+│       ├── print
+│       │   ├── bc_print_client.c
+│       │   ├── bc_print_server.c
+│       │   └── Makefile
+│       ├── session
+│       │   ├── bc_session.c
+│       │   ├── bc_session_ipc_client.c
+│       │   ├── bc_session_server.c
+│       │   └── Makefile
+│       ├── test
+│       │   ├── bc_test.c
+│       │   └── Makefile
+│       └── usermgmt
+│           ├── bc_usermgmt.c
+│           ├── bc_usermgmt_core.c
+│           ├── bc_usermgmt_db.c
+│           ├── bc_usermgmt_srv.c
+│           └── Makefile
+├── processes
+│   ├── Makefile
+│   ├── mycli
+│   │   ├── cli
+│   │   │   ├── bc_cli.c
+│   │   │   ├── cli_cmds
+│   │   │   │   ├── bc_cli_base.c
+│   │   │   │   ├── bc_cli_base.h
+│   │   │   │   ├── bc_cli_cmds.c
+│   │   │   │   ├── bc_cli_cmds.h
+│   │   │   │   ├── bc_cli_text.c
+│   │   │   │   ├── bc_cli_text.h
+│   │   │   │   ├── demo
+│   │   │   │   │   ├── bc_cli_cmd_demomodule.c
+│   │   │   │   │   ├── bc_cli_cmd_demomodule.h
+│   │   │   │   │   └── Makefile
+│   │   │   │   ├── Makefile
+│   │   │   │   └── system
+│   │   │   │       ├── baseinfo
+│   │   │   │       │   ├── bc_cli_cmd_baseinfo.c
+│   │   │   │       │   ├── bc_cli_cmd_baseinfo_debug.c
+│   │   │   │       │   ├── bc_cli_cmd_baseinfo.h
+│   │   │   │       │   └── Makefile
+│   │   │   │       ├── binchie
+│   │   │   │       │   ├── bc_cli_cmd_binchie.c
+│   │   │   │       │   ├── bc_cli_cmd_binchie.h
+│   │   │   │       │   ├── Makefile
+│   │   │   │       │   ├── TFX3499.tmp
+│   │   │   │       │   ├── TFX4CE8.tmp
+│   │   │   │       │   └── TFXB0CA.tmp
+│   │   │   │       ├── dbg
+│   │   │   │       │   ├── cli
+│   │   │   │       │   │   ├── bc_cli_cmd_cli.c
+│   │   │   │       │   │   ├── bc_cli_cmd_cli.h
+│   │   │   │       │   │   └── Makefile
+│   │   │   │       │   ├── ipc
+│   │   │   │       │   │   ├── bc_cli_cmd_ipc_debug.c
+│   │   │   │       │   │   ├── bc_cli_cmd_ipc_debug.h
+│   │   │   │       │   │   └── Makefile
+│   │   │   │       │   └── Makefile
+│   │   │   │       ├── filetrans
+│   │   │   │       │   ├── bc_cli_cmd_filetrans.c
+│   │   │   │       │   ├── bc_cli_cmd_filetrans.h
+│   │   │   │       │   └── Makefile
+│   │   │   │       ├── Makefile
+│   │   │   │       ├── monitor
+│   │   │   │       │   ├── bc_cli_cmd_monitor.c
+│   │   │   │       │   ├── bc_cli_cmd_monitor.h
+│   │   │   │       │   └── Makefile
+│   │   │   │       ├── print
+│   │   │   │       │   ├── bc_cli_cmd_print_dbg.c
+│   │   │   │       │   ├── bc_cli_cmd_print_dbg.h
+│   │   │   │       │   └── Makefile
+│   │   │   │       └── usermgmt
+│   │   │   │           ├── bc_cli_cmd_usermgmt.c
+│   │   │   │           ├── bc_cli_cmd_usermgmt.h
+│   │   │   │           └── Makefile
+│   │   │   ├── cliImage
+│   │   │   ├── cli_kernel
+│   │   │   │   ├── inc
+│   │   │   │   │   ├── bc_cli_alias.h
+│   │   │   │   │   ├── bc_cli_bnr_cmd.h
+│   │   │   │   │   ├── bc_cli_bnr.h
+│   │   │   │   │   ├── bc_cli_bnr_msg.h
+│   │   │   │   │   ├── bc_cli_chs.h
+│   │   │   │   │   ├── bc_cli_core.h
+│   │   │   │   │   ├── bc_cli_db.h
+│   │   │   │   │   ├── bc_cli_dir.h
+│   │   │   │   │   ├── bc_cli_edit.h
+│   │   │   │   │   ├── bc_cli_fltr.h
+│   │   │   │   │   ├── bc_cli.h
+│   │   │   │   │   ├── bc_cli_hist.h
+│   │   │   │   │   ├── bc_cli_hook.h
+│   │   │   │   │   ├── bc_cli_kernel_cfg.h
+│   │   │   │   │   ├── bc_cli_log_cmd.h
+│   │   │   │   │   ├── bc_cli_mainprocess.h
+│   │   │   │   │   ├── bc_cli_misc.h
+│   │   │   │   │   ├── bc_cli_msg.h
+│   │   │   │   │   ├── bc_cli_para.h
+│   │   │   │   │   ├── bc_cli_para_lex_dnf.h
+│   │   │   │   │   ├── bc_cli_paratype.h
+│   │   │   │   │   ├── bc_cli_parse.h
+│   │   │   │   │   ├── bc_cli_priv.h
+│   │   │   │   │   ├── bc_cli_pseudo.h
+│   │   │   │   │   ├── bc_cli_sesn.h
+│   │   │   │   │   ├── bc_cli_sys_cmd.h
+│   │   │   │   │   ├── bc_cli_term.h
+│   │   │   │   │   ├── bc_cli_type.h
+│   │   │   │   │   ├── bc_cli_utili_print.h
+│   │   │   │   │   ├── bc_cli_vio.h
+│   │   │   │   │   ├── bc_cli_vkey.h
+│   │   │   │   │   ├── bc_cli_vt100.h
+│   │   │   │   │   └── vt_100.h
+│   │   │   │   ├── Makefile
+│   │   │   │   └── src
+│   │   │   │       ├── bc_cli_alias.c
+│   │   │   │       ├── bc_cli_api.c
+│   │   │   │       ├── bc_cli_bnr.c
+│   │   │   │       ├── bc_cli_chs.c
+│   │   │   │       ├── bc_cli_cmd_bnr.c
+│   │   │   │       ├── bc_cli_cmd_log.c
+│   │   │   │       ├── bc_cli_cmd_sys.c
+│   │   │   │       ├── bc_cli_core.c
+│   │   │   │       ├── bc_cli_db.c
+│   │   │   │       ├── bc_cli_dir.c
+│   │   │   │       ├── bc_cli_edit.c
+│   │   │   │       ├── bc_cli_fltr.c
+│   │   │   │       ├── bc_cli_hist.c
+│   │   │   │       ├── bc_cli_hook.c
+│   │   │   │       ├── bc_cli_mainprocess.c
+│   │   │   │       ├── bc_cli_misc.c
+│   │   │   │       ├── bc_cli_para.c
+│   │   │   │       ├── bc_cli_para_lex_dnf.c
+│   │   │   │       ├── bc_cli_parse.c
+│   │   │   │       ├── bc_cli_pseudo.c
+│   │   │   │       ├── bc_cli_sesn.c
+│   │   │   │       ├── bc_cli_utili_print.c
+│   │   │   │       ├── bc_cli_vio.c
+│   │   │   │       └── Makefile
+│   │   │   ├── Makefile
+│   │   │   └── Makefile.build
+│   │   └── cli_mini
+│   │       ├── bc_cli.c
+│   │       ├── common
+│   │       │   ├── bc_modules.c
+│   │       │   ├── Makefile
+│   │       │   ├── platform
+│   │       │   │   ├── bc_platform_init.c
+│   │       │   │   ├── bc_platform_mem.c
+│   │       │   │   ├── bc_platform_mutex.c
+│   │       │   │   ├── bc_platform_procps.c
+│   │       │   │   ├── bc_platform_queue.c
+│   │       │   │   ├── bc_platform_sem.c
+│   │       │   │   ├── bc_platform_signal.c
+│   │       │   │   ├── bc_platform_thread.c
+│   │       │   │   ├── bc_platform_time.c
+│   │       │   │   └── Makefile
+│   │       │   ├── print
+│   │       │   │   ├── bc_print.c
+│   │       │   │   └── Makefile
+│   │       │   ├── util
+│   │       │   │   ├── Makefile
+│   │       │   │   ├── utili_avlt.c
+│   │       │   │   ├── utili_bit.c
+│   │       │   │   ├── utili_block.c
+│   │       │   │   ├── utili_hash.c
+│   │       │   │   ├── utili_ip_mac.c
+│   │       │   │   ├── utili_list.c
+│   │       │   │   ├── utili_rbt.c
+│   │       │   │   └── utili_string.c
+│   │       │   └── vfs
+│   │       │       ├── bc_vfs.c
+│   │       │       └── Makefile
+│   │       ├── core
+│   │       │   ├── bc_cli_acc.c
+│   │       │   ├── bc_cli_alias.c
+│   │       │   ├── bc_cli_api.c
+│   │       │   ├── bc_cli_bnr.c
+│   │       │   ├── bc_cli_bnr_cmd.c
+│   │       │   ├── bc_cli_bnr_stk.c
+│   │       │   ├── bc_cli_chs.c
+│   │       │   ├── bc_cli_core.c
+│   │       │   ├── bc_cli_db.c
+│   │       │   ├── bc_cli_dir.c
+│   │       │   ├── bc_cli_edit.c
+│   │       │   ├── bc_cli_fltr.c
+│   │       │   ├── bc_cli_hist.c
+│   │       │   ├── bc_cli_hook.c
+│   │       │   ├── bc_cli_io.c
+│   │       │   ├── bc_cli_ipc.c
+│   │       │   ├── bc_cli_log_cmd.c
+│   │       │   ├── bc_cli_mainprocess.c
+│   │       │   ├── bc_cli_misc.c
+│   │       │   ├── bc_cli_para.c
+│   │       │   ├── bc_cli_parse.c
+│   │       │   ├── bc_cli_prt.c
+│   │       │   ├── bc_cli_pseudo.c
+│   │       │   ├── bc_cli_sesn.c
+│   │       │   ├── bc_cli_sys_cmd.c
+│   │       │   ├── bc_cli_vio.c
+│   │       │   ├── bc_cli_vt100.c
+│   │       │   ├── Makefile
+│   │       │   └── vt_100.c
+│   │       ├── include
+│   │       │   ├── common
+│   │       │   │   ├── bc_common_defs.h
+│   │       │   │   ├── bc_err.h
+│   │       │   │   ├── bc_modules.h
+│   │       │   │   ├── platform
+│   │       │   │   │   ├── bc_platform_init.h
+│   │       │   │   │   ├── bc_platform_mem.h
+│   │       │   │   │   ├── bc_platform_mutex.h
+│   │       │   │   │   ├── bc_platform_procps.h
+│   │       │   │   │   ├── bc_platform_queue.h
+│   │       │   │   │   ├── bc_platform_sem.h
+│   │       │   │   │   ├── bc_platform_signal.h
+│   │       │   │   │   ├── bc_platform_thread.h
+│   │       │   │   │   ├── bc_platform_time.h
+│   │       │   │   │   └── bc_platform_types.h
+│   │       │   │   ├── print
+│   │       │   │   │   └── bc_print.h
+│   │       │   │   ├── util
+│   │       │   │   │   ├── utili_avlt.h
+│   │       │   │   │   ├── utili_bit.h
+│   │       │   │   │   ├── utili_block.h
+│   │       │   │   │   ├── utili_hash.h
+│   │       │   │   │   ├── utili_ip_mac.h
+│   │       │   │   │   ├── utili_list.h
+│   │       │   │   │   ├── utili_rbt.h
+│   │       │   │   │   └── utili_string.h
+│   │       │   │   └── vfs
+│   │       │   │       └── bc_vfs.h
+│   │       │   ├── core
+│   │       │   │   ├── bc_cli_acc.h
+│   │       │   │   ├── bc_cli_alias.h
+│   │       │   │   ├── bc_cli_bnr_cmd.h
+│   │       │   │   ├── bc_cli_bnr.h
+│   │       │   │   ├── bc_cli_bnr_msg.h
+│   │       │   │   ├── bc_cli_bnr_stk.h
+│   │       │   │   ├── bc_cli_chs.h
+│   │       │   │   ├── bc_cli_core.h
+│   │       │   │   ├── bc_cli_db.h
+│   │       │   │   ├── bc_cli_dir.h
+│   │       │   │   ├── bc_cli_edit.h
+│   │       │   │   ├── bc_cli_fltr.h
+│   │       │   │   ├── bc_cli.h
+│   │       │   │   ├── bc_cli_hist.h
+│   │       │   │   ├── bc_cli_hook.h
+│   │       │   │   ├── bc_cli_io.h
+│   │       │   │   ├── bc_cli_ipc.h
+│   │       │   │   ├── bc_cli_kernel_cfg.h
+│   │       │   │   ├── bc_cli_log_cmd.h
+│   │       │   │   ├── bc_cli_mainprocess.h
+│   │       │   │   ├── bc_cli_misc.h
+│   │       │   │   ├── bc_cli_msg.h
+│   │       │   │   ├── bc_cli_os.h
+│   │       │   │   ├── bc_cli_para.h
+│   │       │   │   ├── bc_cli_paratype.h
+│   │       │   │   ├── bc_cli_parse.h
+│   │       │   │   ├── bc_cli_priv.h
+│   │       │   │   ├── bc_cli_prt.h
+│   │       │   │   ├── bc_cli_pseudo.h
+│   │       │   │   ├── bc_cli_sesn.h
+│   │       │   │   ├── bc_cli_sys_cmd.h
+│   │       │   │   ├── bc_cli_term.h
+│   │       │   │   ├── bc_cli_type.h
+│   │       │   │   ├── bc_cli_vio.h
+│   │       │   │   ├── bc_cli_vkey.h
+│   │       │   │   ├── bc_cli_vt100.h
+│   │       │   │   └── vt_100.h
+│   │       │   └── module
+│   │       │       ├── bc_cli_base.h
+│   │       │       ├── bc_cli_cmds.h
+│   │       │       ├── bc_cli_text.h
+│   │       │       └── filetrans
+│   │       │           ├── bc_cli_cmd_filetrans.h
+│   │       │           ├── bc_filetrans_core.h
+│   │       │           ├── bc_filetrans_db.h
+│   │       │           ├── bc_filetrans_def.h
+│   │       │           └── bc_filetrans_file.h
+│   │       ├── Makefile
+│   │       ├── Makefile.build
+│   │       └── module
+│   │           ├── bc_cli_base.c
+│   │           ├── bc_cli_cmds.c
+│   │           ├── bc_cli_text.c
+│   │           ├── filetrans
+│   │           │   ├── bc_cli_cmd_filetrans.c
+│   │           │   ├── bc_filetrans_core.c
+│   │           │   ├── bc_filetrans_db.c
+│   │           │   ├── bc_filetrans_file.c
+│   │           │   ├── Makefile
+│   │           │   └── TFX1921.tmp
+│   │           └── Makefile
+│   ├── other
+│   │   ├── Makefile
+│   │   ├── Makefile - bak
+│   │   ├── Makefile.build
+│   │   ├── other
+│   │   ├── otherImage
+│   │   └── othermain.c
+│   └── snmp
+│       ├── core
+│       │   ├── configuration summary.txt
+│       │   ├── Makefile
+│       │   ├── snmp_core_ex.c
+│       │   └── snmp_global.c
+│       ├── include
+│       │   ├── core
+│       │   │   ├── snmp_core_ex.h
+│       │   │   ├── snmp_global.h
+│       │   │   └── TFX7122.tmp
+│       │   ├── module
+│       │   │   ├── fhEntityExtentMIB
+│       │   │   │   ├── snmp_fhEntityBoardInfoTable.h
+│       │   │   │   ├── snmp_fhEntityBoardPfmTable.h
+│       │   │   │   ├── snmp_fhEntityExtentMIB.h
+│       │   │   │   ├── snmp_fhEntityIfPfmTable.h
+│       │   │   │   ├── snmp_fhEntityOpticalModuleInfoTable.h
+│       │   │   │   ├── snmp_fhEntitySlotInfoTable.h
+│       │   │   │   └── snmp_fhEntityState_scalar.h
+│       │   │   ├── fhIfExtMIB
+│       │   │   │   ├── snmp_fhIfExtMIB.h
+│       │   │   │   └── snmp_fhIfStateTable.h
+│       │   │   ├── fhSysExtMIB
+│       │   │   │   ├── snmp_fhSysExtMIB.h
+│       │   │   │   ├── snmp_fhSysExtMIB_scalar.h
+│       │   │   │   └── snmp_snmpCommunityNameTable.h
+│       │   │   ├── mib2
+│       │   │   │   ├── interface
+│       │   │   │   │   ├── snmp_mib2_ifTable.h
+│       │   │   │   │   ├── snmp_mib2_ifxTable.h
+│       │   │   │   │   └── snmp_mib2_interfaces.h
+│       │   │   │   ├── ip
+│       │   │   │   │   ├── snmp_mib2_ipAddrTable.h
+│       │   │   │   │   └── snmp_mib2_ip.h
+│       │   │   │   └── system
+│       │   │   │       ├── snmp_mib2_system.h
+│       │   │   │       └── snmp_mib2_system_scalar.h
+│       │   │   ├── privateObject
+│       │   │   │   ├── snmp_privateObject.h
+│       │   │   │   └── snmp_privateObject_scalar.h
+│       │   │   ├── snmp_mib.h
+│       │   │   └── trap
+│       │   │       ├── snmp_trap_610a.h
+│       │   │       ├── snmp_trap_comm.h
+│       │   │       ├── snmp_trap_fhHardwareTraps.h
+│       │   │       ├── snmp_trap_fhIntfTraps.h
+│       │   │       ├── snmp_trap_fhVCTraps.h
+│       │   │       ├── snmp_trap_x86.h
+│       │   │       └── TestTraps.h
+│       │   └── net-snmp
+│       │       ├── agent
+│       │       │   ├── agent_callbacks.h
+│       │       │   ├── agent_handler.h
+│       │       │   ├── agent_index.h
+│       │       │   ├── agent_module_config.h
+│       │       │   ├── agent_read_config.h
+│       │       │   ├── agent_registry.h
+│       │       │   ├── agent_sysORTable.h
+│       │       │   ├── agent_trap.h
+│       │       │   ├── all_helpers.h
+│       │       │   ├── auto_nlist.h
+│       │       │   ├── baby_steps.h
+│       │       │   ├── bulk_to_next.h
+│       │       │   ├── cache_handler.h
+│       │       │   ├── debug_handler.h
+│       │       │   ├── ds_agent.h
+│       │       │   ├── hardware
+│       │       │   │   ├── cpu.h
+│       │       │   │   ├── fsys.h
+│       │       │   │   ├── memory.h
+│       │       │   │   └── sensors.h
+│       │       │   ├── instance.h
+│       │       │   ├── mfd.h
+│       │       │   ├── mib_module_config.h
+│       │       │   ├── mib_modules.h
+│       │       │   ├── mode_end_call.h
+│       │       │   ├── multiplexer.h
+│       │       │   ├── net-snmp-agent-includes.h
+│       │       │   ├── null.h
+│       │       │   ├── object_monitor.h
+│       │       │   ├── old_api.h
+│       │       │   ├── read_only.h
+│       │       │   ├── row_merge.h
+│       │       │   ├── scalar_group.h
+│       │       │   ├── scalar.h
+│       │       │   ├── serialize.h
+│       │       │   ├── set_helper.h
+│       │       │   ├── snmp_agent.h
+│       │       │   ├── snmp_get_statistic.h
+│       │       │   ├── snmp_vars.h
+│       │       │   ├── stash_cache.h
+│       │       │   ├── stash_to_next.h
+│       │       │   ├── sysORTable.h
+│       │       │   ├── table_array.h
+│       │       │   ├── table_container.h
+│       │       │   ├── table_data.h
+│       │       │   ├── table_dataset.h
+│       │       │   ├── table.h
+│       │       │   ├── table_iterator.h
+│       │       │   ├── table_tdata.h
+│       │       │   ├── var_struct.h
+│       │       │   └── watcher.h
+│       │       ├── config_api.h
+│       │       ├── data_access
+│       │       │   ├── arp.h
+│       │       │   ├── defaultrouter.h
+│       │       │   ├── interface.h
+│       │       │   ├── ipaddress.h
+│       │       │   ├── ip_scalars.h
+│       │       │   ├── ipstats.h
+│       │       │   ├── net-snmp-data-access-includes.h
+│       │       │   ├── route.h
+│       │       │   ├── scopezone.h
+│       │       │   ├── swinst.h
+│       │       │   ├── swrun.h
+│       │       │   ├── systemstats.h
+│       │       │   ├── tcpConn.h
+│       │       │   └── udp_endpoint.h
+│       │       ├── definitions.h
+│       │       ├── library
+│       │       │   ├── asn1.h
+│       │       │   ├── callback.h
+│       │       │   ├── cert_util.h
+│       │       │   ├── check_varbind.h
+│       │       │   ├── container_binary_array.h
+│       │       │   ├── container.h
+│       │       │   ├── container_iterator.h
+│       │       │   ├── container_list_ssll.h
+│       │       │   ├── container_null.h
+│       │       │   ├── data_list.h
+│       │       │   ├── default_store.h
+│       │       │   ├── dir_utils.h
+│       │       │   ├── factory.h
+│       │       │   ├── fd_event_manager.h
+│       │       │   ├── file_utils.h
+│       │       │   ├── getopt.h
+│       │       │   ├── int64.h
+│       │       │   ├── keytools.h
+│       │       │   ├── large_fd_set.h
+│       │       │   ├── lcd_time.h
+│       │       │   ├── libsnmp.h
+│       │       │   ├── md5.h
+│       │       │   ├── mib.h
+│       │       │   ├── mt_support.h
+│       │       │   ├── oid.h
+│       │       │   ├── oid_stash.h
+│       │       │   ├── openssl_aes.h
+│       │       │   ├── openssl_des.h
+│       │       │   ├── openssl_md5.h
+│       │       │   ├── openssl_sha.h
+│       │       │   ├── parse.h
+│       │       │   ├── read_config.h
+│       │       │   ├── README
+│       │       │   ├── scapi.h
+│       │       │   ├── snmpAAL5PVCDomain.h
+│       │       │   ├── snmp_alarm.h
+│       │       │   ├── snmpAliasDomain.h
+│       │       │   ├── snmp_api.h
+│       │       │   ├── snmp_assert.h
+│       │       │   ├── snmpCallbackDomain.h
+│       │       │   ├── snmp_client.h
+│       │       │   ├── snmp_debug.h
+│       │       │   ├── snmpDTLSUDPDomain.h
+│       │       │   ├── snmp_enum.h
+│       │       │   ├── snmp.h
+│       │       │   ├── snmp_impl.h
+│       │       │   ├── snmpIPv4BaseDomain.h
+│       │       │   ├── snmpIPv6BaseDomain.h
+│       │       │   ├── snmpIPXDomain.h
+│       │       │   ├── snmpksm.h
+│       │       │   ├── snmp_logging.h
+│       │       │   ├── snmp_openssl.h
+│       │       │   ├── snmp_parse_args.h
+│       │       │   ├── snmp_secmod.h
+│       │       │   ├── snmp_service.h
+│       │       │   ├── snmpSocketBaseDomain.h
+│       │       │   ├── snmpSSHDomain.h
+│       │       │   ├── snmpSTDDomain.h
+│       │       │   ├── snmp-tc.h
+│       │       │   ├── snmpTCPBaseDomain.h
+│       │       │   ├── snmpTCPDomain.h
+│       │       │   ├── snmpTCPIPv6Domain.h
+│       │       │   ├── snmpTLSBaseDomain.h
+│       │       │   ├── snmpTLSTCPDomain.h
+│       │       │   ├── snmp_transport.h
+│       │       │   ├── snmptsm.h
+│       │       │   ├── snmpUDPBaseDomain.h
+│       │       │   ├── snmpUDPDomain.h
+│       │       │   ├── snmpUDPIPv4BaseDomain.h
+│       │       │   ├── snmpUDPIPv6Domain.h
+│       │       │   ├── snmpUnixDomain.h
+│       │       │   ├── snmpusm.h
+│       │       │   ├── snmpv3.h
+│       │       │   ├── snmpv3-security-includes.h
+│       │       │   ├── system.h
+│       │       │   ├── testing.h
+│       │       │   ├── text_utils.h
+│       │       │   ├── tools.h
+│       │       │   ├── transform_oids.h
+│       │       │   ├── types.h
+│       │       │   ├── ucd_compat.h
+│       │       │   ├── vacm.h
+│       │       │   ├── winpipe.h
+│       │       │   └── winservice.h
+│       │       ├── machine
+│       │       │   └── generic.h
+│       │       ├── mib_api.h
+│       │       ├── net-snmp-config.h
+│       │       ├── net-snmp-config.h.in
+│       │       ├── net-snmp-features.h
+│       │       ├── net-snmp-includes.h
+│       │       ├── openssl_md5.h
+│       │       ├── output_api.h
+│       │       ├── pdu_api.h
+│       │       ├── session_api.h
+│       │       ├── snmpv3_api.h
+│       │       ├── system
+│       │       │   ├── aix.h
+│       │       │   ├── bsd.h
+│       │       │   ├── bsdi3.h
+│       │       │   ├── bsdi4.h
+│       │       │   ├── bsdi.h
+│       │       │   ├── cygwin.h
+│       │       │   ├── darwin10.h
+│       │       │   ├── darwin11.h
+│       │       │   ├── darwin12.h
+│       │       │   ├── darwin7.h
+│       │       │   ├── darwin8.h
+│       │       │   ├── darwin9.h
+│       │       │   ├── darwin.h
+│       │       │   ├── dragonfly.h
+│       │       │   ├── dynix.h
+│       │       │   ├── freebsd10.h
+│       │       │   ├── freebsd2.h
+│       │       │   ├── freebsd3.h
+│       │       │   ├── freebsd4.h
+│       │       │   ├── freebsd5.h
+│       │       │   ├── freebsd6.h
+│       │       │   ├── freebsd7.h
+│       │       │   ├── freebsd8.h
+│       │       │   ├── freebsd9.h
+│       │       │   ├── freebsd.h
+│       │       │   ├── generic.h
+│       │       │   ├── hpux.h
+│       │       │   ├── irix.h
+│       │       │   ├── kfreebsd.h
+│       │       │   ├── linux.h
+│       │       │   ├── mingw32.h
+│       │       │   ├── mingw32msvc.h
+│       │       │   ├── mips.h
+│       │       │   ├── netbsd.h
+│       │       │   ├── nto-qnx6.h
+│       │       │   ├── openbsd4.h
+│       │       │   ├── openbsd5.h
+│       │       │   ├── openbsd.h
+│       │       │   ├── osf5.h
+│       │       │   ├── solaris2.3.h
+│       │       │   ├── solaris2.4.h
+│       │       │   ├── solaris2.5.h
+│       │       │   ├── solaris2.6.h
+│       │       │   ├── solaris.h
+│       │       │   ├── sunos.h
+│       │       │   ├── svr5.h
+│       │       │   ├── sysv.h
+│       │       │   └── ultrix4.h
+│       │       ├── types.h
+│       │       ├── utilities.h
+│       │       ├── varbind_api.h
+│       │       └── version.h
+│       ├── Makefile
+│       ├── Makefile.build
+│       ├── mibs
+│       ├── module
+│       │   ├── fhEntityExtentMIB
+│       │   │   ├── Makefile
+│       │   │   ├── snmp_fhEntityBoardInfoTable.c
+│       │   │   ├── snmp_fhEntityBoardPfmTable.c
+│       │   │   ├── snmp_fhEntityExtentMIB.c
+│       │   │   ├── snmp_fhEntityIfPfmTable.c
+│       │   │   ├── snmp_fhEntityOpticalModuleInfoTable.c
+│       │   │   ├── snmp_fhEntitySlotInfoTable.c
+│       │   │   ├── snmp_fhEntityState_scalar.c
+│       │   │   ├── TFX5903.tmp
+│       │   │   ├── TFX6329.tmp
+│       │   │   └── TFXC34B.tmp
+│       │   ├── fhIfExtMIB
+│       │   │   ├── Makefile
+│       │   │   ├── snmp_fhIfStateTable.c
+│       │   │   └── snmp_fhSysExtMIB.c
+│       │   ├── fhSysExtMIB
+│       │   │   ├── Makefile
+│       │   │   ├── snmp_fhIfExtMIB.c
+│       │   │   ├── snmp_fhSysExtMIB_scalar.c
+│       │   │   └── snmp_snmpCommunityNameTable.c
+│       │   ├── Makefile
+│       │   ├── mib2
+│       │   │   ├── interface
+│       │   │   │   ├── Makefile
+│       │   │   │   ├── snmp_mib2_ifTable.c
+│       │   │   │   ├── snmp_mib2_ifxTable.c
+│       │   │   │   └── snmp_mib2_interfaces.c
+│       │   │   ├── ip
+│       │   │   │   ├── Makefile
+│       │   │   │   ├── snmp_mib2_ipAddrTable.c
+│       │   │   │   └── snmp_mib2_ip.c
+│       │   │   ├── Makefile
+│       │   │   └── system
+│       │   │       ├── Makefile
+│       │   │       ├── snmp_mib2_system.c
+│       │   │       └── snmp_mib2_system_scalar.c
+│       │   ├── privateObject
+│       │   │   ├── Makefile
+│       │   │   ├── snmp_privateObject.c
+│       │   │   └── snmp_privateObject_scalar.c
+│       │   └── trap
+│       │       ├── Makefile
+│       │       ├── snmp_trap_610a.c
+│       │       ├── snmp_trap_fhHardwareTraps.c
+│       │       ├── snmp_trap_fhIntfTraps.c
+│       │       ├── snmp_trap_fhVCTraps.c
+│       │       ├── snmp_trap_x86.c
+│       │       ├── TestTraps.c
+│       │       └── TFX2948.tmp
+│       ├── ptn-snmp.conf
+│       ├── snmpApp
+│       └── snmp.c
+├── readme
+└── si
+    ├── myipc.IAB
+    ├── myipc.IAD
+    ├── myipc.IMB
+    ├── myipc.IMD
+    ├── myipc.PFI
+    ├── myipc.PO
+    ├── myipc.PR
+    ├── myipc.PRI
+    ├── myipc.PS
+    ├── myipc.SearchResults
+    └── myipc.WK3
+
+124 directories, 751 files
+[root@localhost mylinux]# 
+
+
+--------------------------------
+[root@localhost mylinux]# find -name "*.c" | xargs wc -l
+    418 ./common/ipc/bc_ipc_client.c
+    195 ./common/ipc/bc_ipc_cmm.c
+    165 ./common/ipc/bc_ipc_package.c
+    950 ./common/ipc/bc_ipc_server.c
+    323 ./common/ipc/bc_ipc_trans.c
+   1176 ./common/log/bc_log.c
+    133 ./common/message/bc_err_msg.c
+    157 ./common/message/bc_msg.c
+    137 ./common/modules/bc_modules.c
+    428 ./common/platform/bc_platform_dbg_trace.c
+     36 ./common/platform/bc_platform_init.c
+    323 ./common/platform/bc_platform_interrupt.c
+    352 ./common/platform/bc_platform_mem.c
+    522 ./common/platform/bc_platform_mutex.c
+    669 ./common/platform/bc_platform_procps.c
+    625 ./common/platform/bc_platform_queue.c
+    510 ./common/platform/bc_platform_sem.c
+     70 ./common/platform/bc_platform_signal.c
+    730 ./common/platform/bc_platform_thread.c
+    607 ./common/platform/bc_platform_time.c
+   1195 ./common/print/bc_print.c
+    900 ./common/util/utili_avlt.c
+   1110 ./common/util/utili_bit.c
+    136 ./common/util/utili_block.c
+    518 ./common/util/utili_block_ext.c
+    351 ./common/util/utili_hash.c
+    219 ./common/util/utili_ip_mac.c
+    306 ./common/util/utili_list.c
+    155 ./common/util/utili_module_cb.c
+   1375 ./common/util/utili_rbt.c
+   1043 ./common/util/utili_string.c
+   1151 ./common/vfs/bc_vfs.c
+    169 ./module/startup/bc_startup.c
+    299 ./module/system/baseinfo/bc_sys.c
+    366 ./module/system/baseinfo/bc_sys_baseinfo.c
+    684 ./module/system/baseinfo/bc_sys_event.c
+    424 ./module/system/baseinfo/bc_sys_ip.c
+    290 ./module/system/baseinfo/bc_sys_ipc_client.c
+    238 ./module/system/baseinfo/bc_sys_ipc_srv.c
+    243 ./module/system/baseinfo/bc_sys_mac.c
+    247 ./module/system/baseinfo/bc_sys_polling.c
+    281 ./module/system/binchie/bc_binchie_client.c
+    363 ./module/system/binchie/bc_binchie_db.c
+    214 ./module/system/binchie/bc_binchie_server.c
+    185 ./module/system/cli/bc_cli_ipc_client.c
+     44 ./module/system/cli/bc_cli_ipc_msg_client.c
+     41 ./module/system/cli/bc_cli_ipc_msg_server.c
+    178 ./module/system/cli/bc_cli_ipc_server.c
+   1095 ./module/system/filetrans/bc_filetrans_core.c
+    853 ./module/system/filetrans/bc_filetrans_db.c
+    328 ./module/system/filetrans/bc_filetrans_file.c
+    392 ./module/system/filetrans/bc_filetrans_file_srv.c
+     52 ./module/system/ipc/bc_ipc_dev.c
+    285 ./module/system/ipc/bc_ipc_dev_client.c
+     58 ./module/system/ipc/bc_ipc_dev_client_srv.c
+    318 ./module/system/ipc/bc_ipc_dev_debug.c
+    307 ./module/system/ipc/bc_ipc_dev_debug_srv.c
+    201 ./module/system/ipc/bc_ipc_dev_server.c
+    407 ./module/system/log/bc_log_client.c
+    398 ./module/system/log/bc_log_server.c
+    256 ./module/system/platform/bc_platform_sys_debug.c
+    178 ./module/system/platform/bc_platform_sys_debug_srv.c
+    620 ./module/system/print/bc_print_client.c
+    580 ./module/system/print/bc_print_server.c
+    367 ./module/system/session/bc_session.c
+    149 ./module/system/session/bc_session_ipc_client.c
+    141 ./module/system/session/bc_session_server.c
+    250 ./module/system/test/bc_test.c
+    459 ./module/system/usermgmt/bc_usermgmt.c
+    749 ./module/system/usermgmt/bc_usermgmt_core.c
+    975 ./module/system/usermgmt/bc_usermgmt_db.c
+    427 ./module/system/usermgmt/bc_usermgmt_srv.c
+    474 ./processes/mycli/cli/bc_cli.c
+     17 ./processes/mycli/cli/cli_cmds/bc_cli_base.c
+     75 ./processes/mycli/cli/cli_cmds/bc_cli_cmds.c
+    787 ./processes/mycli/cli/cli_cmds/bc_cli_text.c
+    586 ./processes/mycli/cli/cli_cmds/demo/bc_cli_cmd_demomodule.c
+    321 ./processes/mycli/cli/cli_cmds/system/baseinfo/bc_cli_cmd_baseinfo.c
+    246 ./processes/mycli/cli/cli_cmds/system/baseinfo/bc_cli_cmd_baseinfo_debug.c
+   2015 ./processes/mycli/cli/cli_cmds/system/binchie/bc_cli_cmd_binchie.c
+    217 ./processes/mycli/cli/cli_cmds/system/dbg/cli/bc_cli_cmd_cli.c
+    489 ./processes/mycli/cli/cli_cmds/system/dbg/ipc/bc_cli_cmd_ipc_debug.c
+   1081 ./processes/mycli/cli/cli_cmds/system/filetrans/bc_cli_cmd_filetrans.c
+    187 ./processes/mycli/cli/cli_cmds/system/monitor/bc_cli_cmd_monitor.c
+   1228 ./processes/mycli/cli/cli_cmds/system/print/bc_cli_cmd_print_dbg.c
+   1903 ./processes/mycli/cli/cli_cmds/system/usermgmt/bc_cli_cmd_usermgmt.c
+   8705 ./processes/mycli/cli/cli_kernel/src/bc_cli_alias.c
+   2753 ./processes/mycli/cli/cli_kernel/src/bc_cli_api.c
+    483 ./processes/mycli/cli/cli_kernel/src/bc_cli_bnr.c
+    315 ./processes/mycli/cli/cli_kernel/src/bc_cli_chs.c
+    813 ./processes/mycli/cli/cli_kernel/src/bc_cli_cmd_bnr.c
+    478 ./processes/mycli/cli/cli_kernel/src/bc_cli_cmd_log.c
+   1569 ./processes/mycli/cli/cli_kernel/src/bc_cli_cmd_sys.c
+   2434 ./processes/mycli/cli/cli_kernel/src/bc_cli_core.c
+    722 ./processes/mycli/cli/cli_kernel/src/bc_cli_db.c
+   1039 ./processes/mycli/cli/cli_kernel/src/bc_cli_dir.c
+   2190 ./processes/mycli/cli/cli_kernel/src/bc_cli_edit.c
+    588 ./processes/mycli/cli/cli_kernel/src/bc_cli_fltr.c
+    544 ./processes/mycli/cli/cli_kernel/src/bc_cli_hist.c
+    387 ./processes/mycli/cli/cli_kernel/src/bc_cli_hook.c
+   1965 ./processes/mycli/cli/cli_kernel/src/bc_cli_mainprocess.c
+    158 ./processes/mycli/cli/cli_kernel/src/bc_cli_misc.c
+   2536 ./processes/mycli/cli/cli_kernel/src/bc_cli_para.c
+    632 ./processes/mycli/cli/cli_kernel/src/bc_cli_para_lex_dnf.c
+    343 ./processes/mycli/cli/cli_kernel/src/bc_cli_parse.c
+    791 ./processes/mycli/cli/cli_kernel/src/bc_cli_pseudo.c
+    382 ./processes/mycli/cli/cli_kernel/src/bc_cli_sesn.c
+    164 ./processes/mycli/cli/cli_kernel/src/bc_cli_utili_print.c
+   1010 ./processes/mycli/cli/cli_kernel/src/bc_cli_vio.c
+    183 ./processes/mycli/cli_mini/bc_cli.c
+    279 ./processes/mycli/cli_mini/common/bc_modules.c
+     44 ./processes/mycli/cli_mini/common/platform/bc_platform_init.c
+    377 ./processes/mycli/cli_mini/common/platform/bc_platform_mem.c
+    448 ./processes/mycli/cli_mini/common/platform/bc_platform_mutex.c
+    670 ./processes/mycli/cli_mini/common/platform/bc_platform_procps.c
+    509 ./processes/mycli/cli_mini/common/platform/bc_platform_queue.c
+    426 ./processes/mycli/cli_mini/common/platform/bc_platform_sem.c
+     71 ./processes/mycli/cli_mini/common/platform/bc_platform_signal.c
+    626 ./processes/mycli/cli_mini/common/platform/bc_platform_thread.c
+    524 ./processes/mycli/cli_mini/common/platform/bc_platform_time.c
+   1111 ./processes/mycli/cli_mini/common/print/bc_print.c
+    896 ./processes/mycli/cli_mini/common/util/utili_avlt.c
+   1106 ./processes/mycli/cli_mini/common/util/utili_bit.c
+    132 ./processes/mycli/cli_mini/common/util/utili_block.c
+    348 ./processes/mycli/cli_mini/common/util/utili_hash.c
+    175 ./processes/mycli/cli_mini/common/util/utili_ip_mac.c
+    303 ./processes/mycli/cli_mini/common/util/utili_list.c
+   1370 ./processes/mycli/cli_mini/common/util/utili_rbt.c
+   1015 ./processes/mycli/cli_mini/common/util/utili_string.c
+   1147 ./processes/mycli/cli_mini/common/vfs/bc_vfs.c
+    806 ./processes/mycli/cli_mini/core/bc_cli_acc.c
+  11912 ./processes/mycli/cli_mini/core/bc_cli_alias.c
+   2901 ./processes/mycli/cli_mini/core/bc_cli_api.c
+    487 ./processes/mycli/cli_mini/core/bc_cli_bnr.c
+    823 ./processes/mycli/cli_mini/core/bc_cli_bnr_cmd.c
+    253 ./processes/mycli/cli_mini/core/bc_cli_bnr_stk.c
+    315 ./processes/mycli/cli_mini/core/bc_cli_chs.c
+   2434 ./processes/mycli/cli_mini/core/bc_cli_core.c
+    520 ./processes/mycli/cli_mini/core/bc_cli_db.c
+   1039 ./processes/mycli/cli_mini/core/bc_cli_dir.c
+   2190 ./processes/mycli/cli_mini/core/bc_cli_edit.c
+    588 ./processes/mycli/cli_mini/core/bc_cli_fltr.c
+    544 ./processes/mycli/cli_mini/core/bc_cli_hist.c
+    387 ./processes/mycli/cli_mini/core/bc_cli_hook.c
+      1 ./processes/mycli/cli_mini/core/bc_cli_io.c
+     21 ./processes/mycli/cli_mini/core/bc_cli_ipc.c
+    479 ./processes/mycli/cli_mini/core/bc_cli_log_cmd.c
+   2079 ./processes/mycli/cli_mini/core/bc_cli_mainprocess.c
+    392 ./processes/mycli/cli_mini/core/bc_cli_misc.c
+   2551 ./processes/mycli/cli_mini/core/bc_cli_para.c
+    343 ./processes/mycli/cli_mini/core/bc_cli_parse.c
+    137 ./processes/mycli/cli_mini/core/bc_cli_prt.c
+    686 ./processes/mycli/cli_mini/core/bc_cli_pseudo.c
+    756 ./processes/mycli/cli_mini/core/bc_cli_sesn.c
+   1575 ./processes/mycli/cli_mini/core/bc_cli_sys_cmd.c
+    619 ./processes/mycli/cli_mini/core/bc_cli_vio.c
+    579 ./processes/mycli/cli_mini/core/bc_cli_vt100.c
+    758 ./processes/mycli/cli_mini/core/vt_100.c
+    151 ./processes/mycli/cli_mini/module/bc_cli_base.c
+     66 ./processes/mycli/cli_mini/module/bc_cli_cmds.c
+    715 ./processes/mycli/cli_mini/module/bc_cli_text.c
+    408 ./processes/mycli/cli_mini/module/filetrans/bc_cli_cmd_filetrans.c
+    741 ./processes/mycli/cli_mini/module/filetrans/bc_filetrans_core.c
+    497 ./processes/mycli/cli_mini/module/filetrans/bc_filetrans_db.c
+    157 ./processes/mycli/cli_mini/module/filetrans/bc_filetrans_file.c
+     57 ./processes/other/othermain.c
+   1037 ./processes/snmp/core/snmp_core_ex.c
+    445 ./processes/snmp/core/snmp_global.c
+    515 ./processes/snmp/module/fhEntityExtentMIB/snmp_fhEntityBoardInfoTable.c
+    478 ./processes/snmp/module/fhEntityExtentMIB/snmp_fhEntityBoardPfmTable.c
+    109 ./processes/snmp/module/fhEntityExtentMIB/snmp_fhEntityExtentMIB.c
+    460 ./processes/snmp/module/fhEntityExtentMIB/snmp_fhEntityIfPfmTable.c
+    506 ./processes/snmp/module/fhEntityExtentMIB/snmp_fhEntityOpticalModuleInfoTable.c
+    493 ./processes/snmp/module/fhEntityExtentMIB/snmp_fhEntitySlotInfoTable.c
+    206 ./processes/snmp/module/fhEntityExtentMIB/snmp_fhEntityState_scalar.c
+    477 ./processes/snmp/module/fhIfExtMIB/snmp_fhIfStateTable.c
+    102 ./processes/snmp/module/fhIfExtMIB/snmp_fhSysExtMIB.c
+    100 ./processes/snmp/module/fhSysExtMIB/snmp_fhIfExtMIB.c
+    361 ./processes/snmp/module/fhSysExtMIB/snmp_fhSysExtMIB_scalar.c
+    466 ./processes/snmp/module/fhSysExtMIB/snmp_snmpCommunityNameTable.c
+   1655 ./processes/snmp/module/mib2/interface/snmp_mib2_ifTable.c
+    494 ./processes/snmp/module/mib2/interface/snmp_mib2_ifxTable.c
+    101 ./processes/snmp/module/mib2/interface/snmp_mib2_interfaces.c
+     99 ./processes/snmp/module/mib2/ip/snmp_mib2_ip.c
+   2796 ./processes/snmp/module/mib2/ip/snmp_mib2_ipAddrTable.c
+     98 ./processes/snmp/module/mib2/system/snmp_mib2_system.c
+    366 ./processes/snmp/module/mib2/system/snmp_mib2_system_scalar.c
+     99 ./processes/snmp/module/privateObject/snmp_privateObject.c
+    506 ./processes/snmp/module/privateObject/snmp_privateObject_scalar.c
+    500 ./processes/snmp/module/trap/snmp_trap_610a.c
+    588 ./processes/snmp/module/trap/snmp_trap_fhHardwareTraps.c
+    234 ./processes/snmp/module/trap/snmp_trap_fhIntfTraps.c
+    233 ./processes/snmp/module/trap/snmp_trap_fhVCTraps.c
+    338 ./processes/snmp/module/trap/snmp_trap_x86.c
+    287 ./processes/snmp/module/trap/TestTraps.c
+    226 ./processes/snmp/snmp.c
+ 136825 total
+
+------------------------------------
+
+[root@localhost mylinux]# find -name "*.h" | xargs wc -l
+    130 ./include/common/bc_common_defs.h
+    233 ./include/common/error/bc_err.h
+     84 ./include/common/ipc/bc_ipc_client.h
+     53 ./include/common/ipc/bc_ipc_cmm.h
+     76 ./include/common/ipc/bc_ipc_def.h
+    176 ./include/common/ipc/bc_ipc_package.h
+    104 ./include/common/ipc/bc_ipc_server.h
+     63 ./include/common/ipc/bc_ipc_trans.h
+    372 ./include/common/log/bc_log.h
+    176 ./include/common/message/bc_msg.h
+     50 ./include/common/modules/bc_cli_func.h
+    239 ./include/common/modules/bc_func.h
+    165 ./include/common/modules/bc_modules.h
+     34 ./include/common/modules/bc_modules_com_para.h
+    240 ./include/common/nouse/bc_no_use.h
+     47 ./include/common/platform/bc_platform_dbg_trace.h
+     38 ./include/common/platform/bc_platform_init.h
+     47 ./include/common/platform/bc_platform_interrupt.h
+    132 ./include/common/platform/bc_platform_mem.h
+    170 ./include/common/platform/bc_platform_mutex.h
+    197 ./include/common/platform/bc_platform_procps.h
+    174 ./include/common/platform/bc_platform_queue.h
+    172 ./include/common/platform/bc_platform_sem.h
+     36 ./include/common/platform/bc_platform_signal.h
+    245 ./include/common/platform/bc_platform_thread.h
+    243 ./include/common/platform/bc_platform_time.h
+     39 ./include/common/platform/bc_platform_types.h
+    672 ./include/common/print/bc_print.h
+     72 ./include/common/util/utili_avlt.h
+    550 ./include/common/util/utili_bit.h
+    106 ./include/common/util/utili_block.h
+     79 ./include/common/util/utili_block_ext.h
+     76 ./include/common/util/utili_hash.h
+     54 ./include/common/util/utili_ip_mac.h
+     57 ./include/common/util/utili_list.h
+     78 ./include/common/util/utili_module_cb.h
+    712 ./include/common/util/utili_rbt.h
+    112 ./include/common/util/utili_string.h
+    411 ./include/common/vfs/bc_vfs.h
+     66 ./include/module/system/baseinfo/bc_sys.h
+     98 ./include/module/system/baseinfo/bc_sys_baseinfo.h
+     81 ./include/module/system/baseinfo/bc_sys_defs.h
+    134 ./include/module/system/baseinfo/bc_sys_event.h
+    167 ./include/module/system/baseinfo/bc_sys_ip.h
+    126 ./include/module/system/baseinfo/bc_sys_ipc_client.h
+    105 ./include/module/system/baseinfo/bc_sys_ipc_srv.h
+     97 ./include/module/system/baseinfo/bc_sys_mac.h
+     78 ./include/module/system/baseinfo/bc_sys_polling.h
+    131 ./include/module/system/binchie/bc_binchie_client.h
+    124 ./include/module/system/binchie/bc_binchie_db.h
+    131 ./include/module/system/binchie/bc_binchie_def.h
+    114 ./include/module/system/binchie/bc_binchie_server.h
+     47 ./include/module/system/cli/bc_cli_ipc_client.h
+     26 ./include/module/system/cli/bc_cli_ipc_msg_client.h
+     26 ./include/module/system/cli/bc_cli_ipc_msg_server.h
+     63 ./include/module/system/cli/bc_cli_ipc_server.h
+    111 ./include/module/system/filetrans/bc_filetrans_core.h
+    244 ./include/module/system/filetrans/bc_filetrans_db.h
+    165 ./include/module/system/filetrans/bc_filetrans_def.h
+     84 ./include/module/system/filetrans/bc_filetrans_file.h
+     76 ./include/module/system/filetrans/bc_filetrans_file_srv.h
+     29 ./include/module/system/ipc/bc_ipc_dev_api.h
+     50 ./include/module/system/ipc/bc_ipc_dev_client.h
+     60 ./include/module/system/ipc/bc_ipc_dev_client_srv.h
+     85 ./include/module/system/ipc/bc_ipc_dev_debug.h
+     88 ./include/module/system/ipc/bc_ipc_dev_debug_srv.h
+     86 ./include/module/system/ipc/bc_ipc_dev_def.h
+     63 ./include/module/system/ipc/bc_ipc_dev_server.h
+    230 ./include/module/system/log/bc_log_client.h
+    303 ./include/module/system/log/bc_log_server.h
+    109 ./include/module/system/platform/bc_platform.h
+    109 ./include/module/system/platform/bc_platform_srv.h
+    342 ./include/module/system/print/bc_print_client.h
+    333 ./include/module/system/print/bc_print_server.h
+     33 ./include/module/system/session/bc_session.h
+     47 ./include/module/system/session/bc_session_api.h
+     44 ./include/module/system/session/bc_session_def.h
+     36 ./include/module/system/session/bc_session_ipc_client.h
+     33 ./include/module/system/session/bc_session_server.h
+    270 ./include/module/system/startup/bc_startup.h
+    324 ./include/module/system/startup/bc_startup_post.h
+     26 ./include/module/system/test/bc_test.h
+      0 ./include/module/system/test/bc_test_def.h
+    123 ./include/module/system/usermgmt/bc_usermgmt.h
+    138 ./include/module/system/usermgmt/bc_usermgmt_core.h
+    154 ./include/module/system/usermgmt/bc_usermgmt_db.h
+    137 ./include/module/system/usermgmt/bc_usermgmt_def.h
+    136 ./include/module/system/usermgmt/bc_usermgmt_srv.h
+     37 ./include/proj/bc_proj_defs.h
+     37 ./include/proj/bc_proj_platform_defs.h
+    104 ./include/proj/bc_proj_port_defs.h
+     75 ./include/proj/bc_proj_system_defs.h
+    346 ./processes/mycli/cli/cli_cmds/bc_cli_base.h
+     38 ./processes/mycli/cli/cli_cmds/bc_cli_cmds.h
+   1440 ./processes/mycli/cli/cli_cmds/bc_cli_text.h
+     13 ./processes/mycli/cli/cli_cmds/demo/bc_cli_cmd_demomodule.h
+     38 ./processes/mycli/cli/cli_cmds/system/baseinfo/bc_cli_cmd_baseinfo.h
+     12 ./processes/mycli/cli/cli_cmds/system/binchie/bc_cli_cmd_binchie.h
+     27 ./processes/mycli/cli/cli_cmds/system/dbg/cli/bc_cli_cmd_cli.h
+     34 ./processes/mycli/cli/cli_cmds/system/dbg/ipc/bc_cli_cmd_ipc_debug.h
+     13 ./processes/mycli/cli/cli_cmds/system/filetrans/bc_cli_cmd_filetrans.h
+     30 ./processes/mycli/cli/cli_cmds/system/monitor/bc_cli_cmd_monitor.h
+     88 ./processes/mycli/cli/cli_cmds/system/print/bc_cli_cmd_print_dbg.h
+     12 ./processes/mycli/cli/cli_cmds/system/usermgmt/bc_cli_cmd_usermgmt.h
+   1031 ./processes/mycli/cli/cli_kernel/inc/bc_cli.h
+    649 ./processes/mycli/cli/cli_kernel/inc/bc_cli_alias.h
+    228 ./processes/mycli/cli/cli_kernel/inc/bc_cli_bnr.h
+     60 ./processes/mycli/cli/cli_kernel/inc/bc_cli_bnr_cmd.h
+     64 ./processes/mycli/cli/cli_kernel/inc/bc_cli_bnr_msg.h
+     74 ./processes/mycli/cli/cli_kernel/inc/bc_cli_chs.h
+    281 ./processes/mycli/cli/cli_kernel/inc/bc_cli_core.h
+    213 ./processes/mycli/cli/cli_kernel/inc/bc_cli_db.h
+    454 ./processes/mycli/cli/cli_kernel/inc/bc_cli_dir.h
+    412 ./processes/mycli/cli/cli_kernel/inc/bc_cli_edit.h
+    133 ./processes/mycli/cli/cli_kernel/inc/bc_cli_fltr.h
+    221 ./processes/mycli/cli/cli_kernel/inc/bc_cli_hist.h
+    293 ./processes/mycli/cli/cli_kernel/inc/bc_cli_hook.h
+    131 ./processes/mycli/cli/cli_kernel/inc/bc_cli_kernel_cfg.h
+    191 ./processes/mycli/cli/cli_kernel/inc/bc_cli_log_cmd.h
+    106 ./processes/mycli/cli/cli_kernel/inc/bc_cli_mainprocess.h
+    110 ./processes/mycli/cli/cli_kernel/inc/bc_cli_misc.h
+     94 ./processes/mycli/cli/cli_kernel/inc/bc_cli_msg.h
+    316 ./processes/mycli/cli/cli_kernel/inc/bc_cli_para.h
+    245 ./processes/mycli/cli/cli_kernel/inc/bc_cli_paratype.h
+     53 ./processes/mycli/cli/cli_kernel/inc/bc_cli_para_lex_dnf.h
+    100 ./processes/mycli/cli/cli_kernel/inc/bc_cli_parse.h
+    134 ./processes/mycli/cli/cli_kernel/inc/bc_cli_priv.h
+    105 ./processes/mycli/cli/cli_kernel/inc/bc_cli_pseudo.h
+    178 ./processes/mycli/cli/cli_kernel/inc/bc_cli_sesn.h
+     97 ./processes/mycli/cli/cli_kernel/inc/bc_cli_sys_cmd.h
+     56 ./processes/mycli/cli/cli_kernel/inc/bc_cli_term.h
+    615 ./processes/mycli/cli/cli_kernel/inc/bc_cli_type.h
+     47 ./processes/mycli/cli/cli_kernel/inc/bc_cli_utili_print.h
+    294 ./processes/mycli/cli/cli_kernel/inc/bc_cli_vio.h
+    120 ./processes/mycli/cli/cli_kernel/inc/bc_cli_vkey.h
+     57 ./processes/mycli/cli/cli_kernel/inc/bc_cli_vt100.h
+    210 ./processes/mycli/cli/cli_kernel/inc/vt_100.h
+    141 ./processes/mycli/cli_mini/include/common/bc_common_defs.h
+    793 ./processes/mycli/cli_mini/include/common/bc_err.h
+    335 ./processes/mycli/cli_mini/include/common/bc_modules.h
+     35 ./processes/mycli/cli_mini/include/common/platform/bc_platform_init.h
+    133 ./processes/mycli/cli_mini/include/common/platform/bc_platform_mem.h
+    171 ./processes/mycli/cli_mini/include/common/platform/bc_platform_mutex.h
+    198 ./processes/mycli/cli_mini/include/common/platform/bc_platform_procps.h
+    173 ./processes/mycli/cli_mini/include/common/platform/bc_platform_queue.h
+    173 ./processes/mycli/cli_mini/include/common/platform/bc_platform_sem.h
+     37 ./processes/mycli/cli_mini/include/common/platform/bc_platform_signal.h
+    245 ./processes/mycli/cli_mini/include/common/platform/bc_platform_thread.h
+    244 ./processes/mycli/cli_mini/include/common/platform/bc_platform_time.h
+     40 ./processes/mycli/cli_mini/include/common/platform/bc_platform_types.h
+    625 ./processes/mycli/cli_mini/include/common/print/bc_print.h
+     73 ./processes/mycli/cli_mini/include/common/util/utili_avlt.h
+    551 ./processes/mycli/cli_mini/include/common/util/utili_bit.h
+    107 ./processes/mycli/cli_mini/include/common/util/utili_block.h
+     77 ./processes/mycli/cli_mini/include/common/util/utili_hash.h
+     53 ./processes/mycli/cli_mini/include/common/util/utili_ip_mac.h
+     58 ./processes/mycli/cli_mini/include/common/util/utili_list.h
+    712 ./processes/mycli/cli_mini/include/common/util/utili_rbt.h
+     53 ./processes/mycli/cli_mini/include/common/util/utili_string.h
+    414 ./processes/mycli/cli_mini/include/common/vfs/bc_vfs.h
+   1332 ./processes/mycli/cli_mini/include/core/bc_cli.h
+    541 ./processes/mycli/cli_mini/include/core/bc_cli_acc.h
+    680 ./processes/mycli/cli_mini/include/core/bc_cli_alias.h
+    228 ./processes/mycli/cli_mini/include/core/bc_cli_bnr.h
+     60 ./processes/mycli/cli_mini/include/core/bc_cli_bnr_cmd.h
+     64 ./processes/mycli/cli_mini/include/core/bc_cli_bnr_msg.h
+     96 ./processes/mycli/cli_mini/include/core/bc_cli_bnr_stk.h
+     74 ./processes/mycli/cli_mini/include/core/bc_cli_chs.h
+    281 ./processes/mycli/cli_mini/include/core/bc_cli_core.h
+    213 ./processes/mycli/cli_mini/include/core/bc_cli_db.h
+    454 ./processes/mycli/cli_mini/include/core/bc_cli_dir.h
+    412 ./processes/mycli/cli_mini/include/core/bc_cli_edit.h
+    133 ./processes/mycli/cli_mini/include/core/bc_cli_fltr.h
+    221 ./processes/mycli/cli_mini/include/core/bc_cli_hist.h
+    293 ./processes/mycli/cli_mini/include/core/bc_cli_hook.h
+     11 ./processes/mycli/cli_mini/include/core/bc_cli_io.h
+     15 ./processes/mycli/cli_mini/include/core/bc_cli_ipc.h
+    160 ./processes/mycli/cli_mini/include/core/bc_cli_kernel_cfg.h
+    191 ./processes/mycli/cli_mini/include/core/bc_cli_log_cmd.h
+    106 ./processes/mycli/cli_mini/include/core/bc_cli_mainprocess.h
+    238 ./processes/mycli/cli_mini/include/core/bc_cli_misc.h
+     94 ./processes/mycli/cli_mini/include/core/bc_cli_msg.h
+     65 ./processes/mycli/cli_mini/include/core/bc_cli_os.h
+    316 ./processes/mycli/cli_mini/include/core/bc_cli_para.h
+    253 ./processes/mycli/cli_mini/include/core/bc_cli_paratype.h
+    100 ./processes/mycli/cli_mini/include/core/bc_cli_parse.h
+    134 ./processes/mycli/cli_mini/include/core/bc_cli_priv.h
+     52 ./processes/mycli/cli_mini/include/core/bc_cli_prt.h
+    105 ./processes/mycli/cli_mini/include/core/bc_cli_pseudo.h
+    395 ./processes/mycli/cli_mini/include/core/bc_cli_sesn.h
+     97 ./processes/mycli/cli_mini/include/core/bc_cli_sys_cmd.h
+     56 ./processes/mycli/cli_mini/include/core/bc_cli_term.h
+    615 ./processes/mycli/cli_mini/include/core/bc_cli_type.h
+    294 ./processes/mycli/cli_mini/include/core/bc_cli_vio.h
+    143 ./processes/mycli/cli_mini/include/core/bc_cli_vkey.h
+    151 ./processes/mycli/cli_mini/include/core/bc_cli_vt100.h
+    525 ./processes/mycli/cli_mini/include/core/vt_100.h
+     83 ./processes/mycli/cli_mini/include/module/bc_cli_base.h
+     38 ./processes/mycli/cli_mini/include/module/bc_cli_cmds.h
+   1364 ./processes/mycli/cli_mini/include/module/bc_cli_text.h
+     13 ./processes/mycli/cli_mini/include/module/filetrans/bc_cli_cmd_filetrans.h
+    105 ./processes/mycli/cli_mini/include/module/filetrans/bc_filetrans_core.h
+    188 ./processes/mycli/cli_mini/include/module/filetrans/bc_filetrans_db.h
+    143 ./processes/mycli/cli_mini/include/module/filetrans/bc_filetrans_def.h
+     69 ./processes/mycli/cli_mini/include/module/filetrans/bc_filetrans_file.h
+    337 ./processes/snmp/include/core/snmp_core_ex.h
+    148 ./processes/snmp/include/core/snmp_global.h
+     95 ./processes/snmp/include/module/fhEntityExtentMIB/snmp_fhEntityBoardInfoTable.h
+     85 ./processes/snmp/include/module/fhEntityExtentMIB/snmp_fhEntityBoardPfmTable.h
+     63 ./processes/snmp/include/module/fhEntityExtentMIB/snmp_fhEntityExtentMIB.h
+     84 ./processes/snmp/include/module/fhEntityExtentMIB/snmp_fhEntityIfPfmTable.h
+     93 ./processes/snmp/include/module/fhEntityExtentMIB/snmp_fhEntityOpticalModuleInfoTable.h
+     90 ./processes/snmp/include/module/fhEntityExtentMIB/snmp_fhEntitySlotInfoTable.h
+     55 ./processes/snmp/include/module/fhEntityExtentMIB/snmp_fhEntityState_scalar.h
+     64 ./processes/snmp/include/module/fhIfExtMIB/snmp_fhIfExtMIB.h
+     85 ./processes/snmp/include/module/fhIfExtMIB/snmp_fhIfStateTable.h
+     63 ./processes/snmp/include/module/fhSysExtMIB/snmp_fhSysExtMIB.h
+     55 ./processes/snmp/include/module/fhSysExtMIB/snmp_fhSysExtMIB_scalar.h
+     83 ./processes/snmp/include/module/fhSysExtMIB/snmp_snmpCommunityNameTable.h
+    186 ./processes/snmp/include/module/mib2/interface/snmp_mib2_ifTable.h
+     75 ./processes/snmp/include/module/mib2/interface/snmp_mib2_ifxTable.h
+     63 ./processes/snmp/include/module/mib2/interface/snmp_mib2_interfaces.h
+     63 ./processes/snmp/include/module/mib2/ip/snmp_mib2_ip.h
+    520 ./processes/snmp/include/module/mib2/ip/snmp_mib2_ipAddrTable.h
+     63 ./processes/snmp/include/module/mib2/system/snmp_mib2_system.h
+     70 ./processes/snmp/include/module/mib2/system/snmp_mib2_system_scalar.h
+     64 ./processes/snmp/include/module/privateObject/snmp_privateObject.h
+     55 ./processes/snmp/include/module/privateObject/snmp_privateObject_scalar.h
+     41 ./processes/snmp/include/module/snmp_mib.h
+     97 ./processes/snmp/include/module/trap/snmp_trap_610a.h
+    266 ./processes/snmp/include/module/trap/snmp_trap_comm.h
+     33 ./processes/snmp/include/module/trap/snmp_trap_fhHardwareTraps.h
+     28 ./processes/snmp/include/module/trap/snmp_trap_fhIntfTraps.h
+     23 ./processes/snmp/include/module/trap/snmp_trap_fhVCTraps.h
+     46 ./processes/snmp/include/module/trap/snmp_trap_x86.h
+     11 ./processes/snmp/include/module/trap/TestTraps.h
+     21 ./processes/snmp/include/net-snmp/agent/agent_callbacks.h
+    283 ./processes/snmp/include/net-snmp/agent/agent_handler.h
+     46 ./processes/snmp/include/net-snmp/agent/agent_index.h
+     31 ./processes/snmp/include/net-snmp/agent/agent_module_config.h
+     31 ./processes/snmp/include/net-snmp/agent/agent_read_config.h
+    184 ./processes/snmp/include/net-snmp/agent/agent_registry.h
+     28 ./processes/snmp/include/net-snmp/agent/agent_sysORTable.h
+     54 ./processes/snmp/include/net-snmp/agent/agent_trap.h
+     43 ./processes/snmp/include/net-snmp/agent/all_helpers.h
+     28 ./processes/snmp/include/net-snmp/agent/auto_nlist.h
+    117 ./processes/snmp/include/net-snmp/agent/baby_steps.h
+     28 ./processes/snmp/include/net-snmp/agent/bulk_to_next.h
+    130 ./processes/snmp/include/net-snmp/agent/cache_handler.h
+     16 ./processes/snmp/include/net-snmp/agent/debug_handler.h
+     74 ./processes/snmp/include/net-snmp/agent/ds_agent.h
+     68 ./processes/snmp/include/net-snmp/agent/hardware/cpu.h
+    109 ./processes/snmp/include/net-snmp/agent/hardware/fsys.h
+     39 ./processes/snmp/include/net-snmp/agent/hardware/memory.h
+     48 ./processes/snmp/include/net-snmp/agent/hardware/sensors.h
+    145 ./processes/snmp/include/net-snmp/agent/instance.h
+     84 ./processes/snmp/include/net-snmp/agent/mfd.h
+     23 ./processes/snmp/include/net-snmp/agent/mib_modules.h
+    646 ./processes/snmp/include/net-snmp/agent/mib_module_config.h
+     39 ./processes/snmp/include/net-snmp/agent/mode_end_call.h
+     39 ./processes/snmp/include/net-snmp/agent/multiplexer.h
+     22 ./processes/snmp/include/net-snmp/agent/net-snmp-agent-includes.h
+     26 ./processes/snmp/include/net-snmp/agent/null.h
+    186 ./processes/snmp/include/net-snmp/agent/object_monitor.h
+     49 ./processes/snmp/include/net-snmp/agent/old_api.h
+     29 ./processes/snmp/include/net-snmp/agent/read_only.h
+     38 ./processes/snmp/include/net-snmp/agent/row_merge.h
+     36 ./processes/snmp/include/net-snmp/agent/scalar.h
+     36 ./processes/snmp/include/net-snmp/agent/scalar_group.h
+     24 ./processes/snmp/include/net-snmp/agent/serialize.h
+     25 ./processes/snmp/include/net-snmp/agent/set_helper.h
+    322 ./processes/snmp/include/net-snmp/agent/snmp_agent.h
+     20 ./processes/snmp/include/net-snmp/agent/snmp_get_statistic.h
+    138 ./processes/snmp/include/net-snmp/agent/snmp_vars.h
+     35 ./processes/snmp/include/net-snmp/agent/stash_cache.h
+     24 ./processes/snmp/include/net-snmp/agent/stash_to_next.h
+     62 ./processes/snmp/include/net-snmp/agent/sysORTable.h
+    200 ./processes/snmp/include/net-snmp/agent/table.h
+    158 ./processes/snmp/include/net-snmp/agent/table_array.h
+    108 ./processes/snmp/include/net-snmp/agent/table_container.h
+    124 ./processes/snmp/include/net-snmp/agent/table_data.h
+    196 ./processes/snmp/include/net-snmp/agent/table_dataset.h
+    165 ./processes/snmp/include/net-snmp/agent/table_iterator.h
+    147 ./processes/snmp/include/net-snmp/agent/table_tdata.h
+    116 ./processes/snmp/include/net-snmp/agent/var_struct.h
+    148 ./processes/snmp/include/net-snmp/agent/watcher.h
+    100 ./processes/snmp/include/net-snmp/config_api.h
+    146 ./processes/snmp/include/net-snmp/data_access/arp.h
+    114 ./processes/snmp/include/net-snmp/data_access/defaultrouter.h
+    306 ./processes/snmp/include/net-snmp/data_access/interface.h
+    168 ./processes/snmp/include/net-snmp/data_access/ipaddress.h
+    110 ./processes/snmp/include/net-snmp/data_access/ipstats.h
+     19 ./processes/snmp/include/net-snmp/data_access/ip_scalars.h
+     14 ./processes/snmp/include/net-snmp/data_access/net-snmp-data-access-includes.h
+    158 ./processes/snmp/include/net-snmp/data_access/route.h
+     68 ./processes/snmp/include/net-snmp/data_access/scopezone.h
+     77 ./processes/snmp/include/net-snmp/data_access/swinst.h
+    104 ./processes/snmp/include/net-snmp/data_access/swrun.h
+    106 ./processes/snmp/include/net-snmp/data_access/systemstats.h
+    130 ./processes/snmp/include/net-snmp/data_access/tcpConn.h
+    100 ./processes/snmp/include/net-snmp/data_access/udp_endpoint.h
+     32 ./processes/snmp/include/net-snmp/definitions.h
+    455 ./processes/snmp/include/net-snmp/library/asn1.h
+     85 ./processes/snmp/include/net-snmp/library/callback.h
+    226 ./processes/snmp/include/net-snmp/library/cert_util.h
+     53 ./processes/snmp/include/net-snmp/library/check_varbind.h
+    501 ./processes/snmp/include/net-snmp/library/container.h
+     46 ./processes/snmp/include/net-snmp/library/container_binary_array.h
+     62 ./processes/snmp/include/net-snmp/library/container_iterator.h
+     27 ./processes/snmp/include/net-snmp/library/container_list_ssll.h
+     21 ./processes/snmp/include/net-snmp/library/container_null.h
+    105 ./processes/snmp/include/net-snmp/library/data_list.h
+    214 ./processes/snmp/include/net-snmp/library/default_store.h
+     63 ./processes/snmp/include/net-snmp/library/dir_utils.h
+     72 ./processes/snmp/include/net-snmp/library/factory.h
+    134 ./processes/snmp/include/net-snmp/library/fd_event_manager.h
+     88 ./processes/snmp/include/net-snmp/library/file_utils.h
+     24 ./processes/snmp/include/net-snmp/library/getopt.h
+     43 ./processes/snmp/include/net-snmp/library/int64.h
+     64 ./processes/snmp/include/net-snmp/library/keytools.h
+    171 ./processes/snmp/include/net-snmp/library/large_fd_set.h
+    137 ./processes/snmp/include/net-snmp/library/lcd_time.h
+    174 ./processes/snmp/include/net-snmp/library/libsnmp.h
+     71 ./processes/snmp/include/net-snmp/library/md5.h
+    518 ./processes/snmp/include/net-snmp/library/mib.h
+     89 ./processes/snmp/include/net-snmp/library/mt_support.h
+     18 ./processes/snmp/include/net-snmp/library/oid.h
+     82 ./processes/snmp/include/net-snmp/library/oid_stash.h
+    140 ./processes/snmp/include/net-snmp/library/openssl_aes.h
+    236 ./processes/snmp/include/net-snmp/library/openssl_des.h
+    116 ./processes/snmp/include/net-snmp/library/openssl_md5.h
+    199 ./processes/snmp/include/net-snmp/library/openssl_sha.h
+    250 ./processes/snmp/include/net-snmp/library/parse.h
+    156 ./processes/snmp/include/net-snmp/library/read_config.h
+    107 ./processes/snmp/include/net-snmp/library/scapi.h
+     66 ./processes/snmp/include/net-snmp/library/snmp-tc.h
+    360 ./processes/snmp/include/net-snmp/library/snmp.h
+     39 ./processes/snmp/include/net-snmp/library/snmpAAL5PVCDomain.h
+     32 ./processes/snmp/include/net-snmp/library/snmpAliasDomain.h
+     73 ./processes/snmp/include/net-snmp/library/snmpCallbackDomain.h
+     41 ./processes/snmp/include/net-snmp/library/snmpDTLSUDPDomain.h
+     37 ./processes/snmp/include/net-snmp/library/snmpIPv4BaseDomain.h
+     34 ./processes/snmp/include/net-snmp/library/snmpIPv6BaseDomain.h
+     38 ./processes/snmp/include/net-snmp/library/snmpIPXDomain.h
+     35 ./processes/snmp/include/net-snmp/library/snmpksm.h
+     25 ./processes/snmp/include/net-snmp/library/snmpSocketBaseDomain.h
+     41 ./processes/snmp/include/net-snmp/library/snmpSSHDomain.h
+     41 ./processes/snmp/include/net-snmp/library/snmpSTDDomain.h
+     22 ./processes/snmp/include/net-snmp/library/snmpTCPBaseDomain.h
+     41 ./processes/snmp/include/net-snmp/library/snmpTCPDomain.h
+     38 ./processes/snmp/include/net-snmp/library/snmpTCPIPv6Domain.h
+     83 ./processes/snmp/include/net-snmp/library/snmpTLSBaseDomain.h
+     39 ./processes/snmp/include/net-snmp/library/snmpTLSTCPDomain.h
+     33 ./processes/snmp/include/net-snmp/library/snmptsm.h
+     50 ./processes/snmp/include/net-snmp/library/snmpUDPBaseDomain.h
+     63 ./processes/snmp/include/net-snmp/library/snmpUDPDomain.h
+     44 ./processes/snmp/include/net-snmp/library/snmpUDPIPv4BaseDomain.h
+     61 ./processes/snmp/include/net-snmp/library/snmpUDPIPv6Domain.h
+     65 ./processes/snmp/include/net-snmp/library/snmpUnixDomain.h
+    281 ./processes/snmp/include/net-snmp/library/snmpusm.h
+      2 ./processes/snmp/include/net-snmp/library/snmpv3-security-includes.h
+     61 ./processes/snmp/include/net-snmp/library/snmpv3.h
+     71 ./processes/snmp/include/net-snmp/library/snmp_alarm.h
+    713 ./processes/snmp/include/net-snmp/library/snmp_api.h
+    127 ./processes/snmp/include/net-snmp/library/snmp_assert.h
+    167 ./processes/snmp/include/net-snmp/library/snmp_client.h
+    243 ./processes/snmp/include/net-snmp/library/snmp_debug.h
+    115 ./processes/snmp/include/net-snmp/library/snmp_enum.h
+    146 ./processes/snmp/include/net-snmp/library/snmp_impl.h
+    126 ./processes/snmp/include/net-snmp/library/snmp_logging.h
+     46 ./processes/snmp/include/net-snmp/library/snmp_openssl.h
+     93 ./processes/snmp/include/net-snmp/library/snmp_parse_args.h
+    180 ./processes/snmp/include/net-snmp/library/snmp_secmod.h
+     39 ./processes/snmp/include/net-snmp/library/snmp_service.h
+    317 ./processes/snmp/include/net-snmp/library/snmp_transport.h
+    215 ./processes/snmp/include/net-snmp/library/system.h
+     16 ./processes/snmp/include/net-snmp/library/testing.h
+    113 ./processes/snmp/include/net-snmp/library/text_utils.h
+    315 ./processes/snmp/include/net-snmp/library/tools.h
+     39 ./processes/snmp/include/net-snmp/library/transform_oids.h
+     70 ./processes/snmp/include/net-snmp/library/types.h
+     51 ./processes/snmp/include/net-snmp/library/ucd_compat.h
+    266 ./processes/snmp/include/net-snmp/library/vacm.h
+     44 ./processes/snmp/include/net-snmp/library/winpipe.h
+    159 ./processes/snmp/include/net-snmp/library/winservice.h
+      3 ./processes/snmp/include/net-snmp/machine/generic.h
+    113 ./processes/snmp/include/net-snmp/mib_api.h
+   2443 ./processes/snmp/include/net-snmp/net-snmp-config.h
+     32 ./processes/snmp/include/net-snmp/net-snmp-features.h
+     80 ./processes/snmp/include/net-snmp/net-snmp-includes.h
+    116 ./processes/snmp/include/net-snmp/openssl_md5.h
+    157 ./processes/snmp/include/net-snmp/output_api.h
+     46 ./processes/snmp/include/net-snmp/pdu_api.h
+    311 ./processes/snmp/include/net-snmp/session_api.h
+     38 ./processes/snmp/include/net-snmp/snmpv3_api.h
+     27 ./processes/snmp/include/net-snmp/system/aix.h
+     20 ./processes/snmp/include/net-snmp/system/bsd.h
+      3 ./processes/snmp/include/net-snmp/system/bsdi.h
+      2 ./processes/snmp/include/net-snmp/system/bsdi3.h
+     11 ./processes/snmp/include/net-snmp/system/bsdi4.h
+     12 ./processes/snmp/include/net-snmp/system/cygwin.h
+      8 ./processes/snmp/include/net-snmp/system/darwin.h
+    148 ./processes/snmp/include/net-snmp/system/darwin10.h
+    161 ./processes/snmp/include/net-snmp/system/darwin11.h
+    161 ./processes/snmp/include/net-snmp/system/darwin12.h
+     15 ./processes/snmp/include/net-snmp/system/darwin7.h
+     94 ./processes/snmp/include/net-snmp/system/darwin8.h
+    148 ./processes/snmp/include/net-snmp/system/darwin9.h
+     25 ./processes/snmp/include/net-snmp/system/dragonfly.h
+    106 ./processes/snmp/include/net-snmp/system/dynix.h
+     27 ./processes/snmp/include/net-snmp/system/freebsd.h
+      3 ./processes/snmp/include/net-snmp/system/freebsd10.h
+     10 ./processes/snmp/include/net-snmp/system/freebsd2.h
+     11 ./processes/snmp/include/net-snmp/system/freebsd3.h
+     23 ./processes/snmp/include/net-snmp/system/freebsd4.h
+      8 ./processes/snmp/include/net-snmp/system/freebsd5.h
+      3 ./processes/snmp/include/net-snmp/system/freebsd6.h
+      3 ./processes/snmp/include/net-snmp/system/freebsd7.h
+      3 ./processes/snmp/include/net-snmp/system/freebsd8.h
+      3 ./processes/snmp/include/net-snmp/system/freebsd9.h
+     78 ./processes/snmp/include/net-snmp/system/generic.h
+     94 ./processes/snmp/include/net-snmp/system/hpux.h
+     33 ./processes/snmp/include/net-snmp/system/irix.h
+      9 ./processes/snmp/include/net-snmp/system/kfreebsd.h
+     23 ./processes/snmp/include/net-snmp/system/linux.h
+     93 ./processes/snmp/include/net-snmp/system/mingw32.h
+     10 ./processes/snmp/include/net-snmp/system/mingw32msvc.h
+      4 ./processes/snmp/include/net-snmp/system/mips.h
+     75 ./processes/snmp/include/net-snmp/system/netbsd.h
+     35 ./processes/snmp/include/net-snmp/system/nto-qnx6.h
+     18 ./processes/snmp/include/net-snmp/system/openbsd.h
+      3 ./processes/snmp/include/net-snmp/system/openbsd4.h
+      3 ./processes/snmp/include/net-snmp/system/openbsd5.h
+     28 ./processes/snmp/include/net-snmp/system/osf5.h
+     43 ./processes/snmp/include/net-snmp/system/solaris.h
+      1 ./processes/snmp/include/net-snmp/system/solaris2.3.h
+      1 ./processes/snmp/include/net-snmp/system/solaris2.4.h
+      4 ./processes/snmp/include/net-snmp/system/solaris2.5.h
+      2 ./processes/snmp/include/net-snmp/system/solaris2.6.h
+     12 ./processes/snmp/include/net-snmp/system/sunos.h
+     20 ./processes/snmp/include/net-snmp/system/svr5.h
+      2 ./processes/snmp/include/net-snmp/system/sysv.h
+      9 ./processes/snmp/include/net-snmp/system/ultrix4.h
+    427 ./processes/snmp/include/net-snmp/types.h
+     63 ./processes/snmp/include/net-snmp/utilities.h
+    105 ./processes/snmp/include/net-snmp/varbind_api.h
+     18 ./processes/snmp/include/net-snmp/version.h
+  64148 total
+[root@localhost mylinux]# 

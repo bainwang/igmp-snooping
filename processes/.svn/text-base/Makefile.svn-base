@@ -1,0 +1,4 @@
+all :
+	cd other; make;
+	cd mycli/cli; make;
+	cd snmp; make;

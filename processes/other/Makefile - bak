@@ -1,0 +1,122 @@
+##################################################################
+##          For igmp by wangb@longraise.com                     ##
+##################################################################
+CROSS_COMPILE = #arm-linux-
+AS		= $(CROSS_COMPILE)as
+LD		= $(CROSS_COMPILE)ld
+CC		= $(CROSS_COMPILE)gcc
+CPP		= $(CC) -E
+AR		= $(CROSS_COMPILE)ar
+NM		= $(CROSS_COMPILE)nm
+
+STRIP		= $(CROSS_COMPILE)strip
+OBJCOPY		= $(CROSS_COMPILE)objcopy
+OBJDUMP		= $(CROSS_COMPILE)objdump
+
+export AS LD CC CPP AR NM
+export STRIP OBJCOPY OBJDUMP
+
+##################################################################
+#CFLAGS := -Wall -O2 -g
+export OTHER_INC_DIR 	= $(shell pwd)/../include
+
+#CFLAGS=-I`net-snmp-config --cflags`
+#BUILDLIBS=`net-snmp-config --libs`
+#BUILDAGENTLIBS=`net-snmp-config --agent-libs`
+
+# shared library flags (assumes gcc)
+#DLFLAGS=-fPIC -shared
+
+#LDFLAGS := -lm -lfreetype -lts -lpthread
+#export CFLAGS LDFLAGS		
+##################################################################
+TOPDIR := $(shell pwd)
+export TOPDIR
+
+## pass to C files
+PROJ_DEFS_X86 := MK_IGMP_PRJ_NAME_X86
+
+TARGET := other
+
+IMAGEDIR := $(TOPDIR)/$(image)
+
+	  
+CFLAGS += -I $(TOPDIR)	\
+		  -I $(OTHER_INC_DIR)/common	\
+		  -I $(OTHER_INC_DIR)/common/error	\
+		  -I $(OTHER_INC_DIR)/common/modules	\
+		  -I $(OTHER_INC_DIR)/common/nouse	\
+		  -I $(OTHER_INC_DIR)/common/ipc	\
+		  -I $(OTHER_INC_DIR)/common/platform	\
+		  -I $(OTHER_INC_DIR)/common/print	\
+		  -I $(OTHER_INC_DIR)/common/vfs	\
+		  -I $(OTHER_INC_DIR)/common/log	\
+		  -I $(OTHER_INC_DIR)/common/util	\
+		  -I $(OTHER_INC_DIR)/module/system/baseinfo	\
+		  -I $(OTHER_INC_DIR)/module/system/ipc	\
+		  -I $(OTHER_INC_DIR)/module/system/platform	\
+		  -I $(OTHER_INC_DIR)/module/system/session	\
+		  -I $(OTHER_INC_DIR)/proj
+		  
+ifeq ($(CC), gcc)
+	CFLAGS += -D $(PROJ_DEFS_X86)
+endif
+LDFLAGS := -lpthread -lrt
+
+#############################静态库###############################
+BC_LIB_DIRETOR := $(TOPDIR)/../lib_a
+#LIB_A += -L/$(TOPDIR)/../lib_a
+#LIB_A += -lplatform -lcommon -lsession -lipc
+
+LIB_A += -Wl,--start-group ${BC_LIB_DIRETOR}/libcommon.a ${BC_LIB_DIRETOR}/libplatform.a ${BC_LIB_DIRETOR}/libsession.a  ${BC_LIB_DIRETOR}/libipc.a -Wl,--end-group $(LDFLAGS)
+
+
+##################################################################		  
+OBJECT = othermain.o
+
+obj-y += othermain.o
+
+##################################################################
+ifeq ($(CC), gcc)
+	export CFLAGS LDFLAGS
+else
+	export CFLAGS LDFLAGS	
+endif
+##################################################################
+
+
+#note: $(IMAGEDIR)$(TARGET1)已构成目录结构，无需写'/'。 echo前面加@表示只回显
+all : 
+ifeq ($(CC), gcc)
+	@echo "********[IPC PRJ NAME IS X86]********"
+else
+	@echo "********[IPC PRJ NAME IS board]********"
+endif
+
+	make -C ./ -f $(TOPDIR)/Makefile.build
+	$(CC) -o $(TARGET) built-in.o $(LIB_A)
+	
+
+##################################################################
+#	mv $(TARGET) $(IMAGEDIR)$(TARGET1)
+#	chmod 777 $(IMAGEDIR)$(TARGET1)
+
+ifeq ($(CC), gcc)
+	@echo "============ BUILD FINISHED, PRJ NAME IS [X86] ============"
+else
+	@echo "============ BUILD FINISHED, PRJ NAME IS [board] ============"
+endif
+##################################################################
+
+clean:
+	rm -f $(shell find -name "*.o")
+	rm -f $(TARGET)
+	rm -f 
+
+distclean:
+	rm -f $(shell find -name "*.o")
+	rm -f $(shell find -name "*.d")
+	rm -f $(shell find -name "*.a")
+	rm -f $(TARGET)
+	
+############################### END ###################################

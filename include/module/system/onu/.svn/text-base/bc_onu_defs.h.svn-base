@@ -1,0 +1,461 @@
+/*******************************************************************************
+  Copyright (C), 1988-2012, xxxxx Tech. Co., Ltd.
+  [File name]  : \\BC\Include\systerm\onu\bc_onu_defs.h
+  [Author]     : wangbin
+  [Version]    : 1.0
+  [Date]       : 2014-06-10
+  [Description]:
+
+  [Others]     :
+
+  [Function List]:
+	1. ....
+	2. ....
+  [History]:
+	 D a t e	Modification										  Initials
+	---------- --------------										 ----------
+	2014-06-10	Created 										      wangbin
+*******************************************************************************/
+
+
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//								头   文   件								  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+#ifndef __BC_ONU_DEFS_H__
+#define __BC_ONU_DEFS_H__
+
+#include "bc_common_defs.h"
+#include "bc_port_def.h"
+#include "utili_list.h"
+#include "utili_block.h"
+#include "bc_onu_type.h"
+#include "bc_onu_bitmap.h"
+
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//								宏   定   义								  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+
+#define BC_ONU_OLT_PON_ONU_LLID_MIN            1         /* ONU LLID最小值 */
+#define BC_ONU_OLT_PON_ONU_LLID_MAX            64        /* ONU LLID最大值 */
+
+#define MAX_NORMAL_NAME_LEN                    48        /*普通文本长度: 名称、类型等*/
+
+#define MAX_NORMAL_BUF_LEN                    1024        /*data buf length*/
+#define MAX_ONU_CAVE_CMD_LEN                    50        /*Max onu save cfg command number*/
+#define MAX_ONU_CAVE_DATA_LEN                    50*1024        /*Max onu save cfg data length*/
+
+#define BC_ONU_CAP1_BITMAP_NUM            8         /* ONU LLID最小值 */
+
+#define BC_ONU_DEF_IP_ADDR            "192.168.10.1"         /* ONU default ip address */
+#define BC_ONU_DEF_MASK_ADDR          "255.255.255.0"         /* ONU default mask address */
+
+#define BC_ONU_DEF_SNMP_COMMUNITY_READ          "public"         /* snmp default community read*/
+#define BC_ONU_DEF_SNMP_COMMUNITY_WRITE         "private"         /* snmp default community read*/
+
+
+#define BC_ONU_INFO_PON_SLOT (BC_PORT_PON_MAX_SLOTNUM - BC_PORT_PON_MIN_SLOTNUM+1)
+#define BC_ONU_INFO_PORT_MAX_ON_SLOT BC_PORT_PON_MAX_PORTNUM
+#define BC_ONU_INFO_NUM_ON_PORT BC_ONU_MAX_OLT_PON_MAX_ONU_COUNTS
+
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//					结 构 体 、联 合 体、枚 举 定 义				  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+#if 1
+
+typedef enum {
+	BC_ONU_INFO_FEC_CAP_UNKNOW_E = 0x01,
+	BC_ONU_INFO_FEC_CAP_SUPPORT_E = 0x02,
+	BC_ONU_INFO_FEC_CAP_NO_SUPPORT_E = 0x03,
+} bc_onu_info_fec_cap_e;
+
+typedef enum {
+	BC_ONU_INFO_FEC_MODE_UNKNOW_E = 0x01,
+	BC_ONU_INFO_FEC_MODE_ENABLE_E = 0x02,
+	BC_ONU_INFO_FEC_MODE_DISABLE_E = 0x03,
+} bc_onu_info_fec_mode_e;
+
+typedef enum {
+	BC_ONU_BIND_LIST_ALL = 0x00,
+	BC_ONU_BIND_LIST_ONLINE = 0x01,
+} bc_onu_bind_list_mark_e;
+
+typedef struct {
+	bc_uint8 vendor_id[4];
+	bc_uint8 onu_model[4];
+	bc_mac  onu_mac;
+	bc_uint8 hw_ver[8];
+	bc_uint8 sw_ver[16];
+} bc_onu_info_sn_t;
+
+typedef struct {
+	bc_uint8 vendor_id[2];
+	bc_uint8 chip_model[2];
+	bc_uint8 revision;
+	bc_uint8 ic_ver_date[3];
+} bc_onu_info_chipset_t;
+
+typedef struct {
+	bc_uint8 service_supported;
+
+	bc_uint8 num_of_ge;
+	bc_uint8 ge_bitmap[BC_ONU_CAP1_BITMAP_NUM];
+
+	bc_uint8 num_of_fe;
+	bc_uint8 fe_bitmap[BC_ONU_CAP1_BITMAP_NUM];
+
+	bc_uint8 num_of_ptos;
+	bc_uint8 num_of_e1;
+
+	bc_uint8 num_of_us_queue;
+	bc_uint8 queue_max_per_port_us;
+	bc_uint8 num_of_ds_queue;
+	bc_uint8 queue_max_per_port_ds;
+
+	bc_uint8 battery_backup;
+} bc_onu_info_cap1_t;
+
+typedef struct {
+	bc_uint32 intf_type;
+	bc_uint16 num_of_port;
+} bc_onu_info_port_ability_t;
+
+typedef struct {
+	bc_uint32 onu_type;
+	bc_uint8 multi_llid;
+	bc_uint8 protection_type;
+	bc_uint8 num_of_pon_if;
+	bc_uint8 num_of_slot;
+	bc_uint8 num_of_intf_type;
+
+	bc_uint8 port_ability_num;
+	bc_onu_info_port_ability_t port_ability[10];
+
+	bc_uint8 battery_backup;
+} bc_onu_info_cap2_t;
+
+typedef struct {
+	bc_ip ipaddr;
+	bc_ip mask;
+	bc_ip gateway;
+
+	bc_uint16 cvlan;
+	bc_uint16 svlan;
+	bc_uint8 priority;
+} bc_onu_info_mng_glb_para_t;
+
+typedef struct {
+	bc_uint8 snmp_ver;
+	bc_ip trap_host;
+	bc_uint16 trap_port;
+	bc_uint16 snmp_port;
+	bc_uint8 security_name[MAX_NORMAL_NAME_LEN];
+	bc_uint8 community_read[MAX_NORMAL_NAME_LEN];
+	bc_uint8 community_write[MAX_NORMAL_NAME_LEN];
+} bc_onu_info_mng_snmp_para_t;
+
+typedef struct {
+	bc_uint8 ipv6_supported;
+	bc_uint8 onu_pwr_supply_ctrl;
+	bc_uint8 service_sla;
+} bc_onu_info_cap3_t;
+
+
+typedef struct {
+	bc_uint8 sleep_mode_cap;
+	bc_uint8 early_wake_up_cap;
+} bc_onu_info_pwr_saving_cap_t;
+
+
+typedef struct {
+	bc_uint8 early_wake_up;
+	bc_uint8 sleep_duration_max[6];
+} bc_onu_info_pwr_saving_cfg_t;
+
+typedef struct {
+	bc_uint16 los_optical_time;
+	bc_uint16 los_mac_time;
+} bc_onu_info_protection_para_t;
+
+typedef struct {
+	bc_uint32	onu_id;
+	bc_onu_index_t onu_idx;
+	bc_port_index_t port_index;
+	
+	bc_uint8 name[MAX_NORMAL_NAME_LEN];
+
+	bc_onu_status_e status;
+	
+	bc_mac mac;
+	bc_uint32	reg_time;		/* reg */
+	bc_char reg_time_str[MAX_NORMAL_NAME_LEN];
+	bc_uint32	distance;
+
+	bc_uint32 onu_unreg_count; /* unreg */
+
+	bc_boolean bind_mac_llid_auto;
+	bc_boolean bind_mac_llid;
+
+	bc_uint32 profile_id;
+
+	bc_boolean dhcp;
+} bc_onu_info_local_t;
+
+typedef struct {
+	bc_uint16 cvlan;
+	bc_uint16 svlan;
+	bc_uint8 priority;
+	
+	bc_uint8 community_read[MAX_NORMAL_NAME_LEN];
+	bc_uint8 community_write[MAX_NORMAL_NAME_LEN];
+} bc_onu_mgmt_snmp_info_t;
+
+
+typedef struct {
+	bc_onu_info_fec_mode_e fec_mode;
+
+	bc_onu_info_mng_glb_para_t mng;
+	bc_onu_info_mng_snmp_para_t snmp;
+} bc_onu_cfg_t;
+
+
+typedef struct
+{
+	bc_onu_info_local_t local_info;
+	
+	/* 0x07 info */
+	bc_onu_info_fec_cap_e fec_cap;
+	bc_onu_info_fec_mode_e fec_mode;
+
+	/* 0xc7 0x000* info */
+	bc_onu_info_sn_t sn;
+	bc_uint8 firm_ver[32];
+	bc_onu_info_chipset_t chipset;
+	bc_onu_info_cap1_t cap1;
+	bc_onu_info_cap2_t cap2;
+	bc_onu_info_mng_glb_para_t mng;
+	bc_onu_info_mng_snmp_para_t snmp;
+	bc_onu_info_cap3_t cap3;
+	bc_onu_info_pwr_saving_cap_t pwr_saving_cap;
+	bc_onu_info_pwr_saving_cfg_t pwr_saving_cfg;
+	bc_onu_info_protection_para_t protect_para;
+
+	/* churning */
+	bc_onu_encrpyt_mode_e encrypt_mode;               /*加密模式*/
+	bc_uint32 encrypt_key_exchange_tm;	/*密钥更换时间*/
+} bc_onu_info_t;
+
+
+#endif
+#if 1
+
+#define BC_ONU_UNBIND_PROFILE 1
+
+typedef enum {
+	BC_ONU_PROFILE_CREATE_E = 0x00,
+	BC_ONU_PROFILE_DELETE_E = 0x01,
+	BC_ONU_PROFILE_ADD_ONUS_IN_PROFILE_E = 0x02,
+	BC_ONU_PROFILE_REMOVE_ONUS_FROM_PROFILE_E = 0x03,
+} bc_onu_profile_change_action_e;
+
+
+#endif
+#if 1
+
+typedef enum {
+	BC_ONU_EVT_MSG_REG_E,
+	BC_ONU_EVT_MSG_UNREG_E,
+	BC_ONU_EVT_MSG_PW_DN_E,
+	BC_ONU_EVT_FIBERCUT,
+	BC_ONU_EVT_AUTH_PASS,
+	BC_ONU_EVT_AUTH_REJECT,
+	BC_ONU_EVT_UNKOWN_STATUS
+} bc_onu_event_msg_e;
+
+typedef enum {
+  BC_ONU_EVENT_STATE_ASYN = 0x1,
+  BC_ONU_EVENT_STATE_NEW_REG = 0x2,	
+}bc_onu_event_state_e;
+
+typedef struct {
+	bc_onu_event_msg_e msg_type;
+	
+	bc_onu_index_t onu_index;
+	bc_uint32 onu_id;
+	bc_uint32 profile_id;
+
+	bc_uint32 rec_id;/*0--synchronization , 1--asynchronous*/
+	bc_uint32 onu_state; /* BC_ONU_EVENT_STATE_ASYN | BC_ONU_EVENT_STATE_NEW_REG  1 bit for asynchronous ,2 bit for new reg*/
+} bc_onu_event_msg_t;
+
+#define BC_ONU_EVENT_IS_NEW_REG(state) (((state)&BC_ONU_EVENT_STATE_NEW_REG)? TRUE : FALSE)
+
+
+typedef void (*bc_onu_event_onu_status_chg_cb)(bc_onu_event_msg_t*);
+
+#define BC_ONU_EVT_NUM 50
+
+typedef struct {
+	bc_boolean valid;
+
+	bc_modules_e module_id;
+	bc_onu_event_onu_status_chg_cb cb;
+	
+	bc_uint32 cb_in_cnt;	/* for dbg */
+	bc_uint32 cb_out_cnt;	/* for dbg */
+} bc_onu_event_node_t;
+
+#endif
+#if 1
+
+typedef struct
+{
+    bc_char			         	chip_vendor[MAX_NORMAL_NAME_LEN];
+	bc_char			         	chip_type[2];
+	bc_char			         	chip_ver[1];
+	bc_char			         	sftwr_ver[MAX_NORMAL_NAME_LEN];
+	bc_char			         	frmwr_ver[MAX_NORMAL_NAME_LEN];
+}bc_onu_chip_t;
+
+
+typedef struct
+{
+	bc_uint16			     	mgmt_cvid;
+	bc_uint16			     	mgmt_svid;
+	bc_uint8			     	priority;                /*0~7管理优先级 */
+}bc_onu_in_profile_t;
+
+/*模板信息*/
+typedef struct
+{
+	bc_boolean                	use_flag;       /*记录profile是否在使用*/
+	bc_char			         	mode_name[MAX_NORMAL_NAME_LEN];
+	bc_int32                  	onu_num;        /*记录绑定的onu数量*/
+//	bc_alarm_t					alarm_db;
+
+	utili_list                		onu_list ;   /*绑定到模板的onu列表*/
+}bc_onu_mode_t;
+
+typedef struct
+{
+	bc_uint32		pro_id;
+	bc_onu_mode_t	profile;
+}bc_onu_all_profile_t;
+
+/*ONU基本信息*/
+typedef struct
+{
+	bc_int32                 		onu_id;
+	bc_ipv4    		         	ip;
+	bc_ipv4   		         	subnet_mask;
+	bc_ipv4    		         	ip_gateway;
+	bc_uint16 					cvlan;
+	bc_uint16 					svlan;
+	bc_uint8 					priority;
+	bc_char			         	name[MAX_NORMAL_NAME_LEN];
+	bc_uint32                   profile_id;
+	bc_onu_chip_t             	chip_info;
+	bc_onu_type_e	         	type;
+	bc_port_index_t        		port_index;
+	bc_uint8                 	llid;
+	bc_mac 		            	mac;
+	bc_uint32			     	reg_time;
+	bc_char			         	reg_time_str[MAX_NORMAL_NAME_LEN];
+	bc_onu_status_e	     	   	status;
+	bc_uint32			     	distance;
+	bc_uint32                 	onu_unreg_count; //ONU 注册初始化失败，解注册次数 
+	bc_boolean               	bind_mac_llid;   /*默认注册后bind  TRUE: bind  FALSE: not bind*/
+	bc_ipv4    			     	trap_ip;
+	bc_boolean               	dhcp;      /*TRUE: 启用DHCP   FALSE:  静态MAC模式*/
+	bc_uint8			     	read_cmmnty[MAX_NORMAL_NAME_LEN];
+	bc_uint8			     	write_cmmnty[MAX_NORMAL_NAME_LEN];
+	bc_onu_verdor_e          	onu_verdor;      /*ONU 供应商*/
+}bc_onu_base_info_t;
+
+typedef struct
+{
+	bc_onu_base_info_t 	onu_base;
+	bc_onu_mode_t		onu_profile;
+}bc_onu_all_info_t;
+
+
+typedef struct
+{
+    bc_boolean               	bind_mac_llid;
+	bc_uint8                	slotid;
+	bc_uint8                 	ponid;
+    bc_uint8                 	llid;
+    bc_onu_status_e	     	    status;
+    bc_uint32			     	distance;
+    bc_uint16			     	mgmt_cvid;
+	bc_uint16			     	mgmt_svid;
+    bc_ipv4    		         	ip;
+    bc_mac 		             	mac;
+    bc_uint32                     profile_id;
+}bc_onu_list_info_t;
+
+typedef struct
+{
+    bc_char			         	mode_name[MAX_NORMAL_NAME_LEN];
+    bc_int32                    onu_num;        /*记录绑定的onu数量*/
+    bc_uint32                     profile_id;
+}bc_onu_profile_list_t;
+
+//ONU能力表
+typedef struct
+{
+	bc_uint8				ge_port_num;                /*GE端口数*/
+	bc_uint8				ge_port_bitmap[16];         /*GE端口位图*/
+	bc_uint8				fe_port_num;                /*FE端口数*/
+	bc_uint8				fe_port_bitmap[16];         /*FE端口位图*/
+	bc_uint32				queue_num_uplink;           /*上行队列数*/
+	bc_uint32				max_queue_num_uplink;       /*上行端口最大队列数*/
+	bc_uint32				queue_num_downlink;         /*下行队列数*/
+	bc_uint32				max_queue_num_downlink;     /*下行端口最大队列数*/
+	bc_boolean				fec_enable;
+	bc_onu_encrpyt_mode_e	encrypt_mode;               /*加密模式*/
+	bc_uint32				encrypt_key_exchange_tm;	/*密钥更换时间*/
+}bc_onu_capability_t;
+
+//mcs object block mark
+typedef enum {
+	BC_ONU_MCS_OBJ_MARK_ONU,
+	BC_ONU_MCS_OBJ_MARK_PRO,
+} bc_onu_mcs_obj_mark;
+
+
+
+typedef struct
+{
+	bc_uint16   temperature;		// ONU光模块温度:℃
+	bc_uint16   voltage;			// ONU光模块供电电压:V
+	bc_uint16   tx_bias_current;	// ONU光发射机偏置电流:mA
+	bc_uint16   tx_power;			// ONU光发射机发送光功率:mW
+	bc_uint16   rx_power;			// ONU光接收机接收光功率:mW
+}bc_onu_mng_optical_param_t;
+
+
+
+#define BC_ONU_INFO_PON_SLOT (BC_PORT_PON_MAX_SLOTNUM - BC_PORT_PON_MIN_SLOTNUM+1)
+#define BC_ONU_INFO_PORT_MAX_ON_SLOT BC_PORT_PON_MAX_PORTNUM
+#define BC_ONU_INFO_NUM_ON_PORT BC_ONU_MAX_OLT_PON_MAX_ONU_COUNTS
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//						外 部 变 量、 函 数 声 明					          //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+#endif
+#endif
+

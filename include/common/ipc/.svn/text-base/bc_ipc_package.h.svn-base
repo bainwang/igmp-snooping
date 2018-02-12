@@ -1,0 +1,176 @@
+/*******************************************************************************
+  Copyright (C), 2010-2030, xxxxx Tech. Co., Ltd.
+  [File name]  : \\BC\Include\Common\Ipc\bc_ipc_package.h
+  [Author]     : wangbin
+  [Version]    : 1.0
+  [Date]       : 2014-04-10
+  [Description]:
+
+  [Others]     :
+
+  [Function List]:
+	1. ....
+	2. ....
+  [History]:
+	 D a t e	Modification										  Initials
+	---------- --------------										 ----------
+	2014-04-10	Created 											  wangbin
+*******************************************************************************/
+
+#ifndef __BC_IPC_PACKAGE_H__
+#define __BC_IPC_PACKAGE_H__
+   
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//								头   文   件								  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+#include "bc_err.h"
+#include "bc_print.h"
+#include "bc_ipc_def.h"
+
+#define  IPC_PACKAGE_FLAG_LEN           16                                   /*IPC package flag 长度*/ 
+#define  IPC_PACKAGE_FLAG               "0123456789987610"                   /*IPC 数据头标识*/ 
+#define  MAC_IPC_USER_DATA_LEN          (512 *1024)                          /*最大的IPC用户数据*/
+
+
+/*IPC 数据包头*/
+typedef struct
+{
+	bc_char                        pack_flag[IPC_PACKAGE_FLAG_LEN];    /*数据包标识*/
+    bc_uint32                      pack_len;                           /*数据包长度*/
+    bc_uint32                      sessionid;                          /*SessionID 默认为0*/
+    bc_uint32                      functionid;                         /*函数ID*/
+	bc_err_e                       function_ret;                       /*函数返回值*/  
+    bc_uint32                      rw_pos;                             /*用户数据当前读写位置*/
+} bc_ipc_package_head_t;
+
+
+/*IPC 用户数据包*/
+typedef struct
+{ 
+	bc_ipc_package_head_t	       package_head;                       /*IPC 数据包头*/
+    bc_uint32                      user_data_size;                     /*IPC 用户数据大小*/  
+	bc_char                        user_data[MAC_IPC_USER_DATA_LEN];   /*IPC 用户数据*/
+}bc_ipc_package_t;  
+
+
+
+#define  BC_IPC_PPACK_MALLOC_RETPROC(data)  \
+	do \
+	{ \
+		bc_err_e __ret__   = BC_ERR_OK; \
+		__ret__ = bc_ipc_pacakge_alloc((bc_ipc_package_t**)&data); \
+		if(__ret__ != BC_ERR_OK) \
+		{ \
+			BC_PT_ERROR(BC_MODULE_IPC, "Failed to malloc ipc package: ret = %d\n", __ret__); \
+			return __ret__; \
+		} \
+	}while(0)	
+
+#define BC_IPC_PPACK_FREE_RETPROC(data)  \
+	do \
+	{ \
+		bc_err_e __ret__   = BC_ERR_OK; \
+		__ret__ = bc_ipc_pacakge_free((bc_ipc_package_t*)data); \
+		if(__ret__ != BC_ERR_OK) \
+		{ \
+			BC_PT_ERROR(BC_MODULE_IPC, "Failed to free ipc package: ret = %d\n", __ret__); \
+			return __ret__; \
+		} \
+	}while(0)
+
+
+/*初始化数据包*/
+#define BC_IPC_INIT_PACK(data) \
+        do\
+		{\
+			memset(((char*)(data)), 0x00, sizeof(bc_ipc_package_t));\
+			memcpy(((char*)(data)), (char*)IPC_PACKAGE_FLAG, IPC_PACKAGE_FLAG_LEN); \
+		} while (0) 
+
+ 
+/*复位用户数据读写位置*/
+#define BC_IPC_PACK_WR_POS_RESET(data) \
+        do\
+		{\
+			((data)->rw_pos) = 0;\
+		} while (0) 
+
+/*顺序写用户数据*/
+#define BC_IPC_PACK_WRITE(data, p, size) \
+        do\
+		{\
+			if(((((bc_ipc_package_t*)data)->user_data_size) + (size)) < MAC_IPC_USER_DATA_LEN) \
+			{\
+				memcpy((((bc_ipc_package_t*)data)->user_data) + (((bc_ipc_package_t*)data)->package_head.rw_pos), (p), (size));\
+				(((bc_ipc_package_t*)data)->package_head.rw_pos) += (size);\
+				(((bc_ipc_package_t*)data)->user_data_size) = (((bc_ipc_package_t*)data)->package_head.rw_pos); \
+			}\
+			else\
+			{\
+				BC_PT_DBG_PRINT(BC_MODULE_IPC, "IPC Package write data too long!\n");\
+			}\
+		} while (0) 
+
+/*顺序读用户数据*/
+#define BC_IPC_PACK_READ(data, p, size) \
+        do\
+		{\
+			if(((((bc_ipc_package_t*)data)->package_head.rw_pos) + (size)) < MAC_IPC_USER_DATA_LEN) \
+			{\
+				memcpy((p), (((bc_ipc_package_t*)data)->user_data) + (((bc_ipc_package_t*)data)->package_head.rw_pos), (size));\
+				(((bc_ipc_package_t*)data)->package_head.rw_pos) += (size);\
+			}\
+			else\
+			{\
+				BC_PT_DBG_PRINT(BC_MODULE_IPC, "IPC Package read data too long!\n");\
+			}\
+		} while (0) 
+
+/*读用户函数返回*/
+#define BC_IPC_PACK_READ_FUN_RET(data, p) \
+		do\
+		{\
+			(*p) = (((bc_ipc_package_t*)data)->package_head.function_ret); \
+		} while (0) 
+		
+
+/*用户数据设置偏移位置*/
+#define BC_IPC_PACK_WR_POS_SET(data, pos) \
+        do\
+		{\
+			if((pos) < MAC_IPC_USER_DATA_LEN) \
+			{\
+				(((bc_ipc_package_t*)data)->rw_pos) = (pos);\
+			}\
+			else\
+			{\
+				BC_PT_DBG_PRINT(BC_MODULE_IPC, "IPC Package setting position is too big!\n");\
+			}\
+		} while (0) 
+
+			/*用户数据设置偏移位置*/
+#define BC_IPC_PACK_SESSION_GET(data, p) \
+		do\
+		{\
+			(*p) = (((bc_ipc_package_t*)data)->package_head.sessionid); \
+		} while (0)  
+
+
+
+
+/*IPC Package 资源初始化(按进程初始化，同一进程只初始化一次)*/
+bc_err_e bc_ipc_pacakge_init(bc_uint32 max_count);
+/*IPC Package 资源分配*/
+bc_err_e bc_ipc_pacakge_alloc(bc_ipc_package_t **data);
+/*IPC Package 资源释放*/
+bc_err_e bc_ipc_pacakge_free(bc_ipc_package_t  *data);
+/*IPC Package 资源dump*/
+bc_err_e bc_ipc_pacakge_dump(void);
+
+
+
+#endif /* __BC_IPC_PACKAGE_H__ */
+

@@ -1,0 +1,303 @@
+/************************************************************
+  -------------------------------------------------------------------------
+  FileName: bc_log_server.h
+  Author:  bain.wang@outlook.com      Version :  1.0        Date:2016-7-2
+  Description: proj depend parameter define       
+  Version:                        
+  History:        
+                  
+    1. Date:
+       Author:
+       Modification:
+    2. ...
+***********************************************************/
+#ifndef __BC_LOG_SERVER_H__
+#define __BC_LOG_SERVER_H__
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                              头   文   件                                  //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+#include "bc_err.h"
+#include "bc_ipc_def.h"
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                      外 部 变 量、 函 数 引 用                             //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                              宏   定   义                                  //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                  结 构 体 、联 合 体、枚 举 定 义                          //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                          全 局 变 量 定 义                                 //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+/* 
+ *  外部全局变量，提供整个工程调用，在头文件中提供调用接口(外部引用声明)。
+ */
+
+/* 
+ *  内部全局变量，只提供给该文件内部函数调用，不在头文件中提供调用接口。
+ */
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//                              函  数  声  明                                //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
+
+/*************************************************
+  Function: bc_log_lvl_en_srv
+  Description: 
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_log_lvl_en_srv(bc_ipc_package_t *data);
+
+
+
+
+/*************************************************
+  Function: bc_log_lvl_open_srv
+  Description: 
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_log_lvl_open_srv(bc_ipc_package_t *data);
+
+
+
+
+/*************************************************
+  Function: 
+  Description: 
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_log_lvl_close_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: 
+  Description: 
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_log_lvl_get_srv(bc_ipc_package_t *data);
+
+
+#if 1
+/*************************************************
+  Function: bc_log_sys_wrt_upper_layer_srv
+  Description: 
+  Input: 
+  		void
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_log_sys_wrt_upper_layer_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_log_sys_buffer_clear_srv
+  Description: 清空内存中的系统日志数据信息。
+  Input: 
+  		void
+  Output:
+  		NULL
+  Return:
+  		0: 
+  		~0: 
+  Note:    核心进程清空内存接口
+  History: 
+*************************************************/
+bc_err_e bc_log_sys_buffer_clear_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_log_sys_flash_clear_srv
+  Description: 清除系统日志文件。
+  Input: 
+  		void
+  Output:
+  		NULL
+  Return:
+  		0: 
+  		~0: 
+  Note:    核心进程清除文件接口
+  History: 
+*************************************************/
+bc_err_e bc_log_sys_flash_clear_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_log_get_sys_log_srv
+  Description: 获取整个系统日志的所有信息。
+  Input: 
+		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_log_get_sys_log_srv(bc_ipc_package_t *data);
+
+
+/*************************************************
+  Function: bc_log_sys_dbg_dump_srv
+  Description: dump系统日志的所有信息。
+  Input: 
+		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_log_sys_dbg_dump_srv(bc_ipc_package_t *data);
+
+bc_err_e bc_log_sys_dbg_wrt_srv(bc_ipc_package_t *data);
+
+#endif
+
+
+#if 1
+/*************************************************
+  Function: bc_log_usr_wrt_upper_layer_srv
+  Description: 
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_log_usr_wrt_upper_layer_srv(bc_ipc_package_t *data);
+
+
+/*************************************************
+  Function: bc_log_usr_buffer_clear_srv
+  Description: 清空内存中的用户日志数据信息。
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note:    核心进程清空内存接口
+  History: 
+*************************************************/
+bc_err_e bc_log_usr_buffer_clear_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_log_usr_flash_clear_srv
+  Description: 清除用户日志文件。
+  Input: 
+  		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id 
+  Note:    核心进程清除文件接口
+  History: 
+*************************************************/
+bc_err_e bc_log_usr_flash_clear_srv(bc_ipc_package_t *data);
+
+
+
+/*************************************************
+  Function: bc_log_get_user_log_srv
+  Description: 获取所有用户（此处的用户是针对CLI
+  				命令操作）日志的所有信息。
+  Input: 
+ 		data	IPC数据
+  Output:
+  		NULL
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+bc_err_e bc_log_get_user_log_srv(bc_ipc_package_t *data);
+
+bc_err_e bc_log_usr_dbg_wrt_srv(bc_ipc_package_t *data);
+
+#endif
+
+#endif /* __BC_LOG_SERVER_H__ */
+
+

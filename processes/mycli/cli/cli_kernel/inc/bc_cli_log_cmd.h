@@ -1,0 +1,185 @@
+/*******************************************************************
+MODULE NAME:
+	CLI
+
+FILE NAME:
+ 	bc_cli_log_cmd.h
+
+VERSION:
+	1.00
+
+DESCRIPTION:
+ 	Add the command logging function.
+
+NOTES:
+    NA
+
+HISTORY:
+	Ver1.00:	2010.6.22 bain.wang@outlook.com
+********************************************************************/
+
+#ifndef __BC_CLI_LOG_CMD_H__
+#define __BC_CLI_LOG_CMD_H__
+
+////////////////////////////////////////////////////////////////////////////////
+// 								    										  //
+// 							    头   文   件								  //
+// 										    								  //
+////////////////////////////////////////////////////////////////////////////////
+
+#include "bc_cli_type.h"
+//#include "bc_cli.h"
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//						结   构   体   宏   定   义							  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+typedef struct
+{
+	BOOL_T 				cmdlog_enable;
+	cli_acc_lvl_e 		cmdlog_level;
+} CLI_CMDLOG_STATE_T;
+
+typedef struct
+{
+    I8_T				*ptrcmd;   
+    I32_T				sessionID;
+} CLI_CMDLOG_T;
+
+
+
+////////////////////////////////////////////////////////////////////////////////
+//																			  //
+//								函	数	声	明								  //
+//																			  //
+////////////////////////////////////////////////////////////////////////////////
+
+/**************************************************************************
+FUNCTION NAME:
+	CLI_CMDLOG_Get_State
+
+DESCRIPTION:
+	Get the state of command logging function.
+
+INPUT:
+	NA
+
+OUTPUT:
+	cmdLogState	: the command logging state
+
+RETURN:
+	NA
+
+NOTES:
+
+HISTORY:
+	Creat by bain.wang@outlook.com 2011.6.22
+
+**************************************************************************/
+void CLI_CMDLOG_Get_State(OUT CLI_CMDLOG_STATE_T *cmdLogState);
+
+/**************************************************************************
+FUNCTION NAME:
+	CLI_CMDLOG_Set_State
+
+DESCRIPTION:
+	Set the state of command logging function.
+
+INPUT:
+	cmdLogState	: the command logging state
+
+OUTPUT:
+	NA
+
+RETURN:
+	NA
+
+NOTES:
+
+HISTORY:
+	Creat by bain.wang@outlook.com 2011.6.22
+
+**************************************************************************/
+void CLI_CMDLOG_Set_State(IN CLI_CMDLOG_STATE_T *cmdLogState);
+
+/**************************************************************************
+FUNCTION NAME:
+	CLI_CMDLOG_Record_LogForCMD
+
+DESCRIPTION:
+	This funtion used record a log for command.
+
+INPUT:
+	cmdlog	: command logging information
+
+OUTPUT:
+	NA
+
+RETURN:
+	TRUE	: record success
+	FALSE	: record false
+
+NOTES:
+
+HISTORY:
+	Creat by bain.wang@outlook.com 2011.6.22
+
+**************************************************************************/
+BOOL_T CLI_CMDLOG_Record_LogForCMD(IN CLI_CMDLOG_T *cmdlog);
+
+/**************************************************************************
+FUNCTION NAME:
+	bc_cli_log_init
+
+DESCRIPTION:
+	Initialize the record command logging function DB.
+
+INPUT:
+	NA
+
+OUTPUT:
+	NA
+
+RETURN:
+	NA
+
+NOTES:
+
+HISTORY:
+	Creat by bain.wang@outlook.com 2011.6.22
+
+**************************************************************************/
+void bc_cli_log_init(void);
+
+/**************************************************************************
+FUNCTION NAME:
+	bc_cli_log_cmd_reg
+
+DESCRIPTION:
+	Initialize the record command logging function.
+
+INPUT:
+	NA
+
+OUTPUT:
+	NA
+
+RETURN:
+	NA
+
+NOTES:
+
+HISTORY:
+	Creat by bain.wang@outlook.com 2011.6.22
+
+**************************************************************************/
+void bc_cli_log_cmd_reg(void);
+
+
+
+#endif /* __BC_CLI_LOG_CMD_H__ */
+

@@ -1,0 +1,20 @@
+---------------------------------------------------------
+            Net-SNMP configuration summary:
+---------------------------------------------------------
+
+  SNMP Versions Supported:    1 2c 3
+  Building for:               linux
+  Net-SNMP Version:           5.7.2
+  Network transport support:  Callback Unix Alias TCP UDP IPv4Base SocketBase TCPBase UDPIPv4Base UDPBase
+  SNMPv3 Security Modules:     usm
+  Agent MIB code:             default_modules =>  snmpv3mibs mibII ucd_snmp notification notification-log-mib target agent_mibs agentx disman/event disman/schedule utilities host
+  MYSQL Trap Logging:         unavailable
+  Embedded Perl support:      disabled
+  SNMP Perl modules:          building -- not embeddable
+  SNMP Python modules:        disabled
+  Crypto support from:        internal
+  Authentication support:     MD5 SHA1
+  Encryption support:         DES AES
+  Local DNSSEC validation:    disabled
+
+---------------------------------------------------------

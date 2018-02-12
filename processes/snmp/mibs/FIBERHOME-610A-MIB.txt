@@ -1,0 +1,1659 @@
+	FIBERHOME-DATACOMM-MIB DEFINITIONS ::= BEGIN
+ 
+		IMPORTS
+			entPhysicalIndex, PhysicalIndex			
+				FROM ENTITY-MIB			
+			ifIndex, InterfaceIndex			
+				FROM IF-MIB			
+			InetAddressType, InetAddress			
+				FROM INET-ADDRESS-MIB			
+			Ipv6Address			
+				FROM IPV6-TC			
+			OBJECT-GROUP, MODULE-COMPLIANCE, NOTIFICATION-GROUP			
+				FROM SNMPv2-CONF			
+			enterprises, IpAddress, Integer32, Unsigned32, Counter64, 
+			OBJECT-TYPE, MODULE-IDENTITY, NOTIFICATION-TYPE			
+				FROM SNMPv2-SMI			
+			DisplayString, PhysAddress, TEXTUAL-CONVENTION			
+				FROM SNMPv2-TC;
+	
+	
+		-- 1.3.6.1.4.1.11408.11.1
+		fhDatacomm MODULE-IDENTITY 
+			LAST-UPDATED "201702201546Z"		-- February 20, 2017 at 15:46 GMT
+			ORGANIZATION 
+				"longraise"
+			CONTACT-INFO 
+				" ..............
+				Zip:610000 
+				www.longraise.com                                       
+				E-mail:wangb@longraise.com "
+			DESCRIPTION 
+				"The private mib file includes the general extent 
+				information of the device."
+			::= { fhMgmt 1 }
+
+		
+	
+--
+-- Textual conventions
+--
+	
+		tcIpRanNeId ::= TEXTUAL-CONVENTION
+			DISPLAY-HINT 
+				"1d.1d.1d.1d"
+			STATUS current
+			DESCRIPTION 
+				"Uniquely identify the network entity ID.
+				The total valid length is 24 bit, 
+				the high 8 bit is subnet number;
+				the low 16 bit is base id;
+				keep value range: subnet number should within 0x1-0xFE
+				                  base id should within 0xBFF1-0xFFFE,
+				valid value range: subnet number should within 0x1-0xFE,
+				                   base id should within 0x1-0xBFEF,
+				keep range will only use as factory value,
+				in the running network must use the valid value.
+				the IpRanNeId will be showed as 0.x.x.x."
+			SYNTAX IpAddress
+
+--  1.3.6.1.4.1.11408.11.1
+-- 
+-- 
+-- Textual conventions
+-- 
+		MacAddress ::= TEXTUAL-CONVENTION
+			DISPLAY-HINT 
+				"1x:"
+			STATUS current
+			DESCRIPTION 
+				"Represents an 802 MAC address represented in the
+				`canonical' order defined by IEEE 802.1a, i.e., as if it
+				were transmitted least significant bit first, even though
+				802.5 (in contrast to other 802.x protocols) requires MAC
+				addresses to be transmitted most significant bit first."
+			SYNTAX OCTET STRING (SIZE (6))
+
+	
+--
+-- Node definitions
+--
+	
+--  Node definitions
+-- 
+-- 1.3.6.1.4.1.11408
+		-- 1.3.6.1.4.1.11408
+		fh OBJECT IDENTIFIER ::= { enterprises 11408 }
+
+		
+--  1.3.6.1.4.1.11408.11
+		-- 1.3.6.1.4.1.11408.11
+		fhMgmt OBJECT IDENTIFIER ::= { fh 11 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1
+		fhEntityExtentMIB OBJECT IDENTIFIER ::= { fhDatacomm 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1.1
+		fhEntityState OBJECT IDENTIFIER ::= { fhEntityExtentMIB 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1.1.1
+		fhEntityCpuUsage OBJECT-TYPE
+			SYNTAX INTEGER (0..100)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityState 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.2
+		-- 1.3.6.1.4.1.11408.11.1.1.1.2
+		fhEntityMemUsage OBJECT-TYPE
+			SYNTAX INTEGER (0..100)
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityState 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.3
+		-- 1.3.6.1.4.1.11408.11.1.1.1.3
+		fhEntityBoardPfmTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF fhEntityBoardPfmEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityState 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.3.1
+		-- 1.3.6.1.4.1.11408.11.1.1.1.3.1
+		fhEntityBoardPfmEntry OBJECT-TYPE
+			SYNTAX fhEntityBoardPfmEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { fhBoardPfmIndex }
+			::= { fhEntityBoardPfmTable 1 }
+
+		
+		fhEntityBoardPfmEntry ::=
+			SEQUENCE { 
+				fhBoardPfmIndex
+					INTEGER,
+				fhBoardTemperature
+					OCTET STRING,
+				fhBoardVoltage
+					OCTET STRING
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.1.1.3.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1.1.3.1.1
+		fhBoardPfmIndex OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardPfmEntry 1 }
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.3.1.3
+		-- 1.3.6.1.4.1.11408.11.1.1.1.3.1.3
+		fhBoardTemperature OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardPfmEntry 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.3.1.4
+		-- 1.3.6.1.4.1.11408.11.1.1.1.3.1.4
+		fhBoardVoltage OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardPfmEntry 4 }
+
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.4
+		-- 1.3.6.1.4.1.11408.11.1.1.1.4
+		fhEntityIfPfmTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF fhEntityIfPfmEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityState 4 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.4.1
+		-- 1.3.6.1.4.1.11408.11.1.1.1.4.1
+		fhEntityIfPfmEntry OBJECT-TYPE
+			SYNTAX fhEntityIfPfmEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { fhIfPfmIndex }
+			::= { fhEntityIfPfmTable 1 }
+
+		
+		fhEntityIfPfmEntry ::=
+			SEQUENCE { 
+				fhIfPfmIndex
+					INTEGER
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.1.1.4.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1.1.4.1.1
+		fhIfPfmIndex OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityIfPfmEntry 1 }
+
+
+-------------------------------TRAP VAR BUILD NODE------------------------------------------------------------			
+--  1.3.6.1.4.1.11408.11.1.1.1.5
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5
+		fhEntityIfinfoTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF fhEntityIfinfoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityState 5 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.5.1
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5.1
+		fhEntityIfinfoEntry OBJECT-TYPE
+			SYNTAX fhEntityIfinfoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { INTEGER }
+			::= { fhEntityIfinfoTable 1 }
+
+		
+		fhEntityIfinfoEntry ::=
+			SEQUENCE { 
+				fhSlotNo
+					INTEGER,
+				fhSubSlotNO
+					INTEGER,
+				fhBoardName
+					OCTET STRING,
+				fhIfName
+					OCTET STRING,
+				fhBoardType
+					INTEGER,
+				fhBoardStatus
+					INTEGER,
+				fhStatus
+					INTEGER,
+				fhPortNo
+					INTEGER
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.1.1.5.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5.1.1
+		fhSlotNo OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityIfinfoEntry 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.5.1.2
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5.1.2
+		fhSubSlotNO OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityIfinfoEntry 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.5.1.3
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5.1.3
+		fhBoardName OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityIfinfoEntry 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.5.1.4
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5.1.4
+		fhIfName OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityIfinfoEntry 4 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.5.1.5
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5.1.5
+		fhBoardType OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityIfinfoEntry 5 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.5.1.6
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5.1.6
+		fhBoardStatus OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityIfinfoEntry 6 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.5.1.7
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5.1.7
+		fhStatus OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityIfinfoEntry 7 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.1.5.1.8
+		-- 1.3.6.1.4.1.11408.11.1.1.1.5.1.8
+		fhPortNo OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityIfinfoEntry 8 }
+
+
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.2
+		-- 1.3.6.1.4.1.11408.11.1.1.2
+		fhEntityOpticalModuleInfoTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF FhEntityOpticalModuleInfoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityExtentMIB 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.2.1
+		-- 1.3.6.1.4.1.11408.11.1.1.2.1
+		fhEntityOpticalModuleInfoEntry OBJECT-TYPE
+			SYNTAX FhEntityOpticalModuleInfoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { fhEntityOpticalIndex }
+			::= { fhEntityOpticalModuleInfoTable 1 }
+
+		
+		FhEntityOpticalModuleInfoEntry ::=
+			SEQUENCE { 
+				fhEntityOpticalIndex
+					INTEGER,
+				fhEntityOpticalWavelength
+					INTEGER,
+				fhEntityOpticalTransDistance
+					INTEGER,
+				fhEntityOpticalMediaType
+					INTEGER,
+				fhEntityRxOpticalPower
+					INTEGER,
+				fhEntityTxOpticalPower
+					INTEGER,
+				fhEntityOpticalSpeed
+					OCTET STRING
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.1.2.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1.2.1.1
+		fhEntityOpticalIndex OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityOpticalModuleInfoEntry 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.2.1.3
+		-- 1.3.6.1.4.1.11408.11.1.1.2.1.3
+		fhEntityOpticalWavelength OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityOpticalModuleInfoEntry 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.2.1.4
+		-- 1.3.6.1.4.1.11408.11.1.1.2.1.4
+		fhEntityOpticalTransDistance OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityOpticalModuleInfoEntry 4 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.2.1.5
+		-- 1.3.6.1.4.1.11408.11.1.1.2.1.5
+		fhEntityOpticalMediaType OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityOpticalModuleInfoEntry 5 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.2.1.6
+		-- 1.3.6.1.4.1.11408.11.1.1.2.1.6
+		fhEntityRxOpticalPower OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityOpticalModuleInfoEntry 6 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.2.1.7
+		-- 1.3.6.1.4.1.11408.11.1.1.2.1.7
+		fhEntityTxOpticalPower OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityOpticalModuleInfoEntry 7 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.2.1.12
+		-- 1.3.6.1.4.1.11408.11.1.1.2.1.12
+		fhEntityOpticalSpeed OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityOpticalModuleInfoEntry 12 }
+
+		
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.3
+		-- 1.3.6.1.4.1.11408.11.1.1.3
+		fhEntitySlotInfoTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF FhEntitySlotInfoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityExtentMIB 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.3.1
+		-- 1.3.6.1.4.1.11408.11.1.1.3.1
+		fhEntitySlotInfoEntry OBJECT-TYPE
+			SYNTAX FhEntitySlotInfoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { fhSlotEntityIndex }
+			::= { fhEntitySlotInfoTable 1 }
+
+		
+		FhEntitySlotInfoEntry ::=
+			SEQUENCE { 
+				fhSlotEntityIndex
+					PhysicalIndex,
+				fhSlotSeq
+					INTEGER,
+				fhSlotType
+					OCTET STRING,
+				fhSlotName
+					OCTET STRING,
+				fhSlotOccupyStatus
+					OCTET STRING
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.1.3.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1.3.1.1
+		fhSlotEntityIndex OBJECT-TYPE
+			SYNTAX PhysicalIndex
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntitySlotInfoEntry 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.3.1.2
+		-- 1.3.6.1.4.1.11408.11.1.1.3.1.2
+		fhSlotSeq OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntitySlotInfoEntry 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.3.1.3
+		-- 1.3.6.1.4.1.11408.11.1.1.3.1.3
+		fhSlotType OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntitySlotInfoEntry 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.3.1.4
+		-- 1.3.6.1.4.1.11408.11.1.1.3.1.4
+		fhSlotName OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntitySlotInfoEntry 4 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.3.1.5
+		-- 1.3.6.1.4.1.11408.11.1.1.3.1.5
+		fhSlotOccupyStatus OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntitySlotInfoEntry 5 }
+
+		
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.4
+		-- 1.3.6.1.4.1.11408.11.1.1.4
+		fhEntityBoardInfoTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF FhEntityBoardInfoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityExtentMIB 4 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.4.1
+		-- 1.3.6.1.4.1.11408.11.1.1.4.1
+		fhEntityBoardInfoEntry OBJECT-TYPE
+			SYNTAX FhEntityBoardInfoEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { fhBoardEntityIndex }
+			::= { fhEntityBoardInfoTable 1 }
+
+		
+		FhEntityBoardInfoEntry ::=
+			SEQUENCE { 
+				fhBoardEntityIndex
+					PhysicalIndex,
+				fhBoardEntityNo
+					PhysicalIndex,
+				fhBoardHardwareRev
+					OCTET STRING,
+				fhBoardSlotSeq
+					INTEGER,
+				fhBoardSlotNum
+					INTEGER,
+				fhBoardOperStatus
+					OCTET STRING,
+				fhHardwareType
+					OCTET STRING,
+				fhBoardIdleStatus
+					INTEGER
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.1.4.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1.4.1.1
+		fhBoardEntityIndex OBJECT-TYPE
+			SYNTAX PhysicalIndex
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardInfoEntry 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.4.1.2
+		-- 1.3.6.1.4.1.11408.11.1.1.4.1.2
+		fhBoardEntityNo OBJECT-TYPE
+			SYNTAX PhysicalIndex
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardInfoEntry 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.4.1.8
+		-- 1.3.6.1.4.1.11408.11.1.1.4.1.8
+		fhBoardHardwareRev OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardInfoEntry 8 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.4.1.9
+		-- 1.3.6.1.4.1.11408.11.1.1.4.1.9
+		fhBoardSlotSeq OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardInfoEntry 9 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.4.1.10
+		-- 1.3.6.1.4.1.11408.11.1.1.4.1.10
+		fhBoardSlotNum OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardInfoEntry 10 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.4.1.11
+		-- 1.3.6.1.4.1.11408.11.1.1.4.1.11
+		fhBoardOperStatus OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardInfoEntry 11 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.4.1.19
+		-- 1.3.6.1.4.1.11408.11.1.1.4.1.19
+		fhHardwareType OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardInfoEntry 19 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.1.4.1.22
+		-- 1.3.6.1.4.1.11408.11.1.1.4.1.22
+		fhBoardIdleStatus OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhEntityBoardInfoEntry 22 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5
+		-- 1.3.6.1.4.1.11408.11.1.1.5
+		fhHardwareTraps OBJECT IDENTIFIER ::= { fhEntityExtentMIB 5 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.1
+		fhBoardExistTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.1.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.1.1
+		fhBoardNotExist NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhBoardType, fhBoardStatus, fhBoardName }
+			STATUS current
+			DESCRIPTION 
+				"The board pull out action will send this trap."
+			::= { fhBoardExistTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.2
+		-- 1.3.6.1.4.1.11408.11.1.1.5.2
+		fhBoardStatusTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 2 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.2.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.2.1
+		fhBoardFault NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhBoardType, fhBoardStatus, fhBoardName }
+			STATUS current
+			DESCRIPTION 
+				"The board fault action will send this trap."
+			::= { fhBoardStatusTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.3
+		-- 1.3.6.1.4.1.11408.11.1.1.5.3
+		fhIntfPktLossTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 3 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.3.1          
+		-- 1.3.6.1.4.1.11408.11.1.1.5.3.1
+		fhIntfPktLossExceed NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhSubSlotNO, fhBoardName, fhIfName, fhPortNo
+				 }
+			STATUS current
+			DESCRIPTION 
+				"The board IntfPktLossExceed will send this trap."
+			::= { fhIntfPktLossTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.4
+		-- 1.3.6.1.4.1.11408.11.1.1.5.4
+		fhBoardTempTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 4 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.4.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.4.1
+		fhBoardTempExceed NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhBoardType, fhBoardStatus, fhBoardName }
+			STATUS current
+			DESCRIPTION 
+				"The board BoardTempExceed will send this trap."
+			::= { fhBoardTempTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.5
+		-- 1.3.6.1.4.1.11408.11.1.1.5.5
+		fhMemoryUsageTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 5 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.5.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.5.1
+		fhMemoryUsageExceed NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhBoardType, fhBoardStatus, fhBoardName }
+			STATUS current
+			DESCRIPTION 
+				"The board MemoryUsageExceed will send this trap."
+			::= { fhMemoryUsageTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.7
+		-- 1.3.6.1.4.1.11408.11.1.1.5.7
+		fhCPUUsageTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 7 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.7.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.7.1
+		fhCPUUsageExceed NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhBoardType, fhBoardStatus, fhBoardName }
+			STATUS current
+			DESCRIPTION 
+				"The board CPUUsageExceed will send this trap."
+			::= { fhCPUUsageTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.10
+		-- 1.3.6.1.4.1.11408.11.1.1.5.10
+		fhPowerSupplyTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 10 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.10.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.10.1
+		fhPowerSupplyShortage NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhBoardType, fhBoardStatus, fhBoardName }
+			STATUS current
+			DESCRIPTION 
+				"The board PowerSupplyShortage will send this trap."
+			::= { fhPowerSupplyTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.14
+		-- 1.3.6.1.4.1.11408.11.1.1.5.14
+		fhLaserSendTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 14 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.14.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.14.1
+		fhLaserSendFault NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhSubSlotNO, fhBoardName, fhIfName, fhPortNo
+				 }
+			STATUS current
+			DESCRIPTION 
+				"The board LaserSendFault will send this trap."
+			::= { fhLaserSendTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.15
+		-- 1.3.6.1.4.1.11408.11.1.1.5.15
+		fhLaserTempTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 15 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.15.1          
+		-- 1.3.6.1.4.1.11408.11.1.1.5.15.1
+		fhLaserTempExceed NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhSubSlotNO, fhBoardName, fhIfName, fhPortNo
+				 }
+			STATUS current
+			DESCRIPTION 
+				"The board LaserTempExceed will send this trap."
+			::= { fhLaserTempTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.16
+		-- 1.3.6.1.4.1.11408.11.1.1.5.16
+		fhPowerOutShortageTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 16 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.16.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.16.1
+		fhPowerOutShortage NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhSubSlotNO, fhBoardName, fhIfName, fhPortNo
+				 }
+			STATUS current
+			DESCRIPTION 
+				"The board PowerOutShortage will send this trap."
+			::= { fhPowerOutShortageTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.17
+		-- 1.3.6.1.4.1.11408.11.1.1.5.17
+		fhPowerOutExceedTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 17 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.17.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.17.1
+		fhPowerOutExceed NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhSubSlotNO, fhBoardName, fhIfName, fhPortNo
+				 }
+			STATUS current
+			DESCRIPTION 
+				"The board PowerOutExceed will send this trap."
+			::= { fhPowerOutExceedTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.18
+		-- 1.3.6.1.4.1.11408.11.1.1.5.18
+		fhPowerInShortageTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 18 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.18.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.18.1
+		fhPowerInShortage NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhSubSlotNO, fhBoardName, fhIfName, fhPortNo
+				 }
+			STATUS current
+			DESCRIPTION 
+				"The board PowerInShortage will send this trap."
+			::= { fhPowerInShortageTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.19
+		-- 1.3.6.1.4.1.11408.11.1.1.5.19
+		fhPowerInExceedTraps OBJECT IDENTIFIER ::= { fhHardwareTraps 19 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.1.5.19.1
+		-- 1.3.6.1.4.1.11408.11.1.1.5.19.1
+		fhPowerInExceed NOTIFICATION-TYPE
+			OBJECTS { fhSlotNo, fhSubSlotNO, fhBoardName, fhIfName, fhPortNo
+				 }
+			STATUS current
+			DESCRIPTION 
+				"The board PowerInExceed will send this trap."
+			::= { fhPowerInExceedTraps 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2
+		-- 1.3.6.1.4.1.11408.11.1.2
+		fhIfExtMIB OBJECT IDENTIFIER ::= { fhDatacomm 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.1
+		-- 1.3.6.1.4.1.11408.11.1.2.1
+		fhIfStateTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF FhIfStateEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfExtMIB 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.1.1
+		-- 1.3.6.1.4.1.11408.11.1.2.1.1
+		fhIfStateEntry OBJECT-TYPE
+			SYNTAX FhIfStateEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { fhIfStateIndex }
+			::= { fhIfStateTable 1 }
+
+		
+		FhIfStateEntry ::=
+			SEQUENCE { 
+				fhIfStateIndex
+					InterfaceIndex,
+			--	fhIfDescr
+			--		OCTET STRING,
+				fhIfMode
+					INTEGER
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.2.1.1.1
+		-- 1.3.6.1.4.1.11408.11.1.2.1.1.1
+		fhIfStateIndex OBJECT-TYPE
+			SYNTAX InterfaceIndex
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfStateEntry 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.1.1.2
+		-- 1.3.6.1.4.1.11408.11.1.2.1.1.2
+	--	fhIfDescr OBJECT-TYPE
+	--		SYNTAX OCTET STRING
+	--		MAX-ACCESS read-only
+	--		STATUS current
+	--		DESCRIPTION
+	--			"Description."
+	--		::= { fhIfStateEntry 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.1.1.3
+		-- 1.3.6.1.4.1.11408.11.1.2.1.1.3
+		fhIfMode OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfStateEntry 3 }
+
+-- TRAP VAR BUILD NODE------------------------------------
+--  1.3.6.1.4.1.11408.11.1.2.2
+		-- 1.3.6.1.4.1.11408.11.1.2.2
+		fhIfPac OBJECT IDENTIFIER ::= { fhIfExtMIB 2 }
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0
+		fhIfPacketTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF fhIfPacketEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPac 0 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0
+		fhIfPacketEntry OBJECT-TYPE
+			SYNTAX fhIfPacketEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { INTEGER }
+			::= { fhIfPacketTable 0 }
+
+		
+		fhIfPacketEntry ::=
+			SEQUENCE { 
+				ifName
+					OCTET STRING,
+				ifIndex
+					INTEGER,
+				ifDateTime
+					OCTET STRING,
+				ifTrapStatus
+					INTEGER,
+				ifInputPackets
+					Counter64,
+				ifOutputPackets
+					Counter64,
+				ifSeconds
+					INTEGER,
+				ifInputRate
+					OCTET STRING,
+				ifOutputRate
+					OCTET STRING,
+				ifInputError
+					Counter64,
+				ifOutputError
+					Counter64
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.1
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.1
+		ifName OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.2
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.2
+		ifIndex OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.3
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.3
+		ifDateTime OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.4
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.4
+		ifTrapStatus OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 4 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.5
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.5
+		ifInputPackets OBJECT-TYPE
+			SYNTAX Counter64
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 5 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.6
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.6
+		ifOutputPackets OBJECT-TYPE
+			SYNTAX Counter64
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 6 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.7
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.7
+		ifSeconds OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 7 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.8
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.8
+		ifInputRate OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 8 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.9
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.9
+		ifOutputRate OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 9 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.10
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.10
+		ifInputError OBJECT-TYPE
+			SYNTAX Counter64
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 10 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.2.2.0.0.11
+		-- 1.3.6.1.4.1.11408.11.1.2.2.0.0.11
+		ifOutputError OBJECT-TYPE
+			SYNTAX Counter64
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhIfPacketEntry 11 }
+----------------------------------------------------------------------------------			
+--  1.3.6.1.4.1.11408.11.1.2.3
+		-- 1.3.6.1.4.1.11408.11.1.2.3
+		fhIntfTraps OBJECT IDENTIFIER ::= { fhIfExtMIB 3 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.2.3.1
+		-- 1.3.6.1.4.1.11408.11.1.2.3.1
+		fhIntfTrafficTraps OBJECT IDENTIFIER ::= { fhIntfTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.2.3.1.1      
+		-- 1.3.6.1.4.1.11408.11.1.2.3.1.1
+		fhIntfTrafficExceed NOTIFICATION-TYPE
+			OBJECTS { ifName, ifIndex, ifInputRate, ifOutputRate }
+			STATUS current
+			DESCRIPTION 
+				"The board IntfTrafficExceed will send this trap."
+			::= { fhIntfTrafficTraps 1 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.2.3.2
+		-- 1.3.6.1.4.1.11408.11.1.2.3.2
+		fhIntfRxBadPktTraps OBJECT IDENTIFIER ::= { fhIntfTraps 2 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.2.3.2.1
+		-- 1.3.6.1.4.1.11408.11.1.2.3.2.1
+		fhIntfRxBadPktExceed NOTIFICATION-TYPE
+			OBJECTS { ifName, ifIndex, ifInputError, ifOutputError }
+			STATUS current
+			DESCRIPTION 
+				"The board IntfRxBadPktExceed will send this trap."
+			::= { fhIntfRxBadPktTraps 1 }
+
+			
+-- 1.3.6.1.4.1.11408.11.1.2.3.3
+		-- 1.3.6.1.4.1.11408.11.1.2.3.3
+		fhPhysicalInterfaceTraps OBJECT IDENTIFIER ::= { fhIntfTraps 3 }
+
+		
+-- 1.3.6.1.4.1.11408.11.1.2.3.3.1
+		-- 1.3.6.1.4.1.11408.11.1.2.3.3.1
+		fhPhysicalInterfaceDown NOTIFICATION-TYPE
+			OBJECTS { ifName, ifIndex, ifInputError, ifOutputError }
+			STATUS current
+			DESCRIPTION 
+				"The board fhPhysicalInterfaceDown will send this trap."
+			::= { fhPhysicalInterfaceTraps 1 }
+			
+		
+--  1.3.6.1.4.1.11408.11.1.3
+		-- 1.3.6.1.4.1.11408.11.1.3
+		fhSysExtMIB OBJECT IDENTIFIER ::= { fhDatacomm 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.1
+		-- 1.3.6.1.4.1.11408.11.1.3.1
+		devType OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhSysExtMIB 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.2
+		-- 1.3.6.1.4.1.11408.11.1.3.2
+		loopback OBJECT-TYPE
+			SYNTAX IpAddress
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhSysExtMIB 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.3
+		-- 1.3.6.1.4.1.11408.11.1.3.3
+		enable OBJECT-TYPE
+			SYNTAX Integer32
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhSysExtMIB 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.4
+		-- 1.3.6.1.4.1.11408.11.1.3.4
+		snmpVer OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhSysExtMIB 4 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.5
+		-- 1.3.6.1.4.1.11408.11.1.3.5
+		snmpCommunityNameTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF snmpCommunityNameEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhSysExtMIB 5 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.5.1
+		-- 1.3.6.1.4.1.11408.11.1.3.5.1
+		snmpCommunityNameEntry OBJECT-TYPE
+			SYNTAX snmpCommunityNameEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { snmpCommunityIndex }
+			::= { snmpCommunityNameTable 1 }
+
+		
+		snmpCommunityNameEntry ::=
+			SEQUENCE { 
+				snmpCommunityIndex
+					InterfaceIndex,
+				snmpCommunityName
+					OCTET STRING
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.3.5.1.1
+		-- 1.3.6.1.4.1.11408.11.1.3.5.1.1
+		snmpCommunityIndex OBJECT-TYPE
+			SYNTAX InterfaceIndex
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { snmpCommunityNameEntry 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.5.1.2
+		-- 1.3.6.1.4.1.11408.11.1.3.5.1.2
+		snmpCommunityName OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { snmpCommunityNameEntry 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.6
+		-- 1.3.6.1.4.1.11408.11.1.3.6
+		hostName OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhSysExtMIB 6 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.7
+		-- 1.3.6.1.4.1.11408.11.1.3.7
+		passWord OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhSysExtMIB 7 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.3.8
+		-- 1.3.6.1.4.1.11408.11.1.3.8
+		rcuVersion OBJECT-TYPE
+			SYNTAX OCTET STRING
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhSysExtMIB 8 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6
+		-- 1.3.6.1.4.1.11408.11.1.6
+		fhVC OBJECT IDENTIFIER ::= { fhDatacomm 6 }
+
+-----------------------------------TRAP VAR BUILD NODE---------------------------------
+--  1.3.6.1.4.1.11408.11.1.6.1
+		-- 1.3.6.1.4.1.11408.11.1.6.2
+		fhVCType OBJECT IDENTIFIER ::= { fhVC 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.1.1
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1
+		fhVCTable OBJECT-TYPE
+			SYNTAX SEQUENCE OF fhVCEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhVCType 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.1.1.1
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1
+		fhVCEntry OBJECT-TYPE
+			SYNTAX fhVCEntry
+			MAX-ACCESS not-accessible
+			STATUS current
+			DESCRIPTION
+				"Description."
+			INDEX { INTEGER }
+			::= { fhVCTable 1 }
+
+		
+		fhVCEntry ::=
+			SEQUENCE { 
+				VcType
+					INTEGER,
+				CtrlWord
+					INTEGER,
+				SecondaryPwId
+					INTEGER,
+				PrimaryPwId
+					INTEGER,
+				PeerAddress
+					IpAddress,
+				VcId
+					INTEGER,
+				VcOutboundLabel
+					INTEGER,
+				VcInboundLabel
+					INTEGER
+			 }
+
+--  1.3.6.1.4.1.11408.11.1.6.1.1.1.2
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1.1
+		VcType OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhVCEntry 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.1.1.1.5
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1.2
+		CtrlWord OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhVCEntry 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.1.1.1.6
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1.3
+		SecondaryPwId OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhVCEntry 3 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.1.1.1.8
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1.4
+		PrimaryPwId OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhVCEntry 4 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.1.1.1.9
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1.5
+		PeerAddress OBJECT-TYPE
+			SYNTAX IpAddress
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhVCEntry 5 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.1.1.1.12
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1.6
+		VcId OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhVCEntry 6 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.1.1.1.30
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1.7
+		VcOutboundLabel OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhVCEntry 7 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.1.1.1.31
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1.8
+		VcInboundLabel OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"Description."
+			::= { fhVCEntry 8 }
+
+---------------------------------------------------------------------------------------
+		
+--  1.3.6.1.4.1.11408.11.1.6.2
+		-- 1.3.6.1.4.1.11408.11.1.6.4
+		fhVCTraps OBJECT IDENTIFIER ::= { fhVC 4 }
+
+--  1.3.6.1.4.1.11408.11.1.6.2.1
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1
+		fhVCStatusTraps OBJECT IDENTIFIER ::= { fhVCTraps 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.2.1.1      
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.1
+		fhVCDown NOTIFICATION-TYPE
+			OBJECTS { VcId, VcType, PeerAddress, CtrlWord, SecondaryPwId, 
+				ifName }
+			STATUS current
+			DESCRIPTION 
+				"The board fhVCDown will send this trap."
+			::= { fhVCStatusTraps 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.2.1.2 
+		-- 1.3.6.1.4.1.11408.11.1.6.2.1.2
+		fhVCUp NOTIFICATION-TYPE
+			OBJECTS { VcId, VcType, PeerAddress, CtrlWord, PrimaryPwId, 
+				ifName }
+			STATUS current
+			DESCRIPTION 
+				"The board fhVCUp will send this trap."
+			::= { fhVCStatusTraps 2 }
+
+			
+--  1.3.6.1.4.1.11408.11.1.6.2.2
+		-- 1.3.6.1.4.1.11408.11.1.6.2.2
+		fhPwe3VCTraps OBJECT IDENTIFIER ::= { fhVCTraps 2 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.2.2.1      
+		-- 1.3.6.1.4.1.11408.11.1.6.2.2.1
+		fhPwe3VCW2P NOTIFICATION-TYPE
+			OBJECTS { VcId, VcType, PeerAddress, CtrlWord, SecondaryPwId, 
+				ifName }
+			STATUS current
+			DESCRIPTION 
+				"The board Pwe3VC_W2P will send this trap."
+			::= { fhPwe3VCTraps 1 }
+
+		
+--  1.3.6.1.4.1.11408.11.1.6.2.2.2 
+		-- 1.3.6.1.4.1.11408.11.1.6.2.2.2
+		fhPwe3VCP2W NOTIFICATION-TYPE
+			OBJECTS { VcId, VcType, PeerAddress, CtrlWord, PrimaryPwId, 
+				ifName }
+			STATUS current
+			DESCRIPTION 
+				"The board Pwe3VC_P2W will send this trap."
+			::= { fhPwe3VCTraps 2 }
+
+
+
+
+
+
+
+
+			
+--  1.3.6.1.4.1.11408.11.1.12345
+		-- 1.3.6.1.4.1.11408.11.1.12345
+		privateObject OBJECT IDENTIFIER ::= { fhDatacomm 12345 }
+
+--  1.3.6.1.4.1.11408.11.1.12345.1
+		-- 1.3.6.1.4.1.11408.11.1.12345.1
+		ptDebug OBJECT IDENTIFIER ::= { privateObject 1 }
+		
+--  1.3.6.1.4.1.11408.11.1.12345.1.1
+		-- 1.3.6.1.4.1.11408.11.1.12345.1.1
+		debugEnable OBJECT-TYPE
+			SYNTAX INTEGER
+			{
+			enable(1),
+			disable(0)
+			}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"
+			    1:enable  0:disable
+				"
+			::= { ptDebug 1 }	
+
+--  1.3.6.1.4.1.11408.11.1.12345.2
+		-- 1.3.6.1.4.1.11408.11.1.12345.2
+		trapInformation OBJECT IDENTIFIER ::= { privateObject 2 }
+		
+--  1.3.6.1.4.1.11408.11.1.12345.2.1
+		-- 1.3.6.1.4.1.11408.11.1.12345.2.1
+		trapInfoEnable OBJECT-TYPE
+			SYNTAX INTEGER
+			{
+			enable(1),
+			disable(0)
+			}
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"
+			    1:enable  0:disable
+				"
+			::= { trapInformation 1 }	
+
+--  1.3.6.1.4.1.11408.11.1.12345.2.2
+		-- 1.3.6.1.4.1.11408.11.1.12345.2.2
+		trapInfoInterval OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"
+			    U:second
+				"
+			::= { trapInformation 2 }
+
+--  1.3.6.1.4.1.11408.11.1.12345.2.3
+		-- 1.3.6.1.4.1.11408.11.1.12345.2.3
+		trapInfoCounter OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-only
+			STATUS current
+			DESCRIPTION
+				"
+			    total number of trap 
+				"
+			::= { trapInformation 3 }
+			
+--  1.3.6.1.4.1.11408.11.1.12345.2.4
+		-- 1.3.6.1.4.1.11408.11.1.12345.2.4
+		trapInfoAlarmCode OBJECT-TYPE
+			SYNTAX INTEGER
+			MAX-ACCESS read-write
+			STATUS current
+			DESCRIPTION
+				"
+			    (0x100+1) SNMP_ALARM_CODE_LINK_DOWN    256+1
+				(0x100+2) SNMP_ALARM_CODE_BOARD_NO_EXIST
+				(0x100+3) SNMP_ALARM_CODE_BOARD_FAULT
+	
+				(0x200+1) SNMP_ALARM_CODE_INTF_TRAFFIC_EXCEED	512
+				(0x200+2) SNMP_ALARM_CODE_INTF_RX_BAD_PKT_EXCEED
+				(0x200+3) SNMP_ALARM_CODE_PHYSICAL_INTERFACE_DOWN
+				(0x200+4) SNMP_ALARM_CODE_INTF_PKT_LOSS_EXCEED
+
+				(0x300+1) SNMP_ALARM_CODE_BOARD_TEMP_EXCEED	768
+				(0x300+2) SNMP_ALARM_CODE_MEMORY_USAGE_EXCEED
+				(0x300+3) SNMP_ALARM_CODE_CPU_USAGE_EXCEED
+				(0x300+4) SNMP_ALARM_CODE_POWER_SUPPLY_SHORTAGE
+	
+				(0x400+1) SNMP_ALARM_CODE_LASER_SEND_FAULT	1024
+				(0x400+2) SNMP_ALARM_CODE_LASER_TEMP_EXCEED
+	
+				(0x500+1) SNMP_ALARM_CODE_POWER_OUT_SHORTAGE	1280
+				(0x500+2) SNMP_ALARM_CODE_POWER_OUT_EXCEED
+				(0x500+3) SNMP_ALARM_CODE_POWER_IN_SHORTAGE
+				(0x500+4) SNMP_ALARM_CODE_POWER_IN_EXCEED
+	
+				(0x600+1) SNMP_ALARM_CODE_VC_DOWN	1536
+				(0x600+2) SNMP_ALARM_CODE_VC_UP
+				(0x600+3) SNMP_ALARM_CODE_PWE3_VC_W2P
+				(0x600+4) SNMP_ALARM_CODE_PWE3_VC_P2W
+				"
+			::= { trapInformation 4 }			
+	
+	END

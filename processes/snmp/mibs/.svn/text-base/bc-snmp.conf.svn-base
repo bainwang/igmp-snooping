@@ -1,0 +1,15 @@
+#add by wangibn for V2
+#rocommunity public 
+#rwcommunity private
+rwcommunity public 192.168.1.0/24
+rwcommunity public localhost
+#trap
+#trapsink 192.168.5.199 public 162
+#trap2sink 192.168.5.199 public 162
+trapsink 192.168.1.199:162
+trap2sink 192.168.1.199:162
+informsink 192.168.1.199:162
+authtrapenable 1
+#add by wangbin for V3
+rwuser admin
+createUser admin MD5 md5888888 DES des888888

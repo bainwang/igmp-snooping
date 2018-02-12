@@ -1,0 +1,1 @@
+obj-y += startup/ L2mc/

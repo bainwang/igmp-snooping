@@ -1,0 +1,79 @@
+/*******************************************************************************
+  [File name]	: utili_block_ext.h
+  [Author]     	: bain.wang@outlook.com
+  [Version]    	: 1.0
+  [Date]       	: 2017-04-04
+  [Description]	:
+	define avlt api
+  [Others]     	:
+	NULL
+  [Function List]:  
+    1. ....
+    2. ....
+  [History]:
+	 Date       	Modification 							 Initials
+	---------- 	--------------                                        ----------
+	2017-04-04  	Created								 bain.wang@outlook.com
+*******************************************************************************/
+
+#ifndef _UTILI_BLOCK_EXT_H_
+#define _UTILI_BLOCK_EXT_H_
+
+#include "bc_common_defs.h"
+#include "utili_block.h"
+#include "bc_err.h"
+#include "bc_modules.h"
+#include "bc_modules_com_para.h"
+
+#define UTILI_BLOCK_EXT_MAX_BLOCK 64
+
+typedef struct { 
+	utili_block_list_t block_node;
+	bc_uint32 block_id;
+	
+	bc_char data[0];
+} utili_block_ext_node_t;
+
+
+typedef struct {
+	utili_block_t block_hdr;
+	bc_uint32 block_id;
+
+	bc_uint32 block_alloc_cnt;
+	bc_uint32 block_free_cnt;
+	
+	bc_uint8 *mem_ptr;
+} utili_block_ext_block_t;
+
+
+typedef struct {
+	bc_modules_e module_id;
+	bc_char name[BC_MODULE_NAME_LENGTH];
+	
+	bc_uint32 block_num;
+	utili_block_ext_block_t blocks[UTILI_BLOCK_EXT_MAX_BLOCK];
+	bc_uint32 node_num_of_block;
+
+	bc_uint32 node_size;
+	bc_uint32 node_num;
+
+	bc_uint32 current_used_cnt;
+	bc_uint32 peak;
+	unsigned long alloc_record_cnt;
+} utili_block_ext_t;
+
+extern void *utili_block_ext_alloc(utili_block_ext_t *block_ext);
+extern void utili_block_ext_free(utili_block_ext_t *block_ext, void *ptr);
+
+extern bc_err_e utili_block_ext_init(
+	utili_block_ext_t *block_ext, 
+	bc_modules_e module_id,
+	bc_char *name,
+	bc_uint32 node_size, 
+	bc_uint32 nodes_num);
+
+extern void uitli_block_ext_dump(utili_block_ext_t *block_ext);
+
+#define UTILI_BLOCK_EXT_DEBUG 1
+
+#endif

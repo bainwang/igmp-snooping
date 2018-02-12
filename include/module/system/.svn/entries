@@ -1,0 +1,76 @@
+10
+
+dir
+12
+svn://localhost/include/module/system
+svn://localhost
+
+
+
+2017-07-28T03:53:48.912765Z
+7
+wangbin
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+86189913-313b-f84c-88d5-432afe7a17ae
+
+test
+dir
+
+log
+dir
+
+session
+dir
+
+platform
+dir
+
+cfgmgmt
+dir
+
+baseinfo
+dir
+
+filetrans
+dir
+
+clock
+dir
+
+print
+dir
+
+stats
+dir
+
+onu
+dir
+
+binchie
+dir
+
+startup
+dir
+
+usermgmt
+dir
+
+cli
+dir
+
+ipc
+dir
+

@@ -1,0 +1,34 @@
+/************************************************************
+  FileName:
+  Author:  wangbin      Version :  1.0        Date:2017-04-04
+  Description:                   
+  Version:                        
+  History:        
+                  
+    1. Date:
+       Author:
+       Modification:
+    2. ...
+***********************************************************/
+
+#ifndef __bc_modules_com_para_h__
+#define __bc_modules_com_para_h__
+
+#include "bc_common_defs.h"
+
+
+#define BC_MODULE_NAME_LENGTH               32
+
+
+
+#ifdef MK_BC_PRJ_NAME_X86
+#define BC_PRJ_NAME_X86	TRUE 
+#define BC_PRJ_NAME_DEV	FALSE
+#else
+#define BC_PRJ_NAME_X86	FALSE 
+#define BC_PRJ_NAME_DEV	TRUE
+#endif
+
+
+#endif
+

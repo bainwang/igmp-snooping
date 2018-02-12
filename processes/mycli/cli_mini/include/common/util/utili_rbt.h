@@ -1,0 +1,712 @@
+/*******************************************************************************
+  Copyright (C), 1988-2013, xxxxx Tech. Co., Ltd.
+  [File name]	: utili_rbt.h
+  [Author]     	: wangbin
+  [Version]    	: 1.0
+  [Date]       	: 2013-03-12
+  [Description]	:
+	red-black tree
+  [Others]     	:
+	NULL
+  [Function List]:  
+    1. ....
+    2. ....
+  [History]:
+	 Date       	Modification 							 Initials
+	---------- 	--------------                                        ----------
+	2013-03-12  	Created								 wangbin
+*******************************************************************************/
+
+#ifndef _UTILI_RBT_H_
+#define _UTILI_RBT_H_
+
+
+#ifndef IN
+#define IN
+#endif
+
+#ifndef OUT
+#define OUT
+#endif
+
+/* node keyword compare function:
+	should return:
+		(*a)<(*b)	:	-1
+		(*a)>(*b)	:	1
+		(*a)==(*b)	:	0
+
+    example:
+	static int rbt_comp_fdb(const FDB_ENTRY_T *a, const FDB_ENTRY_T *b, void *cookie)
+	{
+	     if (a->vid < b->vid)
+	          return -1;
+
+	     if (a->vid > b->vid)
+	          return 1;
+
+	     return memcmp(a->mac, b->mac, sizeof(a->mac));
+	}
+*/
+typedef int (*utili_rbt_comp_func_t)(const void *, const void *, void *);
+
+
+/* node keyword compare function:
+	should return:
+		(*a)<(args)	:	-1
+		(*a)>(args)	:	1
+		(*a)==(args)	:	0
+
+   example:
+	static int rbt_comp_fdb_vidmac(const FDB_ENTRY_T *a, unsigned int vid, UI8_T *mac)
+	{
+	     if (a->vid < vid)
+	          return -1;
+
+	     if (a->vid > vid)
+	          return 1;
+
+	     return memcmp(a->mac, mac, sizeof(a->mac));
+	}
+*/
+typedef int (*utili_rbt_user_comp_func_t)(const void *, void *);
+
+
+/* red-black tree node
+	user node data should include this struct
+	example:
+		struct
+		{
+			utili_rbt_node_t 	node;
+			user struct  data or pointer data:
+				the red-black tree internal service will get this data's pointer to compare
+				so if use pointer, the compare data will be point of point(void **)
+		}
+
+	node manage:
+		tree->freenodelist point to the first free node,
+		and that's node's left will point to next free node,
+		...
+		the last node.left will point to NULL
+*/
+typedef struct _utili_rbt_node_t
+{
+	struct _utili_rbt_node_t 	*parent;				/* parent node pointer */
+	struct _utili_rbt_node_t 	*left;					/* left node pointer */
+	struct _utili_rbt_node_t 	*right_color;			/* right node pointer (bit31-bit1) & color(bit0) */
+} utili_rbt_node_t;
+
+/* red-black tree struct */
+typedef struct
+{
+	/* tree's basic information */
+	utili_rbt_node_t 			nilnode;				/* nil-node and root node space, all end-node point will set to this space address. */
+	utili_rbt_comp_func_t 		compare;				/* user's node compare function */
+	void						*cookie;				/* user's compare cookie */
+	unsigned int   				count;					/* tree node counter */
+
+	/* optimize: before most insert operate,  need lookup the node, then do insert or replace, so cache the lookup result */
+	utili_rbt_node_t			*lookupParent;			/* the last failer lookup's parent node point */
+	int							lookupResult;			/* the last failer lookup's compare result */
+} utili_rbt_t;
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_init
+
+DESCRIPTION:
+	Initialize a red-black tree
+
+INPUT:
+	tree		: the tree struct pointer
+	comp_func	: compare function for red-black tree node compare
+
+OUTPUT:
+	tree		: the tree struct pointer
+
+RETURN:
+
+NOTES:
+
+*************************************************/
+void utili_rbt_init(OUT utili_rbt_t *tree, IN utili_rbt_comp_func_t comp_func);
+
+
+
+
+/******************************************************************************\
+  Function   : utili_rbt_detach
+  Description: 
+  Return     : 
+  Others     : 
+\******************************************************************************/
+void utili_rbt_detach(OUT utili_rbt_t *tree);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_set_cookie
+
+DESCRIPTION:
+	set the cookie of pass to compare function
+
+INPUT:
+	tree		: the tree struct pointer
+	cookie		: user's cookie pass to compare function
+
+OUTPUT:
+	tree		: the tree's cookie
+
+RETURN:
+
+NOTES:
+
+*************************************************/
+void utili_rbt_set_cookie(OUT utili_rbt_t *tree, IN void *cookie);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_get_count
+
+DESCRIPTION:
+	get node count of tree
+
+INPUT:
+	tree		: the tree struct pointer
+
+OUTPUT:
+
+RETURN:
+	node number of tree
+
+NOTES:
+
+*************************************************/
+unsigned int utili_rbt_get_count(IN utili_rbt_t *tree);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_ins_node_afterfind
+
+DESCRIPTION:
+	fast insert a node into tree after find.
+
+INPUT:
+	tree		: the tree struct pointer
+	node		: insert node (red-black node + the real-data)
+
+OUTPUT:
+
+RETURN:
+
+NOTES:
+	the node must initialize before call.
+
+EXAMPLE:
+	if (utili_rbt_find(&tree, key)) or (utili_rbt_find_byfun(&tree, key))
+	{
+        duplicated node
+        replace it?
+	}
+	else
+	{
+		node = (FDB_RBT_NODE_T *)UTL_BLOCK_Alloc(&tree);
+		node->entry.vid = vid var;
+		memcpy(node->entry.mac, mac var, sizeof(mac));
+		utili_rbt_ins_node_afterfind(&tree, (utili_rbt_node_t *)node);
+	}
+
+*************************************************/
+void utili_rbt_ins_node_afterfind(IN OUT utili_rbt_t *tree, IN OUT utili_rbt_node_t *node);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_ins_node
+
+DESCRIPTION:
+	insert a node into tree
+
+INPUT:
+	tree		: the tree struct pointer
+	node		: insert node (red-black node + the real-data)
+
+OUTPUT:
+
+RETURN:
+	success		: the param: node
+	failure		: the duplication node
+
+NOTES:
+	the node must initialize before call.
+
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_ins_node(IN OUT utili_rbt_t *tree, IN OUT utili_rbt_node_t *node);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_del_node
+
+DESCRIPTION:
+	delete a node from tree
+
+INPUT:
+	tree		: the tree struct pointer
+	node		: deleted node (red-black node + the real-data)
+
+OUTPUT:
+
+RETURN:
+
+NOTES:
+	the node must in the tree, ensure this, please use utili_rbt_find.
+
+*************************************************/
+void utili_rbt_del_node(IN OUT utili_rbt_t *tree, IN OUT utili_rbt_node_t *node);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_del_node_byentry
+
+DESCRIPTION:
+	delete a item from tree
+
+INPUT:
+	tree			: the tree struct pointer
+	item			: deleted node by key-word
+
+OUTPUT:
+
+RETURN:
+	NULL			: not found the item
+	valid pointer	: deleted node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_del_node_byentry(IN OUT utili_rbt_t *tree, IN const void *item);
+
+
+
+
+#define WHAT_IS_GET
+
+/* ======================================================================================= *\
+    get 簇: 指定树中的某一个结点（指向某个节点的指针），找出相关（上一个、下一个、第一个、
+            最后一个）的其它节点
+\* ======================================================================================= */
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_get_first
+
+DESCRIPTION:
+	search lowest(leftmost) node of tree
+
+INPUT:
+	tree		: the tree struct pointer
+
+OUTPUT:
+
+RETURN:
+	NULL		: tree is empty
+	pointer		: the first node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_get_first(IN utili_rbt_t *tree);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_get_last
+
+DESCRIPTION:
+	search highest (rightmost) node of tree
+
+INPUT:
+	tree		: the tree struct pointer
+
+OUTPUT:
+
+RETURN:
+	NULL		: tree is empty
+	pointer		: the last node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_get_last(IN utili_rbt_t *tree);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_get_next
+
+DESCRIPTION:
+	search the given node's successor
+
+INPUT:
+	tree		: the tree struct pointer
+	curr		: predecessor node
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the tail of tree
+	pointer		: the next node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_get_next(IN utili_rbt_t *tree, IN utili_rbt_node_t *curr);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_get_prev
+
+DESCRIPTION:
+	search the given node's predecessor
+
+INPUT:
+	tree		: the tree struct pointer
+	curr		: successor node
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the tail of tree
+	pointer		: the prev node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_get_prev(IN utili_rbt_t *tree, IN utili_rbt_node_t *curr);
+
+
+
+
+#define WHAT_IS_FIND 
+
+/* ======================================================================================= *\
+    find 簇: 指定data，从root开始查找 
+\* ======================================================================================= */
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find
+
+DESCRIPTION:
+	find a item from tree
+
+INPUT:
+	tree		: the tree struct pointer
+	key			: find key pointer (the real-data but not the red-black node)
+
+OUTPUT:
+
+RETURN:
+	NULL		: can't found the item
+	pointer		: the red-black node match the item
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find(IN utili_rbt_t *tree, IN const void *key);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find_byfun
+
+DESCRIPTION:
+	find a item from tree
+
+INPUT:
+	tree		: the tree struct pointer
+	fcmp		: the user special compare function
+	para		: special compare field value
+
+OUTPUT:
+
+RETURN:
+	NULL		: can't found the item
+	pointer		: the red-black node match the item
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find_byfun
+	(
+		IN utili_rbt_t *tree, 
+		IN utili_rbt_user_comp_func_t fcmp,
+		IN void *para
+	);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find_prev
+
+DESCRIPTION:
+	search node that < item
+
+INPUT:
+	tree		: the tree struct pointer
+	item		: the compare keyword  (the real-data)
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the head of tree
+	pointer		: the founded node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find_prev(IN utili_rbt_t *tree, IN const void *item);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find_prev_byfun
+
+DESCRIPTION:
+	search node that < item
+	a special version for performance, most we use struct as entry,
+	if use UTL_RBT_UpperBound, need merge each field into a struct,
+	this function can direct use some value or pointer, but not memcpy into a struct
+
+INPUT:
+	tree		: the tree struct pointer
+	fcmp		: the user special compare function
+	para		: special compare field value
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the tail of tree
+	pointer		: the founded node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find_prev_byfun
+	(
+		IN utili_rbt_t *tree, 
+		IN utili_rbt_user_comp_func_t fcmp,
+		IN void *para
+	);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find_next
+
+DESCRIPTION:
+	search node that > item
+
+INPUT:
+	tree		: the tree struct pointer
+	item		: the compare keyword  (the real-data)
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the tail of tree
+	pointer		: the founded node
+
+NOTES:
+
+HISTORY:
+		porting from kazlib-1.20 dict.c : dict_lower_bound
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find_next(IN utili_rbt_t *tree, IN const void *item);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find_next_byfun
+
+DESCRIPTION:
+	search node that > item
+	a special version for performance, most we use struct as entry,
+	if use UTL_RBT_LowerBound, need merge each field into a struct,
+	this function can direct use some value or pointer, but not memcpy into a struct
+
+INPUT:
+	tree		: the tree struct pointer
+	fcmp		: the user special compare function
+	para		: special compare field value
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the tail of tree
+	pointer		: the founded node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find_next_byfun
+	(
+		IN utili_rbt_t *tree, 
+		IN utili_rbt_user_comp_func_t fcmp,
+		IN void *para
+	);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find_le(Littler Element)
+
+DESCRIPTION:
+	search node that <= item
+
+INPUT:
+	tree		: the tree struct pointer
+	item		: the compare keyword  (the real-data)
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the head of tree
+	pointer		: the founded node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find_le(IN utili_rbt_t *tree, IN const void *item);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find_le_byfun(Littler Element)
+
+DESCRIPTION:
+	search node that <= item
+	a special version for performance, most we use struct as entry,
+	if use UTL_RBT_UpperBound, need merge each field into a struct,
+	this function can direct use some value or pointer, but not memcpy into a struct
+
+INPUT:
+	tree		: the tree struct pointer
+	fcmp		: the user special compare function
+	para		: special compare field value
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the tail of tree
+	pointer		: the founded node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find_le_byfun
+	(
+	IN utili_rbt_t *tree, 
+	IN utili_rbt_user_comp_func_t fcmp,
+	IN void *para
+	);
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find_ge(Greater Element)
+
+DESCRIPTION:
+	search node that >= item
+
+INPUT:
+	tree		: the tree struct pointer
+	item		: the compare keyword  (the real-data)
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the tail of tree
+	pointer		: the founded node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find_ge(IN utili_rbt_t *tree, IN const void *item);
+
+
+
+
+/*************************************************
+FUNCTION NAME:
+	utili_rbt_find_ge_byfun(Greater Element)
+
+DESCRIPTION:
+	search node that >= item
+	a special version for performance, most we use struct as entry,
+	if use UTL_RBT_LowerBound, need merge each field into a struct,
+	this function can direct use some value or pointer, but not memcpy into a struct
+
+INPUT:
+	tree		: the tree struct pointer
+	fcmp		: the user special compare function
+	para		: special compare field value
+
+OUTPUT:
+
+RETURN:
+	NULL		: arrive the tail of tree
+	pointer		: the founded node
+
+NOTES:
+
+*************************************************/
+utili_rbt_node_t *utili_rbt_find_ge_byfun
+	(
+	IN utili_rbt_t *tree, 
+	IN utili_rbt_user_comp_func_t fcmp,
+	IN void *para
+	);
+
+
+#endif
+

@@ -1,0 +1,78 @@
+/************************************************************
+  Copyright (C), 1988-2014, xxxx Tech. Co., Ltd.
+  FileName:
+  Author:  bain.wang@outlook.com      Version :  1.0        Date:2016-4-22
+  Description:                   
+  Version:                        
+  History:        
+                  
+    1. Date:
+       Author:
+       Modification:
+    2. ...
+***********************************************************/
+
+#ifndef __bc_sys_polling_h__
+#define __bc_sys_polling_h__
+
+#include "bc_common_defs.h"
+#include "bc_modules.h"
+#include "bc_err.h"
+
+typedef void (*bc_sys_polling_cb)(void);
+
+
+
+/*************************************************
+  Function: bc_sys_polling_reg
+  Description: register polling callback function
+  Input: 
+  		module_id: module id
+  		interval: polling interval
+  		cb: polling callbck function
+  Output:
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+extern bc_err_e bc_sys_polling_reg(bc_modules_e module_id, bc_uint32 interval, bc_sys_polling_cb cb);
+
+/*************************************************
+  Function: bc_sys_polling_unreg
+  Description: deregister polling callback function
+  Input: 
+  		module_id: module id
+  		cb: polling callbck function
+  Output:
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+extern bc_err_e bc_sys_polling_unreg(bc_modules_e module_id, bc_sys_polling_cb cb);
+
+
+/* 处理时间较长的POLLING，调用这个接口 */
+extern bc_err_e bc_sys_polling_lazy_reg(bc_modules_e module_id, bc_uint32 interval, bc_sys_polling_cb cb);
+
+extern bc_err_e bc_sys_polling_lazy_unreg(bc_modules_e module_id, bc_sys_polling_cb cb);
+
+/*************************************************
+  Function: bc_sys_polling_init
+  Description: polling init
+  Input: 
+  Output:
+  Return:
+  		0: BC_ERR_OK
+  		~0: error id
+  Note: 
+  History: 
+*************************************************/
+extern bc_err_e bc_sys_polling_init(void);
+
+#endif
+
+
